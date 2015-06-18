@@ -194,7 +194,7 @@ $Conf{RestorePreUserCmd}  = undef;
 $Conf{RestorePostUserCmd} = undef;
 $Conf{ArchivePreUserCmd}  = undef;
 $Conf{ArchivePostUserCmd} = undef;
-$Conf{UserCmdCheckStatus} = 1;
+$Conf{UserCmdCheckStatus} = <% if @real_uccs -%>'<%= @real_uccs %>'<% end %>,;
 $Conf{ClientNameAlias} = undef;
 $Conf{SendmailPath} = '/usr/sbin/sendmail';
 $Conf{EMailNotifyMinDays} = <%= @email_notify_min_days %>;
@@ -215,9 +215,9 @@ $Conf{EMailHeaders} = <<EOF;
 <% end -%>
 EOF
 $Conf{CgiAdminUserGroup} = 'backuppc';
-$Conf{CgiAdminUsers}     = 'backuppc';
-$Conf{CgiURL} = 'http://'.$Conf{ServerHost}.'/backuppc/index.cgi';
-$Conf{Language} = 'en';
+$Conf{CgiAdminUsers}     = '<%= @cgi_admin_users %>';
+$Conf{CgiURL} = '<%= @cgi_url %>';
+$Conf{Language} = '<%= @language %>';
 $Conf{CgiUserHomePageCheck} = '';
 $Conf{CgiUserUrlCreate}     = 'mailto:%s';
 $Conf{CgiDateFormatMMDD} = 1;
@@ -243,13 +243,13 @@ $Conf{CgiStatusHilightColor} = {
     Reason_no_ping                 => '#ffff99',
     Reason_backup_canceled_by_user => '#ff9900',
     Status_backup_in_progress      => '#66cc99',
-    Disabled_OnlyManualBackups     => '#d1d1d1',   
-    Disabled_AllBackupsDisabled    => '#d1d1d1',          
+    Disabled_OnlyManualBackups     => '#d1d1d1',
+    Disabled_AllBackupsDisabled    => '#d1d1d1',
 };
 $Conf{CgiHeaders} = '<meta http-equiv="pragma" content="no-cache">';
 $Conf{CgiImageDir} = '<%= scope.lookupvar('backuppc::params::cgi_image_dir') %>';
 $Conf{CgiExt2ContentType} = { };
-$Conf{CgiImageDirURL} = '<%= scope.lookupvar('backuppc::params::cgi_image_dir_url') %>';
+$Conf{CgiImageDirURL} = '<%= @cgi_image_dir_url %>';
 $Conf{CgiCSSFile} = 'BackupPC_stnd.css';
 $Conf{CgiUserConfigEditEnable} = 1;
 $Conf{CgiUserConfigEdit} = {

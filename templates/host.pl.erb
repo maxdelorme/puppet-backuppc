@@ -1,3 +1,6 @@
+<% if @client_name_alias -%>
+$Conf{ClientNameAlias} = '<%= @client_name_alias%>';
+<% end -%>
 $Conf{XferMethod} = '<%= @xfer_method %>';
 $Conf{XferLogLevel} = <%= @xfer_loglevel %>;
 <% if @backups_disable -%>
@@ -32,6 +35,9 @@ $Conf{PartialAgeMax} = <%= @partial_age_max %>;
 <% end -%>
 <% if @blackout_bad_ping_limit -%>
 $Conf{BlackoutBadPingLimit} = <%= @blackout_bad_ping_limit %>;
+<% end -%>
+<% if @ping_cmd -%>
+$Conf{PingCmd} = '<%= @ping_cmd %>';
 <% end -%>
 <% if @ping_max_msec -%>
 $Conf{PingMaxMsec} = <%= @ping_max_msec %>;
@@ -124,7 +130,7 @@ $Conf{RsyncClientRestoreCmd} = '$sshPath -q -x -l <%= @system_account %> $host $
 <% if @rsync_share_name.is_a?(Array) -%>
 $Conf{RsyncShareName} = ['<%= @rsync_share_name.join("', '") %>'];
 <% else -%>
-$Conf{RsyncShareName} = '<%= @rsync_share_name %>'; 
+$Conf{RsyncShareName} = '<%= @rsync_share_name %>';
 <% end -%>
 <% end -%>
 <% if @rsyncd_client_port -%>
@@ -180,4 +186,15 @@ $Conf{EMailAdminUserName} = '<%= @email_admin_user_name %>';
 <% end -%>
 <% if @email_notify_old_backup_days -%>
 $Conf{EMailNotifyOldBackupDays} = <%= @email_notify_old_backup_days %>;
+<% end -%>
+<% if @blackout_periods -%>
+$Conf{BlackoutPeriods} = [
+<% @blackout_periods.each do |period| -%>
+<% if period.is_a?(Hash) -%>{
+<% period.each_pair do |key,value| -%>
+  <%= key %>  => <% if value.is_a?(Array) %>[<%= value.join(', ') %>]<% else %><%= value %><% end %>,
+<% end -%>
+},
+<% end -%>
+<% end -%>];
 <% end -%>

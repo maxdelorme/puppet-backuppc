@@ -12,6 +12,13 @@
 # [*ensure*]
 # Present or absent.
 #
+# [*client_name_alias*]
+# Override the client's host name. This allows multiple clients to all refer to the same physical host. This should only be set in the per-PC config file and is only used by BackupPC at the last moment prior to generating the command used to backup that machine (ie: the value of $Conf{ClientNameAlias} is invisible everywhere else in BackupPC). The setting can be a host name or IP address, eg:
+#         $Conf{ClientNameAlias} = 'realHostName';
+#         $Conf{ClientNameAlias} = '192.1.1.15';
+# will cause the relevant smb/tar/rsync backup/restore commands to be directed to realHostName, not the client name.
+# Note: this setting doesn't work for hosts with DHCP set to 1.
+#
 # [*system_account*]
 # Name of the user that will be created to allow backuppc
 # access to the system via ssh. This only applies to xfer
@@ -53,9 +60,28 @@
 # PC is not on the network, a number of consecutive bad pings is allowed
 # before the good ping count is reset.
 #
+# [*blackout_periods*]
+#  One or more blackout periods can be specified. If a client is subject to blackout then no regular (non-manual) backups will be started during any of these periods. hourBegin and hourEnd specify hours fro midnight and weekDays is a list of days of the week where 0 is Sunday, 1 is Monday etc.
+#  For example:
+#     $Conf{BlackoutPeriods} = [
+#          {
+#              hourBegin =>  7.0,
+#              hourEnd   => 19.5,
+#              weekDays  => [1, 2, 3, 4, 5],
+#          },
+#     ];
+#  specifies one blackout period from 7:00am to 7:30pm local time on Mon-Fri.
+#
 # [*ping_max_msec*]
 # Maximum latency between backuppc server and client to schedule
 # a backup. Default to 20ms.
+#
+# [*ping_cmd*]
+# Ping command. The following variables are substituted at run-time:
+#      $pingPath      path to ping ($Conf{PingPath})
+#      $host          host name
+#    Wade Brown reports that on solaris 2.6 and 2.7 ping -s returns the wrong exit status (0 even on failure). Replace with "ping $host 1", which gets the correct exit status but we don't get the round-trip time.
+#    Note: all Cmds are executed directly without a shell, so the prog name needs to be a full path and you can't include shell syntax like redirection and pipes; put that in a script if you need it.
 #
 # [*backups_disable*]
 # Disable all full and incremental backups. These settings are useful for a client that
@@ -196,6 +222,7 @@
 class backuppc::client (
   $ensure                = 'present',
   $backuppc_hostname     = '',
+  $client_name_alias     = false,
   $system_account        = 'backup',
   $system_home_directory = '/var/backups',
   $system_additional_commands = [],
@@ -213,7 +240,9 @@ class backuppc::client (
   $partial_age_max       = false,
   $blackout_bad_ping_limit = false,
   $ping_max_msec         = false,
+  $ping_cmd              = false,
   $blackout_good_cnt     = false,
+  $blackout_periods      = false,
   $backups_disable       = false,
   $xfer_method           = 'rsync',
   $xfer_loglevel         = '1',
@@ -406,7 +435,7 @@ class backuppc::client (
     ensure  => $ensure,
     content => template("${module_name}/host.pl.erb"),
     owner   => 'backuppc',
-    group   => $backuppc::params::group_apache,
+    group   => 'backuppc',
     mode    => '0640',
     tag     => "backuppc_config_${backuppc_hostname}"
   }

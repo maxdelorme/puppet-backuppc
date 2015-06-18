@@ -435,7 +435,7 @@ class backuppc::client (
     ensure  => $ensure,
     content => template("${module_name}/host.pl.erb"),
     owner   => 'backuppc',
-    group   => 'backuppc',
+    group   => $backuppc::params::group_apache,
     mode    => '0640',
     tag     => "backuppc_config_${backuppc_hostname}"
   }

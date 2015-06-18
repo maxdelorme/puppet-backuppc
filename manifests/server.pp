@@ -387,7 +387,7 @@ class backuppc::server (
     ensure  => 'directory',
     recurse => true,
     owner   => 'backuppc',
-    group   => $backuppc::params::group_apache,
+    group   => 'backuppc',
     mode    => '0640',
     require => Package[$backuppc::params::package],
     ignore  => 'BackupPC.sock',
@@ -442,33 +442,24 @@ class backuppc::server (
 
   # Export backuppc's authorized key to all clients
   # TODO don't rely on facter to obtain the ssh key.
-  if ! empty($::backuppc_pubkey_rsa) {
-    @@ssh_authorized_key { "backuppc_${::fqdn}":
-      ensure  => present,
-      key     => $::backuppc_pubkey_rsa,
-      name    => "backuppc_${::fqdn}",
-      user    => 'backup',
-      options => [
-        'command="~/backuppc.sh"',
-        'no-agent-forwarding',
-        'no-port-forwarding',
-        'no-pty',
-        'no-X11-forwarding',
-      ],
-      type    => 'ssh-rsa',
-      tag     => "backuppc_${::fqdn}",
-    }
-  }
+  #if ! empty($::backuppc_pubkey_rsa) {
+  #  @@ssh_authorized_key { "backuppc_${::fqdn}":
+  #    ensure  => present,
+  #    key     => $::backuppc_pubkey_rsa,
+  #    name    => "backuppc_${::fqdn}",
+  #    user    => 'backup',
+  #    options => [
+  #      'command="~/backuppc.sh"',
+  #      'no-agent-forwarding',
+  #      'no-port-forwarding',
+  #      'no-pty',
+  #      'no-X11-forwarding',
+  #    ],
+  #    type    => 'ssh-rsa',
+  #    tag     => "backuppc_${::fqdn}",
+  #  }
+  #}
 
-  # Hosts
-  File <<| tag == "backuppc_config_${::fqdn}" |>> {
-    group   => $backuppc::params::group_apache,
-    notify  => Service[$backuppc::params::service],
-    require => File["${backuppc::params::config_directory}/pc"],
-  }
-  File_line <<| tag == "backuppc_hosts_${::fqdn}" |>> {
-    require => Package[$backuppc::params::package],
-  }
 
   # Ensure readable file permissions on
   # the known hosts file.
@@ -478,6 +469,6 @@ class backuppc::server (
     group  => 'root',
     mode   => '0644',
   }
-
-  Sshkey <<| tag == "backuppc_sshkeys_${::fqdn}" |>>
+  #TODO
+  #Sshkey <<| tag == "backuppc_sshkeys_${::fqdn}" |>>
 }

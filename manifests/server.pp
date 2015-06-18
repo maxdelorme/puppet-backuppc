@@ -387,7 +387,7 @@ class backuppc::server (
     ensure  => 'directory',
     recurse => true,
     owner   => 'backuppc',
-    group   => 'backuppc',
+    group   => $backuppc::params::group_apache,
     mode    => '0640',
     require => Package[$backuppc::params::package],
     ignore  => 'BackupPC.sock',

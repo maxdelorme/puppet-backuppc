@@ -385,7 +385,6 @@ class backuppc::server (
 
   file { [$topdir, "${topdir}/.ssh"]:
     ensure  => 'directory',
-    recurse => true,
     owner   => 'backuppc',
     group   => $backuppc::params::group_apache,
     mode    => '0640',

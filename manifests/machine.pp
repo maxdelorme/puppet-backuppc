@@ -306,7 +306,7 @@ define backuppc::machine (
     ensure  => $ensure,
     path    => $backuppc::params::hosts,
     match   => "^${title}\s.*$",
-    line    => "${title} ${hosts_file_dhcp} backuppc ${hosts_file_more_users}\n",
+    line    => "${title} ${hosts_file_dhcp} backuppc ${hosts_file_more_users}",
     require => Package[$backuppc::params::package],
   }
 

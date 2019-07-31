@@ -463,3 +463,5 @@ class backuppc::client (
     tag     => "backuppc_config_${backuppc_hostname}"
   }
 }
+
+# vim: sw=2:ai:nu expandtab

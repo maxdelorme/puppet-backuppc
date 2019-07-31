@@ -497,3 +497,5 @@ class backuppc::server (
 
   Sshkey <<| tag == "backuppc_sshkeys_${facts['networking']['fqdn']}" |>>
 }
+
+# vim: sw=2:ai:nu expandtab

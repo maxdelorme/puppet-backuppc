@@ -57,3 +57,4 @@ class backuppc::params {
 
   $htpasswd_apache = "${config_directory}/htpasswd"
 }
+# vim: sw=2:ai:nu expandtab

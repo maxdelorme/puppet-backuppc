@@ -297,10 +297,10 @@ class backuppc::client (
   #validate_re($ensure, '^(present|absent)$',
   #'ensure parameter must have a value of: present or absent')
 
-  #$directory_ensure = $ensure ? {
-  #  'present' => 'directory',
-  #  default   => absent,
-  #}
+  $directory_ensure = $ensure ? {
+    'present' => 'directory',
+    default   => absent,
+  }
 
   #if empty($backuppc_hostname) {
   #  fail('Please provide the hostname of the node that hosts backuppc.')

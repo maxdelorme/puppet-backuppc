@@ -308,9 +308,9 @@ class backuppc::client (
 
   #validate_re($xfer_method, '^(smb|rsync|rsyncd|tar)$',
   #'Xfer_method parameter must have value of: smb, rsync, rsyncd or tar')
-  if $blackout_periods != false {
+  #if $blackout_periods != false {
       #validate_array($blackout_periods)
-  }
+  #}
   #validate_re($xfer_loglevel, '^[0-2]$',
   #'Xfer_loglevel parameter must be a 0, 1 or 2')
 

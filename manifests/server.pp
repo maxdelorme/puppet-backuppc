@@ -472,7 +472,7 @@ class backuppc::server (
       name    => "backuppc_${facts['networking']['fqdn']}",
       user    => 'backup',
       options => [
-        'command="~/backuppc.sh"',
+        "command='${system_home_directory}/backuppc.sh'",
         'no-agent-forwarding',
         'no-port-forwarding',
         'no-pty',

@@ -425,14 +425,14 @@ class backuppc::client (
     }
   }
 
-  if $facts['networking']['fqdn'] != $backuppc_hostname {
-    @@sshkey { $facts['networking']['fqdn']:
-      ensure => $ensure,
-      type   => 'ssh-rsa',
-      key    => $facts['ssh']['rsa']['key'],
-      tag    => "backuppc_sshkeys_${backuppc_hostname}",
-    }
-  }
+#  if $facts['networking']['fqdn'] != $backuppc_hostname {
+#    @@sshkey { $facts['networking']['fqdn']:
+#      ensure => $ensure,
+#      type   => 'ssh-rsa',
+#      key    => $facts['ssh']['rsa']['key'],
+#      tag    => "backuppc_sshkeys_${backuppc_hostname}",
+#    }
+#  }
 
   if $ensure == 'present' {
     @@augeas { "backuppc_host_${config_name}-create":

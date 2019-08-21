@@ -15,13 +15,14 @@ describe 'backuppc::server' do
       let(:options) do
         case facts[:os]['family']
         when 'RedHat'
-	  { group_apache: 'apache',
+          { group_apache: 'apache',
             topdir: '/var/lib/BackupPC' }
-	when 'Debian'
-	  { group_apache: 'www-data',
+        when 'Debian'
+          { group_apache: 'www-data',
             topdir: '/var/lib/backuppc' }
-	end
+        end
       end
+
       context 'with defaults' do
         let(:params) { default_params }
 

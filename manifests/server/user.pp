@@ -1,21 +1,14 @@
-# == Define: backuppc::server::user
+# @summary
+#   Add user credentials to the backuppc htpasswd file.
 #
-# Add user credentials to the backuppc htpasswd file.
+# @param ensure
+#   Present or absent
 #
-# === Parameters
+# @param username
+#   Namevar. Defaults to the title if no value is provided.
 #
-# [*ensure*]
-# Present or absent
-#
-# [*username*]
-# Namevar. Defaults to the title if no value is provided.
-#
-# [*password*]
-# Password for the account. Will be converted to a sha encrypted password.
-#
-# === Authors
-#
-# Scott Barr <gsbarr@gmail.com>
+# @param password
+#   Password for the account. Will be converted to a sha encrypted password.
 #
 define backuppc::server::user (
   $ensure   = 'present',

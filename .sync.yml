@@ -1,0 +1,25 @@
+---
+appveyor.yml:
+  delete: true
+.gitlab-ci.yml:
+  delete: true
+.vscode/extensions.json:
+  delete: true
+.gitignore:
+  required: &ignorepaths
+    - '.onceover/'
+.travis.yml:
+  notifications:
+    email:
+      recipients:
+      - gary@theclarkhome.com
+      on_success: change # default: change
+      on_failure: always # default: always
+spec/spec_helper.rb:
+  coverage_report: true
+  minimum_code_coverage_percentage: 0
+  strict_level: ":warning"
+  hiera_config: "hiera.yaml"
+Rakefile:
+  extras: 
+  - FastGettext.default_text_domain = 'default-text-domain'

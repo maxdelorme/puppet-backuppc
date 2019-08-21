@@ -381,13 +381,13 @@ class backuppc::server (
     notify  => Service['backuppc']
   }
 
-#  file { 'config_directory':
-#    ensure  => $directory_ensure,
-#    path    => $backuppc::params::config_directory,
-#    owner   => 'backuppc',
-#    group   => $backuppc::params::group_apache,
-#    require => Package['backuppc'],
-#  }
+  file { 'config_directory':
+    ensure  => $directory_ensure,
+    path    => $backuppc::params::config_directory,
+    owner   => 'backuppc',
+    group   => $backuppc::params::group_apache,
+    require => Package['backuppc'],
+  }
 
   file { 'pc_directory_symlink':
     ensure  => link,

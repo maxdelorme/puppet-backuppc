@@ -21,5 +21,7 @@ spec/spec_helper.rb:
   strict_level: ":warning"
   hiera_config: "hiera.yaml"
 Rakefile:
+  linter_options:
+    - no-140chars-check
   extras: 
   - FastGettext.default_text_domain = 'default-text-domain'

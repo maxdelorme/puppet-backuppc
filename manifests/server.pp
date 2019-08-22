@@ -281,7 +281,7 @@ class backuppc::server (
   if empty($backuppc_password) {
     fail('Please provide a password for the backuppc user. This is used to login to the web based administration site.')
   }
- 
+
   # TODO - these may not be needed
   $real_incr_fill = bool2num($incr_fill)
   $real_bzfif     = bool2num($backup_zero_files_is_fatal)

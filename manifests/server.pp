@@ -225,110 +225,64 @@
 #   Maximum RTT value (in ms) above which backup won't be started. Default to
 #   20ms
 #
+
 class backuppc::server (
-  $ensure                     = 'present',
-  $service_enable             = true,
-  $wakeup_schedule            = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
-  $max_backups                = 4,
-  $max_user_backups           = 4,
-  $language                   = 'en',
-  $max_pending_cmds           = 15,
-  $max_backuppc_nightly_jobs = 2,
-  $backuppc_nightly_period   = 1,
-  $max_old_log_files          = 14,
-  $df_max_usage_pct           = 95,
-  $trash_clean_sleep_sec      = 300,
-  $dhcp_address_ranges        = [],
-  $full_period                = '6.97',
-  $full_keep_cnt              = [1],
-  $full_age_max               = 90,
-  $incr_period                = '0.97',
-  $incr_keep_cnt              = 6,
-  $incr_age_max               = 30,
-  $incr_levels                = [1],
-  $incr_fill                  = false,
-  $partial_age_max            = 3,
-  $restore_info_keep_cnt      = 10,
-  $archive_info_keep_cnt      = 10,
-  $blackout_good_cnt          = 7,
-  $cgi_url                    = '"http://".$Conf{ServerHost}."/backuppc/index.cgi"',
-  $blackout_periods           = [ { hourBegin =>  7.0,
-                                    hourEnd   => 19.5,
-                                    weekDays  => [1, 2, 3, 4, 5],
-                                }, ],
-  $backup_zero_files_is_fatal = true,
-  $email_notify_min_days      = 2.5,
-  $email_from_user_name       = 'backuppc',
-  $email_admin_user_name      = 'backuppc',
-  $email_user_dest_domain     = '',
-  $email_notify_old_backup_days = 7,
-  $email_headers              = { 'MIME-Version' => 1.0,
-                                  'Content-Type' => 'text/plain; charset="iso-8859-1"', },
-  $apache_configuration       = true,
-  $apache_allow_from          = 'all',
-  $apache_require_ssl         = false,
-  $backuppc_password          = '',
-  $topdir                     = $backuppc::params::topdir,
-  $cgi_image_dir_url          = $backuppc::params::cgi_image_dir_url,
-  $cgi_admin_users            = 'backuppc',
-  $cgi_admin_user_group       = 'backuppc',
-  $cgi_date_format_mmdd       = 1,
-  $user_cmd_check_status      = true,
-  $ping_max_msec              = 20,
-  $system_home_directory      = '/var/backups'
+  Enum['present','absent'] $ensure                          = 'present',
+  Boolean $service_enable                                   = true,
+  Array[Integer[0,24]] $wakeup_schedule = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+  Integer $max_backups                                      = 4,
+  Integer $max_user_backups                                 = 4,
+  String $language                                          = 'en',
+  Integer $max_pending_cmds                                 = 15,
+  Integer $max_backuppc_nightly_jobs                        = 2,
+  Integer $backuppc_nightly_period                          = 1,
+  Integer $max_old_log_files                                = 14,
+  Integer $df_max_usage_pct                                 = 95,
+  Integer $trash_clean_sleep_sec                            = 300,
+  Optional[Backuppc::DhcpAddressRange] $dhcp_address_ranges = [],
+  Numeric $full_period                                      = 6.97,
+  Array[Integer] $full_keep_cnt                             = [1],
+  Integer $full_age_max                                     = 90,
+  Numeric $incr_period                                      = 0.97,
+  Integer $incr_keep_cnt                                    = 6,
+  Integer $incr_age_max                                     = 30,
+  Array[Integer] $incr_levels                               = [1],
+  Boolean $incr_fill                                        = false,
+  Integer $partial_age_max                                  = 3,
+  Integer $restore_info_keep_cnt                            = 10,
+  Integer $archive_info_keep_cnt                            = 10,
+  Integer $blackout_good_cnt                                = 7,
+  Stdlib::HTTPUrl $cgi_url                                  = "http://${facts['networking']['fqdn']}/backuppc/index.cgi",
+  Backuppc::BlackoutPeriods $blackout_periods               = [ { hourBegin =>  7.0,
+                                                                  hourEnd   => 19.5,
+                                                                  weekDays  => [1, 2, 3, 4, 5],
+                                                              }, ],
+  Boolean $backup_zero_files_is_fatal                       = true,
+  Numeric $email_notify_min_days                            = 2.5,
+  String $email_from_user_name                              = 'backuppc',
+  String $email_admin_user_name                             = 'backuppc',
+  Optional[Stdlib::Fqdn] $email_user_dest_domain            = undef,
+  Integer $email_notify_old_backup_days                     = 7,
+  Hash $email_headers = { 'MIME-Version' => 1.0, 'Content-Type' => 'text/plain; charset="iso-8859-1"', },
+  Boolean $apache_configuration                             = true,
+  String $apache_allow_from                                 = 'all',
+  Boolean $apache_require_ssl                               = false,
+  String $backuppc_password                                 = '',
+  Stdlib::Absolutepath $topdir                              = $backuppc::params::topdir,
+  Stdlib::Absolutepath $cgi_image_dir_url                   = $backuppc::params::cgi_image_dir_url,
+  String $cgi_admin_users                                   = 'backuppc',
+  String $cgi_admin_user_group                              = 'backuppc',
+  Integer[0,2] $cgi_date_format_mmdd                        = 1,
+  Boolean $user_cmd_check_status                            = true,
+  Integer $ping_max_msec                                    = 20,
+  Stdlib::Absolutepath $system_home_directory               = '/var/backups'
 ) inherits backuppc::params  {
 
   if empty($backuppc_password) {
     fail('Please provide a password for the backuppc user. This is used to login to the web based administration site.')
   }
-  ##validate_bool($service_enable)
-  #validate_bool($apache_require_ssl)
-
-  #validate_re($ensure, '^(present|absent)$',
-  #'ensure parameter must have a value of: present or absent')
-
-  #validate_integer($max_backups)
-  #validate_integer($max_user_backups)
-  #validate_integer($max_pending_cmds)
-  #validate_integer($max_backuppc_nightly_jobs)
-  #validate_integer($df_max_usage_pct)
-  #validate_integer($max_old_log_files)
-  #validate_integer($backuppc_nightly_period)
-  #validate_integer($trash_clean_sleep_sec)
-
-  #validate_numeric($full_period)
-  #validate_numeric($incr_period)
-
-  #validate_integer($full_age_max)
-  #validate_integer($incr_keep_cnt)
-  #validate_integer($incr_age_max)
-  #validate_integer($partial_age_max)
-  #validate_integer($restore_info_keep_cnt)
-  #validate_integer($archive_info_keep_cnt)
-  #validate_integer($blackout_good_cnt)
-
-  #validate_numeric($email_notify_min_days)
-
-  #validate_integer($email_notify_old_backup_days)
-  #validate_integer($cgi_date_format_mmdd, 2, 0)
-
-  #validate_integer($ping_max_msec)
-
-  #validate_array($wakeup_schedule)
-  #validate_array($dhcp_address_ranges)
-  #validate_array($incr_levels)
-  #validate_array($blackout_periods)
-  #validate_array($full_keep_cnt)
-
-  #validate_hash($email_headers)
-
-  #validate_string($apache_allow_from)
-  #validate_string($cgi_url)
-  #validate_string($cgi_image_dir_url)
-  #validate_string($language)
-  #validate_string($cgi_admin_user_group)
-  #validate_string($cgi_admin_users)
-
+ 
+  # TODO - these may not be needed
   $real_incr_fill = bool2num($incr_fill)
   $real_bzfif     = bool2num($backup_zero_files_is_fatal)
   $real_uccs      = bool2num($user_cmd_check_status)
@@ -361,6 +315,8 @@ class backuppc::server (
   # Set up dependencies
   Package['backuppc'] -> File['config.pl'] -> Service['backuppc']
 
+
+  # TODO move this to hiera
   # Include preseeding for debian packages
   if $facts['os']['family'] == 'Debian' {
     file { '/var/cache/debconf/backuppc.seeds':
@@ -456,8 +412,8 @@ class backuppc::server (
     unless  => "test -f ${real_topdir}/.ssh/id_rsa",
     path    => ['/usr/bin','/bin'],
     require => [
-        Package['backuppc'],
-        File["${real_topdir}/.ssh"],
+      Package['backuppc'],
+      File["${real_topdir}/.ssh"],
     ],
   }
 

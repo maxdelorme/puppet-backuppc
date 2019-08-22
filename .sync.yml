@@ -23,3 +23,7 @@ spec/spec_helper.rb:
 Rakefile:
   extras: 
   - FastGettext.default_text_domain = 'default-text-domain'
+Gemfile:
+  required:
+    ':test':
+      - gem: coveralls

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'backuppc::server' do
+  let(:pre_condition) { 'include backuppc::params' }
+
   describe 'On an unknown operating system' do
     let(:facts) { { 'os' => { 'family' => 'Unknown', 'name' => 'Unknown' } } }
 

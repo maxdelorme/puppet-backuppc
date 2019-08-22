@@ -1,60 +1,55 @@
-# == Class: backuppc::params
+# @summary
+#   Params class for backuppc used as a vehicle to pick up OS specific
+#   defaults from hiera
 #
-# Params class for backuppc.
+# @param package
 #
-# === Authors
+# @param service
 #
-# Scott Barr <gsbarr@gmail.com>
+# @param config_apache
 #
-class backuppc::params {
-  case $facts['os']['family'] {
-    'Debian': {
-      $package            = 'backuppc'
-      $service            = 'backuppc'
-      $topdir             = '/var/lib/backuppc'
-      $config_directory   = '/etc/backuppc'
-      $config             = "${config_directory}/config.pl"
-      $hosts              = "${config_directory}/hosts"
-      $install_directory  = '/usr/share/backuppc'
-      $cgi_directory      = "${install_directory}/cgi-bin"
-      $cgi_image_dir      = "${install_directory}/image"
-      $cgi_image_dir_url  = '/backuppc/image'
-      $log_directory      = '/var/lib/backuppc/log'
-      if ($facts['os']['release']['major'] == 6) {
-        $config_apache      = '/etc/backuppc/apache.conf'
-      } else {
-        $config_apache      = '/etc/apache2/conf.d/backuppc.conf'
-      }
-      $group_apache       = 'www-data'
-      $par_path           = '/usr/bin/par2\' if -x \'/usr/bin/par2'
-      $gzip_path          = '/bin/gzip'
-      $bzip2_path         = '/bin/bzip2'
-      $tar_path           = '/bin/tar'
-    }
-    'RedHat': {
-      $package            = 'BackupPC'
-      $service            = 'backuppc'
-      $topdir             = '/var/lib/BackupPC'
-      $config_directory   = '/etc/BackupPC'
-      $config             = "${config_directory}/config.pl"
-      $hosts              = "${config_directory}/hosts"
-      $install_directory  = '/usr/share/BackupPC'
-      $cgi_directory      = "${install_directory}/sbin"
-      $cgi_image_dir      = "${install_directory}/html"
-      $cgi_image_dir_url  = '/BackupPC/images'
-      $log_directory      = '/var/log/BackupPC'
-      $config_apache      = '/etc/httpd/conf.d/BackupPC.conf'
-      $group_apache       = 'apache'
-      $par_path           = ''
-      $gzip_path          = '/usr/bin/gzip'
-      $bzip2_path         = '/usr/bin/bzip2'
-      $tar_path           = '/bin/gtar'
-    }
-    default: {
-      fail("Operating system ${facts['os']['name']} is not supported by this module")
-    }
-  }
-
-  $htpasswd_apache = "${config_directory}/htpasswd"
+# @param topdir
+#
+# @param config_directory
+#
+# @param config
+#
+# @param hosts
+#
+# @param install_directory
+#
+# @param cgi_directory
+#
+# @param cgi_image_dir
+#
+# @param cgi_image_dir_url
+#
+# @param log_directory
+#
+# @param group_apache
+#
+# @param par_path
+#
+# @param gzip_path
+#
+# @param bzip2_path
+#
+# @param tar_path
+#
+class backuppc::params (
+  String[1] $package                      = 'backuppc',
+  String[1] $service                      = 'backuppc',
+  String[1] $group_apache                 = 'www-data',
+  Stdlib::Absolutepath $install_directory = '/usr/share/backuppc',
+  Stdlib::Absolutepath $cgi_directory     = "%{backuppc::server::install_directory}/cgi-bin",
+  Stdlib::Absolutepath $cgi_image_dir     = "%{backuppc::server::install_directory}/image",
+  Stdlib::Absolutepath $cgi_image_dir_url = '/backuppc/image',
+  Stdlib::Absolutepath $config_apache     = '/etc/apache2/conf.d/backuppc.conf',
+  Stdlib::Absolutepath $config            = "%{backuppc::config_directory}/config.pl",
+  Stdlib::Absolutepath $hosts             = "%{backuppc::config_directory}/hosts",
+  Stdlib::Absolutepath $log_directory     = '/var/lib/backuppc/log',
+  Stdlib::Absolutepath $par_path          = '/usr/bin/par2',
+  Stdlib::Absolutepath $topdir            = '/var/lib/backuppc',
+  Stdlib::Absolutepath $config_directory  = '/etc/backuppc',
+) {
 }
-# vim: sw=2:ai:nu expandtab

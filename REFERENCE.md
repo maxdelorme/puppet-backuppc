@@ -8,7 +8,9 @@
 * [`backuppc::client`](#backuppcclient): Configures a host for backup with the backuppc server.
 Uses storedconfigs to provide the backuppc server with
 required information.
-* [`backuppc::params`](#backuppcparams): == Class: backuppc::params  Params class for backuppc.  === Authors  Scott Barr <gsbarr@gmail.com>
+* [`backuppc::params`](#backuppcparams): Params class for backuppc used as a vehicle to pick up OS specific
+defaults from hiera. The defaults in this class are suitable for Debian
+systems.
 * [`backuppc::server`](#backuppcserver): Configures the backuppc server.
 
 **Defined types**
@@ -42,14 +44,37 @@ Present or absent.
 
 Default value: 'present'
 
+##### `config_name`
+
+Data type: `Any`
+
+TODO
+
+Default value: $facts['networking']['fqdn']
+
+##### `backuppc_hostname`
+
+Data type: `Any`
+
+TODO
+
+Default value: ''
+
 ##### `client_name_alias`
 
 Data type: `Any`
 
-Override the client's host name. This allows multiple clients to all refer to the same physical host. This should only be set in the per-PC config file and is only used by BackupPC at the last moment prior to generating the command used to backup that machine (ie: the value of $Conf{ClientNameAlias} is invisible everywhere else in BackupPC). The setting can be a host name or IP address, eg:
+Override the client's host name. This allows multiple clients to all
+refer to the same physical host. This should only be set in the per-PC
+config file and is only used by BackupPC at the last moment prior to
+generating the command used to backup that machine (ie: the value of
+$Conf{ClientNameAlias} is invisible everywhere else in BackupPC).
+he setting can be a host name or IP address. eg.
       $Conf{ClientNameAlias} = 'realHostName';
       $Conf{ClientNameAlias} = '192.1.1.15';
-will cause the relevant smb/tar/rsync backup/restore commands to be directed to realHostName, not the client name.
+
+will cause the relevant smb/tar/rsync backup/restore commands
+to be directed to realHostName, not the client name.
 Note: this setting doesn't work for hosts with DHCP set to 1.
 
 Default value: `false`
@@ -134,16 +159,19 @@ Default value: `false`
 
 Data type: `Any`
 
-One or more blackout periods can be specified. If a client is subject to blackout then no regular (non-manual) backups will be started during any of these periods. hourBegin and hourEnd specify hours fro midnight and weekDays is a list of days of the week where 0 is Sunday, 1 is Monday etc.
-For example:
-   $Conf{BlackoutPeriods} = [
-        {
-            hourBegin =>  7.0,
-            hourEnd   => 19.5,
-            weekDays  => [1, 2, 3, 4, 5],
-        },
-   ];
-specifies one blackout period from 7:00am to 7:30pm local time on Mon-Fri.
+One or more blackout periods can be specified. If a client is subject
+to blackout then no regular (non-manual) backups will be started
+during any of these periods. hourBegin and hourEnd specify hours fro
+midnight and weekDays is a list of days of the week where 0 is Sunday,
+1 is Monday etc.
+To specify one blackout period from 7:00am to 7:30pm local time on Mon-Fri.
+  $Conf{BlackoutPeriods} = [
+       {
+           hourBegin =>  7.0,
+           hourEnd   => 19.5,
+           weekDays  => [1, 2, 3, 4, 5],
+       },
+  ];
 
 Default value: `false`
 
@@ -163,8 +191,12 @@ Data type: `Any`
 Ping command. The following variables are substituted at run-time:
    $pingPath      path to ping ($Conf{PingPath})
    $host          host name
- Wade Brown reports that on solaris 2.6 and 2.7 ping -s returns the wrong exit status (0 even on failure). Replace with "ping $host 1", which gets the correct exit status but we don't get the round-trip time.
- Note: all Cmds are executed directly without a shell, so the prog name needs to be a full path and you can't include shell syntax like redirection and pipes; put that in a script if you need it.
+Wade Brown reports that on solaris 2.6 and 2.7 ping -s returns the
+wrong exit status (0 even on failure). Replace with "ping $host 1",
+which gets the correct exit status but we don't get the round-trip time.
+Note: all Cmds are executed directly without a shell, so the prog
+name needs to be a full path and you can't include shell syntax like
+redirection and pipes; put that in a script if you need it.
 
 Default value: `false`
 
@@ -172,9 +204,10 @@ Default value: `false`
 
 Data type: `Any`
 
-Disable all full and incremental backups. These settings are useful for a client that
-is no longer being backed up (eg: a retired machine), but you wish to keep the last backups
-available for browsing or restoring to other machines.
+Disable all full and incremental backups. These settings are useful
+for a client that is no longer being backed up (eg: a retired machine),
+but you wish to keep the last backups available for browsing or
+restoring to other machines.
 
 Default value: `false`
 
@@ -182,8 +215,7 @@ Default value: `false`
 
 Data type: `Any`
 
-What transport method to use to backup each host. Valid values are rsync,
-rsyncd, tar and smb.
+What transport method to use to backup each host.
 
 Default value: 'rsync'
 
@@ -201,8 +233,8 @@ Default value: '1'
 
 Data type: `Any`
 
-Name of the host share that is backed up when using SMB. This can be a string or an
-array of strings if there are multiple shares per host.
+Name of the host share that is backed up when using SMB. This can be a
+string or an array of strings if there are multiple shares per host.
 
 Default value: ''
 
@@ -218,7 +250,8 @@ Default value: ''
 
 Data type: `Any`
 
-Smbclient share password. This is passed to smbclient via its PASSWD environment variable.
+Smbclient share password. This is passed to smbclient via its PASSWD
+environment variable.
 
 Default value: ''
 
@@ -250,8 +283,9 @@ Default value: ''
 
 Data type: `Any`
 
-Which host directories to backup when using tar transport. This can be a string or an array
-of strings if there are multiple directories to backup per host.
+Which host directories to backup when using tar transport. This can be
+a string or an array of strings if there are multiple directories to
+backup per host.
 
 Default value: ''
 
@@ -259,8 +293,8 @@ Default value: ''
 
 Data type: `Any`
 
-Command to run tar on the client. GNU tar is required. The default will run
-the tar command as the user you specify in system_account.
+Command to run tar on the client. GNU tar is required. The default
+will run the tar command as the user you specify in system_account.
 
 Default value: ''
 
@@ -342,9 +376,9 @@ Default value: ''
 
 Data type: `Any`
 
-Whether authentication is mandatory when connecting to the client's rsyncd. By default
-this is on, ensuring that BackupPC will refuse to connect to an rsyncd on the client that
-is not password protected.
+Whether authentication is mandatory when connecting to the client's
+rsyncd. By default this is on, ensuring that BackupPC will refuse to
+connect to an rsyncd on the client that is not password protected.
 
 Default value: `false`
 
@@ -352,8 +386,9 @@ Default value: `false`
 
 Data type: `Any`
 
-When rsync checksum caching is enabled (by adding the --checksum-seed=32761 option to
-rsync_args), the cached checksums can be occasionally verified to make sure the file
+When rsync checksum caching is enabled (by adding the
+--checksum-seed=32761 option to rsync_args), the cached checksums can
+be occasionally verified to make sure the file
 contents matches the cached checksums.
 
 Default value: `false`
@@ -363,6 +398,14 @@ Default value: `false`
 Data type: `Any`
 
 Arguments to rsync for backup.
+
+Default value: []
+
+##### `rsync_args_extra`
+
+Data type: `Any`
+
+Additional arguments to rsync for backup.
 
 Default value: []
 
@@ -387,10 +430,11 @@ Default value: []
 
 Data type: `Any`
 
-List of directories or files to exclude from the backup. For xfer_method smb,
-only one of backup_files_exclude and backup_files_only can be specified per share.
-If both are set for a particular share, then backup_files_only takes precedence and
-backup_files_exclude is ignored.
+List of directories or files to exclude from the backup. For
+xfer_method smb, only one of backup_files_exclude and backup_files_only
+can be specified per share.  If both are set for a particular share,
+then backup_files_only takes precedence and backup_files_exclude is
+ignored.
 
 Default value: []
 
@@ -454,9 +498,9 @@ Default value: `true`
 
 Data type: `Any`
 
-The way hosts are discovered has changed and now in most cases you should
-use the default of 0 for the DHCP flag, even if the host has a dynamically
-assigned IP address.
+The way hosts are discovered has changed and now in most cases you
+should use the default of 0 for the DHCP flag, even if the host has
+a dynamically assigned IP address.
 
 Default value: 0
 
@@ -464,10 +508,10 @@ Default value: 0
 
 Data type: `Any`
 
-Additional user names, separate by commas and with no white space, can be
-specified. These users will also have full permission in the CGI interface
-to stop/start/browse/restore backups for this host. These users will not be
-sent email about this host.
+Additional user names, separate by commas and with no white space, can
+be specified. These users will also have full permission in the CGI
+interface to stop/start/browse/restore backups for this host. These
+users will not be sent email about this host.
 
 Default value: ''
 
@@ -475,29 +519,9 @@ Default value: ''
 
 Data type: `Any`
 
-Prepend a command to the sudo command, as run in backuppc.sh. This is mostly
-useful for running the backup via nice or ionice, in order to reduce the
-impact of large backups on the client.
-
-=== Authors
-
-Scott Barr <gsbarr@gmail.com>
-
-Default value: ''
-
-##### `config_name`
-
-Data type: `Any`
-
-
-
-Default value: $facts['networking']['fqdn']
-
-##### `backuppc_hostname`
-
-Data type: `Any`
-
-
+Prepend a command to the sudo command, as run in backuppc.sh. This is
+mostly useful for running the backup via nice or ionice, in order to
+reduce the impact of large backups on the client.
 
 Default value: ''
 
@@ -631,13 +655,157 @@ Default value: 'backuppc'
 
 ### backuppc::params
 
-== Class: backuppc::params
+Params class for backuppc used as a vehicle to pick up OS specific
+defaults from hiera. The defaults in this class are suitable for Debian
+systems.
 
-Params class for backuppc.
+#### Parameters
 
-=== Authors
+The following parameters are available in the `backuppc::params` class.
 
-Scott Barr <gsbarr@gmail.com>
+##### `package`
+
+Data type: `String[1]`
+
+The name of the backuppc package.
+
+Default value: 'backuppc'
+
+##### `service`
+
+Data type: `String[1]`
+
+The name of the backuppc service.
+
+Default value: 'backuppc'
+
+##### `config_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+The location of the backuppc configuration
+
+Default value: '/etc/backuppc'
+
+##### `topdir`
+
+Data type: `Stdlib::Absolutepath`
+
+TODO
+
+Default value: '/var/lib/backuppc'
+
+##### `config`
+
+Data type: `Stdlib::Absolutepath`
+
+The name of the main configuration file. This sets the defaults for all hosts/clients.
+
+Default value: "${backuppc::params::config_directory}/config.pl"
+
+##### `hosts`
+
+Data type: `Stdlib::Absolutepath`
+
+The name of the main configuration file. This sets the defaults for all hosts/clients.
+
+Default value: "${backuppc::params::config_directory}/hosts"
+
+##### `install_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+TODO
+
+Default value: '/usr/share/backuppc'
+
+##### `cgi_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+TODO
+
+Default value: "${backuppc::params::install_directory}/cgi-bin"
+
+##### `cgi_image_dir`
+
+Data type: `Stdlib::Absolutepath`
+
+TODO
+
+Default value: "${backuppc::params::install_directory}/image"
+
+##### `cgi_image_dir_url`
+
+Data type: `Stdlib::Absolutepath`
+
+TODO
+
+Default value: '/backuppc/image'
+
+##### `log_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+TODO
+
+Default value: "${backuppc::params::topdir}/log"
+
+##### `config_apache`
+
+Data type: `Stdlib::Absolutepath`
+
+The file where the backuppc specifc config for apache is stored.
+
+Default value: '/etc/apache2/conf.d/backuppc.conf'
+
+##### `group_apache`
+
+Data type: `String[1]`
+
+TODO
+
+Default value: 'www-data'
+
+##### `par_path`
+
+Data type: `Variant[Stdlib::Absolutepath,Undef]`
+
+Path to par executable
+
+Default value: '/usr/bin/par2'
+
+##### `gzip_path`
+
+Data type: `Stdlib::Absolutepath`
+
+Path to gzip executable
+
+Default value: '/bin/gzip'
+
+##### `bzip2_path`
+
+Data type: `Stdlib::Absolutepath`
+
+Path to bzip2 executable
+
+Default value: '/bin/bzip2'
+
+##### `tar_path`
+
+Data type: `Stdlib::Absolutepath`
+
+Path to tar executable
+
+Default value: '/bin/tar'
+
+##### `htpasswd_apache`
+
+Data type: `Stdlib::Absolutepath`
+
+
+
+Default value: "${backuppc::params::config_directory}/htpasswd"
 
 ### backuppc::server
 

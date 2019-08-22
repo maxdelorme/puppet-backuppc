@@ -1,2 +1,5 @@
 ---
 backuppc_pubkey_rsa: "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAIAyapE7fUfY5u3jPdhCd9rdvfp3fniYnJYJqLX/jYuay9GKW4gXlkxWVVvRImcP21A+9CR2wOpX5vziGUqkW4MCAwEAAQ=="
+ssh:
+  rsa:
+    key: "MFswDQYJKoZIhvcNAQEBBQADSgAwRwJAbBPpupMowfJcoUSs4GBoAT4uCL3rIRPEZRqrGIqjGqnQrRhrsmHbBBoRJTlXd8vXcQbJC3G65e1xQ6Clj/m3iwIDAQAB"

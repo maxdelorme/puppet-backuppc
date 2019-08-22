@@ -1,15 +1,6 @@
 require 'spec_helper'
 
 describe 'backuppc::server' do
-  let(:pre_condition) { 'include backuppc::params' }
-
-  describe 'On an unknown operating system' do
-    let(:facts) { { 'os' => { 'family' => 'Unknown', 'name' => 'Unknown' } } }
-
-    it { is_expected.to compile.and_raise_error(%r{is not supported by this module}) }
-  end
-
-  default_params = { 'backuppc_password' => 'test_password' }
   on_supported_os.each do |os, facts|
     context "on #{os}" do
       let(:facts) { facts }
@@ -24,6 +15,8 @@ describe 'backuppc::server' do
             topdir: '/var/lib/backuppc' }
         end
       end
+
+      default_params = { 'backuppc_password' => 'test_password' }
 
       context 'with defaults' do
         let(:params) { default_params }

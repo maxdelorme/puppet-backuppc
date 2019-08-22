@@ -36,9 +36,10 @@ define backuppc::server::user (
   }
 
   if $ensure == 'present' {
-    $command = @("END"/L)
-      test -f ${backuppc::params::htpasswd_apache} || OPT='-c';
-      htpasswd -bs \${OPT}
+    $command = @("END"/$L)
+      test -f ${backuppc::params::htpasswd_apache} \
+        || OPT='-c';\
+      htpasswd -bs \${OPT} \
         ${backuppc::params::htpasswd_apache} ${real_username} '${password}'":
       | END
     exec {$command:

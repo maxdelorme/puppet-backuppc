@@ -6,19 +6,24 @@
 # @param ensure
 #   Present or absent.
 #
+# @param config_name
+#   TODO
+#
+# @param backuppc_hostname
+#   TODO
+#
 # @param client_name_alias
 #   Override the client's host name. This allows multiple clients to all
 #   refer to the same physical host. This should only be set in the per-PC
 #   config file and is only used by BackupPC at the last moment prior to
 #   generating the command used to backup that machine (ie: the value of
 #   $Conf{ClientNameAlias} is invisible everywhere else in BackupPC). 
-#   he setting can be a host name or IP address, eg:
-# @example
+#   he setting can be a host name or IP address. eg.
 #         $Conf{ClientNameAlias} = 'realHostName';
 #         $Conf{ClientNameAlias} = '192.1.1.15';
 #
-#   will cause the relevant smb/tar/rsync backup/restore commands to be
-#   directed to realHostName, not the client name.
+#   will cause the relevant smb/tar/rsync backup/restore commands
+#   to be directed to realHostName, not the client name.
 #   Note: this setting doesn't work for hosts with DHCP set to 1.
 #
 # @param system_account
@@ -68,7 +73,7 @@
 #   during any of these periods. hourBegin and hourEnd specify hours fro
 #   midnight and weekDays is a list of days of the week where 0 is Sunday,
 #   1 is Monday etc.
-# @example
+#   To specify one blackout period from 7:00am to 7:30pm local time on Mon-Fri.
 #     $Conf{BlackoutPeriods} = [
 #          {
 #              hourBegin =>  7.0,
@@ -76,9 +81,6 @@
 #              weekDays  => [1, 2, 3, 4, 5],
 #          },
 #     ];
-#
-#   specifies one blackout period from 7:00am to 7:30pm local time on
-#   Mon-Fri.
 #
 # @param ping_max_msec
 #   Maximum latency between backuppc server and client to schedule
@@ -283,6 +285,7 @@ class backuppc::client (
   $rsyncd_auth_required  = false,
   $rsync_csum_cache_verify_prob = false,
   $rsync_args            = [],
+  $rsync_args_extra      = [],
   $rsync_restore_args    = [],
   $backup_files_only     = [],
   $backup_files_exclude  = [],

@@ -36,7 +36,12 @@ define backuppc::server::user (
   }
 
   if $ensure == 'present' {
-    exec {"test -f ${backuppc::params::htpasswd_apache} || OPT='-c'; htpasswd -bs \${OPT} ${backuppc::params::htpasswd_apache} ${real_username} '${password}'":
+    $command = @("END"/L)
+      test -f ${backuppc::params::htpasswd_apache} || OPT='-c';
+      htpasswd -bs \${OPT}
+        ${backuppc::params::htpasswd_apache} ${real_username} '${password}'":
+      | END
+    exec {$command:
       unless  => "grep -q ${real_username}:${real_password} ${backuppc::params::htpasswd_apache}",
     }
   } else {

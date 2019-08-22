@@ -41,14 +41,15 @@
 #    URL of the BackupPC_Admin CGI script. Used for email messages.
 #
 # @param cgi_image_dir_url
-#   URL (without the leading http://host) for BackupPC's image directory. The CGI script
-#   uses this value to serve up image files.
+#   URL (without the leading http://host) for BackupPC's image directory.
+#   The CGI script uses this value to serve up image files.
 #   Example:
 #       $Conf{CgiImageDirURL} = '/BackupPC';
 #
 # @param cgi_date_format_mmdd
-#   Date display format for CGI interface. A value of 1 uses US-style dates (MM/DD), a 
-#   value of 2 uses full YYYY-MM-DD format, and zero for international dates (DD/MM).
+#   Date display format for CGI interface. A value of 1 uses US-style dates
+#   (MM/DD), a value of 2 uses full YYYY-MM-DD format, and zero for
+#   international dates (DD/MM).
 #
 # @param max_user_backups
 #   Additional number of simultaneous backups that users
@@ -66,59 +67,62 @@
 #   How many BackupPC_nightly processes to run in parallel. Each night,
 #   at the first wakeup listed in $Conf{WakeupSchedule}, BackupPC_nightly
 #   is run. Its job is to remove unneeded files in the pool, ie: files that
-#   only have one link. To avoid race conditions, BackupPC_nightly and BackupPC_link
-#   cannot run at the same time. Starting in v3.0.0, BackupPC_nightly can run
-#   concurrently with backups (BackupPC_dump).
+#   only have one link. To avoid race conditions, BackupPC_nightly and
+#   BackupPC_link cannot run at the same time. Starting in v3.0.0,
+#   BackupPC_nightly can run concurrently with backups (BackupPC_dump).
 #
 # @param backuppc_nightly_period
-#   How many days (runs) it takes BackupPC_nightly to traverse the entire pool.
-#   Normally this is 1, which means every night it runs, it does traverse the entire
-#   pool removing unused pool files.
+#   How many days (runs) it takes BackupPC_nightly to traverse the entire
+#   pool. Normally this is 1, which means every night it runs, it does
+#   traverse the entire pool removing unused pool files.
 #
 # @param max_old_log_files
-#   Maximum number of log files we keep around in log directory. These files are aged
-#   nightly. A setting of 14 means the log directory will contain about 2 weeks of old
-#   log files, in particular at most the files LOG, LOG.0, LOG.1, ... LOG.13 (except today's
-#   LOG, these files will have a .z extension if compression is on).
+#   Maximum number of log files we keep around in log directory. These files are
+#   aged nightly. A setting of 14 means the log directory will contain about 2
+#   weeks of old log files, in particular at most the files LOG, LOG.0, LOG.1,
+#   ... LOG.13 (except today's LOG, these files will have a .z extension if
+#   compression is on).
 #
 # @param df_max_usage_pct
-#   Maximum threshold for disk utilization on the __TOPDIR__ filesystem. If the output
-#   from $Conf{DfPath} reports a percentage larger than this number then no new regularly
-#   scheduled backups will be run. However, user requested backups (which are usually
-#   incremental and tend to be small) are still performed, independent of disk usage. Also,
-#   currently running backups will not be terminated when the disk usage exceeds this number.
+#   Maximum threshold for disk utilization on the __TOPDIR__ filesystem. If the
+#   output from $Conf{DfPath} reports a percentage larger than this number then
+#   no new regularly scheduled backups will be run. However, user requested
+#   backups (which are usually incremental and tend to be small) are still
+#   performed, independent of disk usage. Also, currently running backups will
+#   not be terminated when the disk usage exceeds this number.
 #
 # @param trash_clean_sleep_sec
-#   How long BackupPC_trashClean sleeps in seconds between each check of the trash directory.
+#   How long BackupPC_trashClean sleeps in seconds between each check of the
+#   trash directory.
 #
 # @param dhcp_address_ranges
-#   List of DHCP address ranges we search looking for PCs to backup. This is an array of
-#   hashes for each class C address range. This is only needed if hosts in the conf/hosts
-#   file have the dhcp flag set.
+#   List of DHCP address ranges we search looking for PCs to backup. This is an
+#   array of hashes for each class C address range. This is only needed if hosts
+#   in the conf/hosts file have the dhcp flag set.
 #
 # @param full_period
-#   Minimum period in days between full backups. A full dump will only be done if at least
-#   this much time has elapsed since the last full dump, and at least $Conf{IncrPeriod}
-#   days has elapsed since the last successful dump.
+#   Minimum period in days between full backups. A full dump will only be done
+#   if at least this much time has elapsed since the last full dump, and at
+#   least $Conf{IncrPeriod} days has elapsed since the last successful dump.
 #
 # @param full_keep_cnt
 #   Number of full backups to keep.
 #
 # @param full_age_max
-#   Very old full backups are removed after $Conf{FullAgeMax} days. However, we keep
-#   at least $Conf{FullKeepCntMin} full backups no matter how old they are.
+#   Very old full backups are removed after $Conf{FullAgeMax} days. However, we
+#   keep at least $Conf{FullKeepCntMin} full backups no matter how old they are.
 #
 # @param incr_period
-#   Minimum period in days between incremental backups (a user requested incremental
-#   backup will be done anytime on demand).
+#   Minimum period in days between incremental backups (a user requested
+#   incremental backup will be done anytime on demand).
 #
 # @param incr_keep_cnt
 #   Number of incremental backups to keep.
 #
 # @param incr_age_max
-#   Very old incremental backups are removed after $Conf{IncrAgeMax} days. However,
-#   we keep at least $Conf{IncrKeepCntMin} incremental backups no matter how old
-#   they are.
+#   Very old incremental backups are removed after $Conf{IncrAgeMax} days.
+#   However, we keep at least $Conf{IncrKeepCntMin} incremental backups no
+#   matter how old they are.
 #
 # @param incr_levels
 #   A full backup has level 0. A new incremental of level N will backup all files
@@ -126,90 +130,100 @@
 #
 # @param partial_age_max
 #   A failed full backup is saved as a partial backup. The rsync XferMethod can
-#   take advantage of the partial full when the next backup is run. This parameter
-#   sets the age of the partial full in days: if the partial backup is older than
-#   this number of days, then rsync will ignore (not use) the partial full when the
-#   next backup is run. If you set this to a negative value then no partials will be
-#   saved. If you set this to 0, partials will be saved, but will not be used by the
-#   next backup.
+#   take advantage of the partial full when the next backup is run. This
+#   parameter sets the age of the partial full in days: if the partial backup is
+#   older than this number of days, then rsync will ignore (not use) the partial
+#   full when the next backup is run. If you set this to a negative value then
+#   no partials will be saved. If you set this to 0, partials will be saved, but
+#   will not be used by the next backup.
 #
 # @param incr_fill
-#   Boolean. Whether incremental backups are filled. "Filling" means that the most recent fulli
-#   (or filled) dump is merged into the new incremental dump using hardlinks. This
-#   makes an incremental dump look like a full dump.
+#   Boolean. Whether incremental backups are filled. "Filling" means that the
+#   most recent fulli (or filled) dump is merged into the new incremental dump
+#   using hardlinks. This makes an incremental dump look like a full dump.
 #
 # @param restore_info_keep_cnt
-#   Number of restore logs to keep. BackupPC remembers information about each restore
-#   request. This number per client will be kept around before the oldest ones are pruned.
+#   Number of restore logs to keep. BackupPC remembers information about each
+#   restore request. This number per client will be kept around before the
+#   oldest ones are pruned.
 #
 # @param archive_info_keep_cnt
-#   Number of archive logs to keep. BackupPC remembers information about each archive request.
-#   This number per archive client will be kept around before the oldest ones are pruned.
+#   Number of archive logs to keep. BackupPC remembers information about each
+#   archive request.  This number per archive client will be kept around before
+#   the oldest ones are pruned.
 #
 # @param blackout_good_cnt
-#   PCs that are always or often on the network can be backed up after hours, to reduce PC,
-#   network and server load during working hours. For each PC a count of consecutive good
-#   pings is maintained. Once a PC has at least $Conf{BlackoutGoodCnt} consecutive good pings
-#   it is subject to "blackout" and not backed up during hours and days specified by $Conf{BlackoutPeriods}.
+#   PCs that are always or often on the network can be backed up after hours, to
+#   reduce PC, network and server load during working hours. For each PC a count
+#   of consecutive good pings is maintained. Once a PC has at least
+#   $Conf{BlackoutGoodCnt} consecutive good pings it is subject to "blackout"
+#   and not backed up during hours and days specified by $Conf{BlackoutPeriods}.
 #
 # @param blackout_periods
 #   TODO
 #
 # @param backup_zero_files_is_fatal
-#   Boolean. A backup of a share that has zero files is considered fatal. This is used to catch miscellaneous Xfer
-#   errors that result in no files being backed up. If you have shares that might be
-#   empty (and therefore an empty backup is valid) you should set this to false.
+#   Boolean. A backup of a share that has zero files is considered fatal. This
+#   is used to catch miscellaneous Xfer errors that result in no files being
+#   backed up. If you have shares that might be empty (and therefore an empty
+#   backup is valid) you should set this to false.
 #
 # @param email_notify_min_days
-#   Minimum period between consecutive emails to a single user. This tries to keep annoying email to users to
-#   a reasonable level.
+#   Minimum period between consecutive emails to a single user. This tries to
+#   keep annoying email to users to a reasonable level.
 #
 # @param email_from_user_name
 #   Name to use as the "from" name for email.
 #
 # @param email_admin_user_name
-#   Destination address to an administrative user who will receive a nightly email with warnings and errors.
+#   Destination address to an administrative user who will receive a nightly
+#   email with warnings and errors.
 #
 # @param email_user_dest_domain
 #   Destination domain name for email sent to users.
 #
 # @param email_notify_old_backup_days
-#   How old the most recent backup has to be before notifying user. When there have been no backups in this
-#   number of days the user is sent an email.
+#   How old the most recent backup has to be before notifying user. When there
+#   have been no backups in this number of days the user is sent an email.
 #
 # @param email_headers
 #   Additional email headers.
 #
 # @param apache_configuration
-#   Boolean. Whether to install the apache configuration file that creates an alias for the /backuppc url.
-#   Disable this if you intend to install backuppc as a virtual host yourself.
+#   Boolean. Whether to install the apache configuration file that creates an
+#   alias for the /backuppc url.  Disable this if you intend to install backuppc
+#   as a virtual host yourself.
 #
 # @param apache_allow_from
-#   A space seperated list of hostnames, ip addresses and networks that are permitted to
-#   access the backuppc interface.
+#   A space seperated list of hostnames, ip addresses and networks that are
+#   permitted to access the backuppc interface.
 #
 # @param apache_require_ssl
-#   This directive forbids access unless HTTP over SSL (i.e. HTTPS) is used. Relies on mod_ssl.
+#   This directive forbids access unless HTTP over SSL (i.e. HTTPS) is used.
+#   Relies on mod_ssl.
 #
 # @param backuppc_password
 #   Password for the backuppc user used to access the web interface.
 #
 # @param user_cmd_check_status
-#    Whether the exit status of each PreUserCmd and PostUserCmd is checked.
-#    If set and the Dump/Restore/Archive Pre/Post UserCmd returns a non-zero exit status then the dump/restore/archive is aborted. To maintain backward compatibility (where the exit status in early versions was always ignored), this flag defaults to 0.
-#    If this flag is set and the Dump/Restore/Archive PreUserCmd fails then the matching Dump/Restore/Archive PostUserCmd is not executed. If DumpPreShareCmd returns a non-exit status, then DumpPostShareCmd is not executed, but the DumpPostUserCmd is still run (since DumpPreUserCmd must have previously succeeded).
-#    An example of a DumpPreUserCmd that might fail is a script that snapshots or dumps a database which fails because of some database error.
+#    Whether the exit status of each PreUserCmd and PostUserCmd is checked.  If
+#    set and the Dump/Restore/Archive Pre/Post UserCmd returns a non-zero exit
+#    status then the dump/restore/archive is aborted. To maintain backward
+#    compatibility (where the exit status in early versions was always ignored),
+#    this flag defaults to 0.  If this flag is set and the Dump/Restore/Archive
+#    PreUserCmd fails then the matching Dump/Restore/Archive PostUserCmd is not
+#    executed. If DumpPreShareCmd returns a non-exit status, then
+#    DumpPostShareCmd is not executed, but the DumpPostUserCmd is still run
+#    (since DumpPreUserCmd must have previously succeeded).  An example of a
+#    DumpPreUserCmd that might fail is a script that snapshots or dumps a
+#    database which fails because of some database error.
 #
 # @param topdir
 #   Overwrite package default location for backuppc.
 #
 # @param ping_max_msec
-#   Maximum RTT value (in ms) above which backup won't be started. Default to 20ms
-#
-#
-#   === Authors
-#
-#   Scott Barr <gsbarr@gmail.com>
+#   Maximum RTT value (in ms) above which backup won't be started. Default to
+#   20ms
 #
 class backuppc::server (
   $ensure                     = 'present',

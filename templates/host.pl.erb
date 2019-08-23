@@ -27,7 +27,7 @@ $Conf{IncrAgeMax}     = <%= @incr_age_max %>;
 <%- if defined?(@incr_fill) -%>
 $Conf{IncrFill} = <%= @real_incr_fill %>;
 <% end -%>
-<%- if defined?(@incr_levels.is_a?(Array) and  !@incr_levels.empty?) -%>
+<%- if defined?(@incr_levels) and @incr_levels.is_a?(Array) and  !@incr_levels.empty? -%>
 $Conf{IncrLevels} = [<%= @incr_levels.join(', ') %>];
 <% end -%>
 <%- if defined?(@partial_age_max) -%>
@@ -43,92 +43,92 @@ $Conf{PingCmd} = '<%= @ping_cmd %>';
 $Conf{PingMaxMsec} = <%= @ping_max_msec %>;
 <% end -%>
 <%- if defined?(@blackout_good_cnt) -%>
-  $Conf{BlackoutGoodCnt}      = <%= @blackout_good_cnt %>;
+$Conf{BlackoutGoodCnt}      = <%= @blackout_good_cnt %>;
 <% end -%>
 <% if defined?(@backup_files_only) -%>
-  <% if !@backup_files_only.empty? -%>
-    <% if @backup_files_only.is_a?(Hash) -%>
-      $Conf{BackupFilesOnly} = {
-      <% @backup_files_only.keys.sort.each do |key| -%>
-	'<%= key %>'  => <% if @backup_files_only[key].is_a?(Array) %>['<%= @backup_files_only[key].join("', '") %>']<% else %><%= @backup_files_only[key] %><% end %>,
-      <% end -%>
-      };
-    <% elsif @backup_files_only.is_a?(Array) -%>
-      $Conf{BackupFilesOnly} = ['<%= @backup_files_only.join("', '") %>'];
-    <% else -%>
-      $Conf{BackupFilesOnly} = '<%= @backup_files_only %>';
-    <% end -%>
-  <% end -%>
+<% if !@backup_files_only.empty? -%>
+<% if @backup_files_only.is_a?(Hash) -%>
+$Conf{BackupFilesOnly} = {
+<% @backup_files_only.keys.sort.each do |key| -%>
+'<%= key %>'  => <% if @backup_files_only[key].is_a?(Array) %>['<%= @backup_files_only[key].join("', '") %>']<% else %><%= @backup_files_only[key] %><% end %>,
+<% end -%>
+};
+<% elsif @backup_files_only.is_a?(Array) -%>
+$Conf{BackupFilesOnly} = ['<%= @backup_files_only.join("', '") %>'];
+<% else -%>
+$Conf{BackupFilesOnly} = '<%= @backup_files_only %>';
+<% end -%>
+<% end -%>
 <% end -%>
 <%- if defined?(@backup_files_exclude) -%>
-  <%- if !@backup_files_exclude.empty? -%>
-    <%- if @backup_files_exclude.is_a?(Hash) -%>
-      $Conf{BackupFilesExclude} = {
-      <% @backup_files_exclude.keys.sort.each do |key| -%>
-	'<%= key %>'  => <% if @backup_files_exclude[key].is_a?(Array) %>['<%= @backup_files_exclude[key].join("', '") %>']<% else %><%= @backup_files_exclude[key] %><% end %>,
-      <% end -%>
-      };
-    <%- elsif @backup_files_exclude.is_a?(Array) -%>
-      $Conf{BackupFilesExclude} = ['<%= @backup_files_exclude.join("', '") %>'];
-    <%- else -%>
-      $Conf{BackupFilesExclude} = '<%= @backup_files_exclude %>';
-    <% end -%>
-  <% end -%>
+<%- if !@backup_files_exclude.empty? -%>
+<%- if @backup_files_exclude.is_a?(Hash) -%>
+$Conf{BackupFilesExclude} = {
+<% @backup_files_exclude.keys.sort.each do |key| -%>
+'<%= key %>'  => <% if @backup_files_exclude[key].is_a?(Array) %>['<%= @backup_files_exclude[key].join("', '") %>']<% else %><%= @backup_files_exclude[key] %><% end %>,
+<% end -%>
+};
+<%- elsif @backup_files_exclude.is_a?(Array) -%>
+$Conf{BackupFilesExclude} = ['<%= @backup_files_exclude.join("', '") %>'];
+<%- else -%>
+$Conf{BackupFilesExclude} = '<%= @backup_files_exclude %>';
+<% end -%>
+<% end -%>
 <% end -%>
 <%- if @smb_share_name and !@smb_share_name.empty? %>
-  $Conf{SmbShareName} = '<%= @smb_share_name %>';
+$Conf{SmbShareName} = '<%= @smb_share_name %>';
 <% end -%>
 <%- if @smb_share_username and !@smb_share_username.empty? -%>
-  $Conf{SmbShareUserName} = '<%= @smb_share_username %>';
+$Conf{SmbShareUserName} = '<%= @smb_share_username %>';
 <% end -%>
 <%- if @smb_share_passwd and !@smb_share_passwd.empty? -%>
-  $Conf{SmbSharePasswd} = '<%= @smb_share_passwd %>';
+$Conf{SmbSharePasswd} = '<%= @smb_share_passwd %>';
 <% end -%>
 <%- if @smb_client_full_cmd and !@smb_client_full_cmd.empty? -%>
-  $Conf{SmbClientFullCmd} = '<%= @smb_client_full_cmd %>';
+$Conf{SmbClientFullCmd} = '<%= @smb_client_full_cmd %>';
 <% end -%>
 <%- if @smb_client_incr_cmd and !@smb_client_incr_cmd.empty? -%>
-  $Conf{SmbClientIncrCmd} = '<%= @smb_client_incr_cmd %>';
+$Conf{SmbClientIncrCmd} = '<%= @smb_client_incr_cmd %>';
 <% end -%>
 <%- if @smb_client_restore_cmd and !@smb_client_restore_cmd.empty? -%>
-  $Conf{SmbClientRestoreCmd} = '<%= @smb_client_restore_cmd %>';
+$Conf{SmbClientRestoreCmd} = '<%= @smb_client_restore_cmd %>';
 <% end -%>
 <%- if @tar_share_name and !@tar_share_name.empty? -%>
-  <%- if @tar_share_name.is_a?(Array) -%>
-    $Conf{TarShareName} = ['<%= @tar_share_name.join("', '") %>'];
-  <% else -%>
-    $Conf{TarShareName} = '<%= @tar_share_name %>';
-  <% end -%>
+<%- if @tar_share_name.is_a?(Array) -%>
+$Conf{TarShareName} = ['<%= @tar_share_name.join("', '") %>'];
+<% else -%>
+$Conf{TarShareName} = '<%= @tar_share_name %>';
+<% end -%>
 <% end -%>
 <%- if @tar_client_cmd and !@tar_client_cmd.empty? -%>
-  $Conf{TarClientCmd} = '<%= @tar_client_cmd %>';
+$Conf{TarClientCmd} = '<%= @tar_client_cmd %>';
 <% elsif !@system_account.empty? -%>
-  $Conf{TarClientCmd} = '$sshPath -q -x -n -l <%= @system_account %> $host'
+$Conf{TarClientCmd} = '$sshPath -q -x -n -l <%= @system_account %> $host'
 . ' env LC_ALL=C $tarPath -c -v -f - -C $shareName+'
 . ' --totals';
 <% end -%>
 <%- if @tar_full_args and !@tar_full_args.empty? -%>
-  $Conf{TarFullArgs} = '<%= @tar_full_args %>';
+$Conf{TarFullArgs} = '<%= @tar_full_args %>';
 <% end -%>
 <%- if @tar_incr_args and !@tar_incr_args.empty? -%>
-  $Conf{TarIncrArgs} = '<%= @tar_incr_args %>';
+$Conf{TarIncrArgs} = '<%= @tar_incr_args %>';
 <% end -%>
 <%- if @tar_client_restore_cmd and !@tar_client_restore_cmd.empty? -%>
-  $Conf{TarClientRestoreCmd} = '<%= @tar_client_restore_cmd %>';
+$Conf{TarClientRestoreCmd} = '<%= @tar_client_restore_cmd %>';
 <% elsif not @system_account.empty? -%>
-  $Conf{TarClientRestoreCmd} = '$sshPath -q -x -l <%= @system_account %> $host'
+$Conf{TarClientRestoreCmd} = '$sshPath -q -x -l <%= @system_account %> $host'
 . ' env LC_ALL=C $tarPath -x -p --numeric-owner --same-owner'
 . ' -v -f - -C $shareName+';
 <% end -%>
 <%- if @rsync_client_cmd and !@rsync_client_cmd.empty? -%>
-  $Conf{RsyncClientCmd} = '<%= @rsync_client_cmd %>';
+$Conf{RsyncClientCmd} = '<%= @rsync_client_cmd %>';
 <% elsif !@system_account.empty? %>
-  $Conf{RsyncClientCmd} = '$sshPath -q -x -l <%= @system_account %> $host $rsyncPath $argList+';
+$Conf{RsyncClientCmd} = '$sshPath -q -x -l <%= @system_account %> $host $rsyncPath $argList+';
 <% end -%>
 <%- if @rsync_client_restore_cmd and !@rsync_client_restore_cmd.empty? -%>
-  $Conf{RsyncClientRestoreCmd} = '<%= @rsync_client_restore_cmd %>';
+$Conf{RsyncClientRestoreCmd} = '<%= @rsync_client_restore_cmd %>';
 <% elsif !@system_account.empty? -%>
-  $Conf{RsyncClientRestoreCmd} = '$sshPath -q -x -l <%= @system_account %> $host $rsyncPath $argList+';
+$Conf{RsyncClientRestoreCmd} = '$sshPath -q -x -l <%= @system_account %> $host $rsyncPath $argList+';
 <% end -%>
 <%- if @rsync_share_name and !@rsync_share_name.empty? -%>
 <%- if defined?(@rsync_share_name.is_a?(Array)) -%>
@@ -152,10 +152,10 @@ $Conf{RsyncdAuthRequired} = <%= @real_rsyncd_auth_required %>;
 <%- if defined?(@rsync_csum_cache_verify_prob) -%>
 $Conf{RsyncCsumCacheVerifyProb} = <%= @rsync_csum_cache_verify_prob %>;
 <% end -%>
-<%- if defined?(@rsync_args.is_a?(Array) and !@rsync_args.empty?) -%>
+<%- if defined?(@rsync_args) and @rsync_args.is_a?(Array) and !@rsync_args.empty? -%>
 $Conf{RsyncArgs} = ['<%= @rsync_args.join("', '") %>'];
 <% end -%>
-<%- if defined?(@rsync_restore_args.is_a?(Array) and !@rsync_restore_args.empty?) -%>
+<%- if defined?(@rsync_restore_args) and @rsync_restore_args.is_a?(Array) and !@rsync_restore_args.empty? -%>
 $Conf{RsyncRestoreArgs} = ['<%= @rsync_restore_args.join("', '") %>'];
 <% end -%>
 <%- if @dump_pre_user_cmd and !@dump_pre_user_cmd.empty? -%>
@@ -199,7 +199,7 @@ $Conf{BlackoutPeriods} = [
 <% @blackout_periods.each do |period| -%>
 <% if period.is_a?(Hash) -%>{
 <% period.each_pair do |key,value| -%>
-  <%= key %>  => <% if value.is_a?(Array) %>[<%= value.join(', ') %>]<% else %><%= value %><% end %>,
+<%= key %>  => <% if value.is_a?(Array) %>[<%= value.join(', ') %>]<% else %><%= value %><% end %>,
 <% end -%>
 },
 <% end -%>

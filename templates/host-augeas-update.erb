@@ -1,5 +1,6 @@
 set *[host = '<%= @config_name %>']/dhcp <%= @hosts_file_dhcp %>
 set *[host = '<%= @config_name %>']/user <%= @hosts_file_user %>
+<% if defined?(@hosts_file_more_users) %>
 <% hosts_file_more_users = @hosts_file_more_users.split(',') -%>
 <% if ! hosts_file_more_users.empty? -%>
 <% hosts_file_more_users.each_with_index do |user, i| -%>
@@ -7,4 +8,5 @@ set *[host = '<%= @config_name %>']/moreusers[<%= i + 1 %>] <%= user %>
 <% end -%>
 <% else -%>
 rm *[host = '<%= @config_name %>']/moreusers
+<% end -%>
 <% end -%>

@@ -1,9 +1,11 @@
 set 01/host <%= @config_name %>
 set 01/dhcp <%= @hosts_file_dhcp %>
 set 01/user <%= @hosts_file_user %>
+<% if defined?(@hosts_file_more_users) %>
 <% hosts_file_more_users = @hosts_file_more_users.split(',') -%>
 <% if ! hosts_file_more_users.empty? -%>
 <% hosts_file_more_users.each_with_index do |user, i| -%>
 set 01/moreusers[<%= i + 1 %>] <%= user %>
+<% end -%>
 <% end -%>
 <% end -%>

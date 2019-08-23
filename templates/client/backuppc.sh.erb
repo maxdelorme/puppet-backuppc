@@ -5,8 +5,8 @@
 #
 
 case "${SSH_ORIGINAL_COMMAND}" in
-  /usr/bin/rsync*|<%= scope.lookupvar('backuppc::params::tar_path') %>*<% if @system_additional_commands.count > 0 %>|<%= @system_additional_commands.join('*|') %>*<% end %> )
-  <%- if @sudo_prepend != '' -%>
+  /usr/bin/rsync*|<%= scope['backuppc::params::tar_path'] %>*<% if defined?(@system_additional_commands) and @system_additional_commands.count > 0 %>|<%= @system_additional_commands.join('*|') %>*<% end %> )
+  <%- if defined?(@sudo_prepend) and @sudo_prepend != '' -%>
   <%= @sudo_prepend -%> sudo ${SSH_ORIGINAL_COMMAND}
   <%- else -%>
   sudo ${SSH_ORIGINAL_COMMAND}

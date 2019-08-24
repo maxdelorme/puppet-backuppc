@@ -228,7 +228,7 @@
 class backuppc::server (
   Enum['present','absent'] $ensure                          = 'present',
   Boolean $service_enable                                   = true,
-  Array[Integer[0,24]] $wakeup_schedule = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+  Backuppc::Hours $wakeup_schedule = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23],
   Integer $max_backups                                      = 4,
   Integer $max_user_backups                                 = 4,
   String $language                                          = 'en',

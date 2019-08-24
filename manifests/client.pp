@@ -73,6 +73,7 @@
 #   midnight and weekDays is a list of days of the week where 0 is Sunday,
 #   1 is Monday etc.
 #   To specify one blackout period from 7:00am to 7:30pm local time on Mon-Fri.
+#
 #     $Conf{BlackoutPeriods} = [
 #          {
 #              hourBegin =>  7.0,
@@ -83,7 +84,7 @@
 #
 # @param ping_max_msec
 #   Maximum latency between backuppc server and client to schedule
-#   a backup. Default to 20ms.
+#   a backup.
 #
 # @param ping_cmd
 #   Ping command. The following variables are substituted at run-time:
@@ -257,7 +258,7 @@ class backuppc::client (
   Optional[Boolean] $incr_fill                               = undef,
   Optional[Integer] $partial_age_max                         = undef,
   Optional[Integer] $blackout_bad_ping_limit                 = undef,
-  Optional[Integer] $ping_max_msec                           = undef,
+  Optional[Integer] $ping_max_msec                           = 20,
   Optional[String] $ping_cmd                                 = undef,
   Optional[Integer] $blackout_good_cnt                       = undef,
   Optional[Backuppc::BlackoutPeriods] $blackout_periods      = undef,

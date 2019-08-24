@@ -14,8 +14,8 @@
 #
 type Backuppc::BlackoutPeriods = Array[
   Struct[{
-    hourBegin => Variant[Integer[-24,24],Float[-24.0,24.0]],
-    hourEnd   => Variant[Integer[-24,24],Float[-24.0,24.0]],
+    hourBegin => Backuppc::Hours,
+    hourEnd   => Backuppc::Hours,
     weekDays  => Array[Integer[0,6]]
   }]
 ]

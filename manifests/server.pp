@@ -225,7 +225,6 @@
 #   Maximum RTT value (in ms) above which backup won't be started. Default to
 #   20ms
 #
-
 class backuppc::server (
   Enum['present','absent'] $ensure                          = 'present',
   Boolean $service_enable                                   = true,

@@ -1,16 +1,15 @@
-# @summary
-#   Configures a host for backup with the backuppc server.
+# @summary Configures a host for backup with the backuppc server.
 #   Uses storedconfigs to provide the backuppc server with
 #   required information.
 #
 # @param ensure
-#   Present or absent.
+#   Default for creation of files by this class
 #
 # @param config_name
-#   TODO
+#   Name of the this host used for the configuration file.
 #
 # @param backuppc_hostname
-#   TODO
+#   The name of the backuppc server.
 #
 # @param client_name_alias
 #   Override the client's host name. This allows multiple clients to all
@@ -237,7 +236,6 @@
 #   mostly useful for running the backup via nice or ionice, in order to
 #   reduce the impact of large backups on the client.
 #
-
 class backuppc::client (
   Enum['present','absent'] $ensure                           = 'present',
   Stdlib::Fqdn $config_name                                  = $facts['networking']['fqdn'],

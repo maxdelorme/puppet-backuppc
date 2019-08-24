@@ -5,13 +5,11 @@
 
 **Classes**
 
-* [`backuppc::client`](#backuppcclient): Configures a host for backup with the backuppc server.
-Uses storedconfigs to provide the backuppc server with
-required information.
+* [`backuppc::client`](#backuppcclient): 
 * [`backuppc::params`](#backuppcparams): Params class for backuppc used as a vehicle to pick up OS specific
 defaults from hiera. The defaults in this class are suitable for Debian
 systems.
-* [`backuppc::server`](#backuppcserver): Configures the backuppc server.
+* [`backuppc::server`](#backuppcserver): 
 
 **Defined types**
 
@@ -19,7 +17,11 @@ systems.
 
 **Data types**
 
-* [`Backuppc::BlackoutPeriods`](#backuppcblackoutperiods): Periods where scheduled backups do not take place
+* [`Backuppc::BackupFiles`](#backuppcbackupfiles): List of filws to ne included or excluded.
+* [`Backuppc::BlackoutPeriods`](#backuppcblackoutperiods): Periods where scheduled backups do not take place.  One or more blackout
+periods can be specified. If a client is subject to blackout then no regular
+(non-manual) backups will be started during any of these periods.  hourBegin
+and hourEnd specify hours from midnight and weekDays is a list of days of
 * [`Backuppc::DhcpAddressRange`](#backuppcdhcpaddressrange): List of DHCP address ranges we search looking for PCs to backup.
 * [`Backuppc::XferLogLevel`](#backuppcxferloglevel): Level of verbosity in Xfer log files.
 * [`Backuppc::XferMethod`](#backuppcxfermethod): What transport method to use to backup each host.
@@ -28,9 +30,7 @@ systems.
 
 ### backuppc::client
 
-Configures a host for backup with the backuppc server.
-Uses storedconfigs to provide the backuppc server with
-required information.
+The backuppc::client class.
 
 #### Parameters
 
@@ -38,620 +38,539 @@ The following parameters are available in the `backuppc::client` class.
 
 ##### `ensure`
 
-Data type: `Any`
+Data type: `Enum['present','absent']`
 
-Present or absent.
+
 
 Default value: 'present'
 
 ##### `config_name`
 
-Data type: `Any`
+Data type: `Stdlib::Fqdn`
 
-TODO
+
 
 Default value: $facts['networking']['fqdn']
 
 ##### `backuppc_hostname`
 
-Data type: `Any`
+Data type: `Optional[Stdlib::Fqdn]`
 
-TODO
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `client_name_alias`
 
-Data type: `Any`
+Data type: `Optional[Stdlib::Fqdn]`
 
-Override the client's host name. This allows multiple clients to all
-refer to the same physical host. This should only be set in the per-PC
-config file and is only used by BackupPC at the last moment prior to
-generating the command used to backup that machine (ie: the value of
-$Conf{ClientNameAlias} is invisible everywhere else in BackupPC).
-he setting can be a host name or IP address. eg.
-      $Conf{ClientNameAlias} = 'realHostName';
-      $Conf{ClientNameAlias} = '192.1.1.15';
 
-will cause the relevant smb/tar/rsync backup/restore commands
-to be directed to realHostName, not the client name.
-Note: this setting doesn't work for hosts with DHCP set to 1.
 
-Default value: `false`
+Default value: `undef`
 
 ##### `system_account`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Name of the user that will be created to allow backuppc
-access to the system via ssh. This only applies to xfer
-methods that require it. To override this set the system_account
-to an empty string and configure access to the client yourself as
-the default in the global config file (root) or change the
-rsync_client_cmd or tar_client_cmd to suit your setup.
+
 
 Default value: 'backup'
 
 ##### `system_home_directory`
 
-Data type: `Any`
+Data type: `Stdlib::Absolutepath`
 
-Absolute path to the home directory of the system account.
+
 
 Default value: '/var/backups'
 
 ##### `system_additional_commands`
 
-Data type: `Any`
+Data type: `Optional[Array[String]]`
 
-Additional sudo commands to whitelist for the system_account. This
-is useful if you need to execute any pre dump *scripts* on client before
-backup. Please prefer system_additional_commands_noexec if you want
-to whitelist a single command/binary since commands specified here
-are going to be allowed without the NOEXEC options. See man sudoers
-for details.
 
-Default value: []
+
+Default value: `undef`
 
 ##### `system_additional_commands_noexec`
 
-Data type: `Any`
+Data type: `Optional[Array[String]]`
 
-Additional sudo commands to whitelist for the system_account. This
-is useful if you need to execute any pre dump commands on client before
-backup.
 
-Default value: []
+
+Default value: `undef`
 
 ##### `manage_sudo`
 
-Data type: `Any`
+Data type: `Boolean`
 
-Boolean. Set to true to configure and install sudo and the
-sudoers.d directory. Defaults to false and is only applied
-if 1) xfer_method requires ssh access and 2) you're using
-the system_account parameter.
+
 
 Default value: `false`
 
 ##### `manage_rsync`
 
-Data type: `Any`
+Data type: `Boolean`
 
-Boolean. By default will install the rsync package. If you
-manage this elsewhere set it to false. Defaults to true and
-is only applied if 1) the xfer_method is rsync and 2) you're
-using the system_account parameter.
+
 
 Default value: `true`
 
+##### `full_period`
+
+Data type: `Optional[Numeric]`
+
+
+
+Default value: `undef`
+
+##### `full_keep_cnt`
+
+Data type: `Optional[Integer]`
+
+
+
+Default value: `undef`
+
+##### `full_age_max`
+
+Data type: `Optional[Integer]`
+
+
+
+Default value: `undef`
+
+##### `incr_period`
+
+Data type: `Optional[Numeric]`
+
+
+
+Default value: `undef`
+
+##### `incr_keep_cnt`
+
+Data type: `Optional[Integer]`
+
+
+
+Default value: `undef`
+
+##### `incr_age_max`
+
+Data type: `Optional[Integer]`
+
+
+
+Default value: `undef`
+
+##### `incr_levels`
+
+Data type: `Optional[Array[Integer]]`
+
+
+
+Default value: `undef`
+
+##### `incr_fill`
+
+Data type: `Optional[Boolean]`
+
+
+
+Default value: `undef`
+
+##### `partial_age_max`
+
+Data type: `Optional[Integer]`
+
+
+
+Default value: `undef`
+
 ##### `blackout_bad_ping_limit`
 
-Data type: `Any`
+Data type: `Optional[Integer]`
 
-To allow for periodic rebooting of a PC or other brief periods when a
-PC is not on the network, a number of consecutive bad pings is allowed
-before the good ping count is reset.
 
-Default value: `false`
 
-##### `blackout_periods`
-
-Data type: `Any`
-
-One or more blackout periods can be specified. If a client is subject
-to blackout then no regular (non-manual) backups will be started
-during any of these periods. hourBegin and hourEnd specify hours fro
-midnight and weekDays is a list of days of the week where 0 is Sunday,
-1 is Monday etc.
-To specify one blackout period from 7:00am to 7:30pm local time on Mon-Fri.
-  $Conf{BlackoutPeriods} = [
-       {
-           hourBegin =>  7.0,
-           hourEnd   => 19.5,
-           weekDays  => [1, 2, 3, 4, 5],
-       },
-  ];
-
-Default value: `false`
+Default value: `undef`
 
 ##### `ping_max_msec`
 
-Data type: `Any`
+Data type: `Optional[Integer]`
 
-Maximum latency between backuppc server and client to schedule
-a backup. Default to 20ms.
 
-Default value: `false`
+
+Default value: `undef`
 
 ##### `ping_cmd`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Ping command. The following variables are substituted at run-time:
-   $pingPath      path to ping ($Conf{PingPath})
-   $host          host name
-Wade Brown reports that on solaris 2.6 and 2.7 ping -s returns the
-wrong exit status (0 even on failure). Replace with "ping $host 1",
-which gets the correct exit status but we don't get the round-trip time.
-Note: all Cmds are executed directly without a shell, so the prog
-name needs to be a full path and you can't include shell syntax like
-redirection and pipes; put that in a script if you need it.
 
-Default value: `false`
+
+Default value: `undef`
+
+##### `blackout_good_cnt`
+
+Data type: `Optional[Integer]`
+
+
+
+Default value: `undef`
+
+##### `blackout_periods`
+
+Data type: `Optional[Backuppc::BlackoutPeriods]`
+
+
+
+Default value: `undef`
 
 ##### `backups_disable`
 
-Data type: `Any`
+Data type: `Boolean`
 
-Disable all full and incremental backups. These settings are useful
-for a client that is no longer being backed up (eg: a retired machine),
-but you wish to keep the last backups available for browsing or
-restoring to other machines.
+
 
 Default value: `false`
 
 ##### `xfer_method`
 
-Data type: `Any`
+Data type: `Backuppc::XferMethod`
 
-What transport method to use to backup each host.
+
 
 Default value: 'rsync'
 
 ##### `xfer_loglevel`
 
-Data type: `Any`
+Data type: `Backuppc::XferLogLevel`
 
-Level of verbosity in Xfer log files. 0 means be quiet, 1 will give will
-give one line per file, 2 will also show skipped files on incrementals,
-higher values give more output.
 
-Default value: '1'
+
+Default value: 1
 
 ##### `smb_share_name`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Name of the host share that is backed up when using SMB. This can be a
-string or an array of strings if there are multiple shares per host.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `smb_share_username`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Smbclient share user name. This is passed to smbclient's -U argument.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `smb_share_passwd`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Smbclient share password. This is passed to smbclient via its PASSWD
-environment variable.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `smb_client_full_cmd`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Command to run smbclient for a full dump.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `smb_client_incr_cmd`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Command to run smbclient for an incremental dump.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `smb_client_restore_cmd`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Command to run smbclient for a restore.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `tar_share_name`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Which host directories to backup when using tar transport. This can be
-a string or an array of strings if there are multiple directories to
-backup per host.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `tar_client_cmd`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Command to run tar on the client. GNU tar is required. The default
-will run the tar command as the user you specify in system_account.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `tar_full_args`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Extra tar arguments for full backups.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `tar_incr_args`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Extra tar arguments for incr backups.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `tar_client_restore_cmd`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Full command to run tar for restore on the client. GNU tar is required.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `rsync_client_cmd`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Full command to run rsync on the client machine. The default will run
-the rsync command as the user you specify in system_account.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `rsync_client_restore_cmd`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Full command to run rsync for restore on the client.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `rsync_share_name`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Share name to backup. For $Conf{XferMethod} = "rsync" this should be a
-file system path, eg '/' or '/home'.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `rsyncd_client_port`
 
-Data type: `Any`
+Data type: `Optional[Integer]`
 
-Rsync daemon port on host.
 
-Default value: `false`
+
+Default value: `undef`
 
 ##### `rsyncd_user_name`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Rsync daemon user name on host.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `rsyncd_passwd`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Rsync daemon password on host.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `rsyncd_auth_required`
 
-Data type: `Any`
+Data type: `Boolean`
 
-Whether authentication is mandatory when connecting to the client's
-rsyncd. By default this is on, ensuring that BackupPC will refuse to
-connect to an rsyncd on the client that is not password protected.
+
 
 Default value: `false`
 
 ##### `rsync_csum_cache_verify_prob`
 
-Data type: `Any`
+Data type: `Optional[Integer]`
 
-When rsync checksum caching is enabled (by adding the
---checksum-seed=32761 option to rsync_args), the cached checksums can
-be occasionally verified to make sure the file
-contents matches the cached checksums.
 
-Default value: `false`
+
+Default value: `undef`
 
 ##### `rsync_args`
 
-Data type: `Any`
+Data type: `Optional[Array[String]]`
 
-Arguments to rsync for backup.
 
-Default value: []
+
+Default value: `undef`
 
 ##### `rsync_args_extra`
 
-Data type: `Any`
+Data type: `Optional[Array[String]]`
 
-Additional arguments to rsync for backup.
 
-Default value: []
+
+Default value: `undef`
 
 ##### `rsync_restore_args`
 
-Data type: `Any`
+Data type: `Optional[Array[String]]`
 
-Arguments to rsync for restore.
 
-Default value: []
+
+Default value: `undef`
 
 ##### `backup_files_only`
 
-Data type: `Any`
+Data type: `Optional[Backuppc::BackupFiles]`
 
-List of directories or files to backup. If this is defined, only these
-directories or files will be backed up.
 
-Default value: []
+
+Default value: `undef`
 
 ##### `backup_files_exclude`
 
-Data type: `Any`
+Data type: `Optional[Backuppc::BackupFiles]`
 
-List of directories or files to exclude from the backup. For
-xfer_method smb, only one of backup_files_exclude and backup_files_only
-can be specified per share.  If both are set for a particular share,
-then backup_files_only takes precedence and backup_files_exclude is
-ignored.
 
-Default value: []
+
+Default value: `undef`
 
 ##### `dump_pre_user_cmd`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Optional command to run before a dump.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `dump_post_user_cmd`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Optional command to run after a dump.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `dump_pre_share_cmd`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Optional command to run before a dump of a share.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `dump_post_share_cmd`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Optional command to run after a dump of a share.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `restore_pre_user_cmd`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Optional command to run before a restore.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `restore_post_user_cmd`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
-Optional command to run after a restore.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `user_cmd_check_status`
 
-Data type: `Any`
+Data type: `Optional[Boolean]`
 
-Whether the exit status of each PreUserCmd and PostUserCmd is checked.
 
-Default value: `true`
 
-##### `hosts_file_dhcp`
-
-Data type: `Any`
-
-The way hosts are discovered has changed and now in most cases you
-should use the default of 0 for the DHCP flag, even if the host has
-a dynamically assigned IP address.
-
-Default value: 0
-
-##### `hosts_file_more_users`
-
-Data type: `Any`
-
-Additional user names, separate by commas and with no white space, can
-be specified. These users will also have full permission in the CGI
-interface to stop/start/browse/restore backups for this host. These
-users will not be sent email about this host.
-
-Default value: ''
-
-##### `sudo_prepend`
-
-Data type: `Any`
-
-Prepend a command to the sudo command, as run in backuppc.sh. This is
-mostly useful for running the backup via nice or ionice, in order to
-reduce the impact of large backups on the client.
-
-Default value: ''
-
-##### `full_period`
-
-Data type: `Any`
-
-
-
-Default value: `false`
-
-##### `full_keep_cnt`
-
-Data type: `Any`
-
-
-
-Default value: `false`
-
-##### `full_age_max`
-
-Data type: `Any`
-
-
-
-Default value: `false`
-
-##### `incr_period`
-
-Data type: `Any`
-
-
-
-Default value: `false`
-
-##### `incr_keep_cnt`
-
-Data type: `Any`
-
-
-
-Default value: `false`
-
-##### `incr_age_max`
-
-Data type: `Any`
-
-
-
-Default value: `false`
-
-##### `incr_levels`
-
-Data type: `Any`
-
-
-
-Default value: []
-
-##### `incr_fill`
-
-Data type: `Any`
-
-
-
-Default value: `false`
-
-##### `partial_age_max`
-
-Data type: `Any`
-
-
-
-Default value: `false`
-
-##### `blackout_good_cnt`
-
-Data type: `Any`
-
-
-
-Default value: `false`
+Default value: `undef`
 
 ##### `email_notify_min_days`
 
-Data type: `Any`
+Data type: `Optional[Integer]`
 
 
 
-Default value: `false`
+Default value: `undef`
 
 ##### `email_from_user_name`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
 
 
-Default value: ''
+Default value: `undef`
 
 ##### `email_admin_user_name`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
 
 
-Default value: ''
+Default value: `undef`
 
 ##### `email_destination_domain`
 
-Data type: `Any`
+Data type: `Optional[Stdlib::Fqdn]`
 
 
 
-Default value: ''
+Default value: `undef`
 
 ##### `email_notify_old_backup_days`
 
-Data type: `Any`
+Data type: `Optional[Integer]`
 
 
 
-Default value: `false`
+Default value: `undef`
+
+##### `hosts_file_dhcp`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+
+
+Default value: `undef`
 
 ##### `hosts_file_user`
 
-Data type: `Any`
+Data type: `Optional[String]`
 
 
 
 Default value: 'backuppc'
+
+##### `hosts_file_more_users`
+
+Data type: `Optional[Array[String]]`
+
+
+
+Default value: `undef`
+
+##### `sudo_prepend`
+
+Data type: `Optional[String]`
+
+
+
+Default value: `undef`
 
 ### backuppc::params
 
@@ -809,7 +728,7 @@ Default value: "${backuppc::params::config_directory}/htpasswd"
 
 ### backuppc::server
 
-Configures the backuppc server.
+The backuppc::server class.
 
 #### Parameters
 
@@ -817,447 +736,370 @@ The following parameters are available in the `backuppc::server` class.
 
 ##### `ensure`
 
-Data type: `Any`
+Data type: `Enum['present','absent']`
 
-Present or absent
+
 
 Default value: 'present'
 
 ##### `service_enable`
 
-Data type: `Any`
+Data type: `Boolean`
 
-Boolean. Will enable service at boot
-and ensure a running service.
+
 
 Default value: `true`
 
 ##### `wakeup_schedule`
 
-Data type: `Any`
+Data type: `Array[Integer[0,24]]`
 
-Times at which we wake up, check all the PCs,
-and schedule necessary backups. Times are measured
-in hours since midnight. Can be fractional if
-necessary (eg: 4.25 means 4:15am).
+
 
 Default value: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
 
 ##### `max_backups`
 
-Data type: `Any`
+Data type: `Integer`
 
-Maximum number of simultaneous backups to run. If
-there are no user backup requests then this is the
-maximum number of simultaneous backups.
+
 
 Default value: 4
-
-##### `cgi_admin_user_group`
-
-Data type: `Any`
-
-
-
-Default value: 'backuppc'
-
-##### `cgi_admin_users`
-
-Data type: `Any`
-
-The administrative users are the union of the unix/linux
-group $Conf{CgiAdminUserGroup} and the manual list of users,
-separated by spaces, in $Conf{CgiAdminUsers}.
-If you don't want a group or manual list of users set the
-corresponding configuration setting to undef or an empty string.
-
-Default value: 'backuppc'
-
-##### `language`
-
-Data type: `Any`
-
-Language to use. See lib/BackupPC/Lang for the list of
-supported languages, which include English (en), French (fr),
-Spanish (es), German (de), Italian (it), Dutch (nl), Polish (pl),
-Portuguese Brazillian (pt_br) and Chinese (zh_CH).
-cz, de, en, es, fr, it, nl, pl, pt_br, zh_CN
-
-Currently the Language setting applies to the CGI interface and email
-messages sent to users. Log files and other text are still in English.
-
-Default value: 'en'
-
-##### `cgi_url`
-
-Data type: `Any`
-
-URL of the BackupPC_Admin CGI script. Used for email messages.
-
-Default value: '"http://".$Conf{ServerHost}."/backuppc/index.cgi"'
-
-##### `cgi_image_dir_url`
-
-Data type: `Any`
-
-URL (without the leading http://host) for BackupPC's image directory. The CGI script
-uses this value to serve up image files.
-Example:
-    $Conf{CgiImageDirURL} = '/BackupPC';
-
-Default value: $backuppc::params::cgi_image_dir_url
-
-##### `cgi_date_format_mmdd`
-
-Data type: `Any`
-
-Date display format for CGI interface. A value of 1 uses US-style dates (MM/DD), a
-value of 2 uses full YYYY-MM-DD format, and zero for international dates (DD/MM).
-
-Default value: 1
 
 ##### `max_user_backups`
 
-Data type: `Any`
+Data type: `Integer`
 
-Additional number of simultaneous backups that users
-can run. As many as $Conf{MaxBackups} + $Conf{MaxUserBackups}
-requests can run at the same time.
+
 
 Default value: 4
 
+##### `language`
+
+Data type: `String`
+
+
+
+Default value: 'en'
+
 ##### `max_pending_cmds`
 
-Data type: `Any`
+Data type: `Integer`
 
-Maximum number of pending link commands. New backups will only
-be started if there are no more than $Conf{MaxPendingCmds} plus
-$Conf{MaxBackups} number of pending link commands, plus running
-jobs. This limit is to make sure BackupPC doesn't fall too far
-behind in running BackupPC_link commands.
+
 
 Default value: 15
 
 ##### `max_backuppc_nightly_jobs`
 
-Data type: `Any`
+Data type: `Integer`
 
-How many BackupPC_nightly processes to run in parallel. Each night,
-at the first wakeup listed in $Conf{WakeupSchedule}, BackupPC_nightly
-is run. Its job is to remove unneeded files in the pool, ie: files that
-only have one link. To avoid race conditions, BackupPC_nightly and BackupPC_link
-cannot run at the same time. Starting in v3.0.0, BackupPC_nightly can run
-concurrently with backups (BackupPC_dump).
+
 
 Default value: 2
 
 ##### `backuppc_nightly_period`
 
-Data type: `Any`
+Data type: `Integer`
 
-How many days (runs) it takes BackupPC_nightly to traverse the entire pool.
-Normally this is 1, which means every night it runs, it does traverse the entire
-pool removing unused pool files.
+
 
 Default value: 1
 
 ##### `max_old_log_files`
 
-Data type: `Any`
+Data type: `Integer`
 
-Maximum number of log files we keep around in log directory. These files are aged
-nightly. A setting of 14 means the log directory will contain about 2 weeks of old
-log files, in particular at most the files LOG, LOG.0, LOG.1, ... LOG.13 (except today's
-LOG, these files will have a .z extension if compression is on).
+
 
 Default value: 14
 
 ##### `df_max_usage_pct`
 
-Data type: `Any`
+Data type: `Integer`
 
-Maximum threshold for disk utilization on the __TOPDIR__ filesystem. If the output
-from $Conf{DfPath} reports a percentage larger than this number then no new regularly
-scheduled backups will be run. However, user requested backups (which are usually
-incremental and tend to be small) are still performed, independent of disk usage. Also,
-currently running backups will not be terminated when the disk usage exceeds this number.
+
 
 Default value: 95
 
 ##### `trash_clean_sleep_sec`
 
-Data type: `Any`
+Data type: `Integer`
 
-How long BackupPC_trashClean sleeps in seconds between each check of the trash directory.
+
 
 Default value: 300
 
 ##### `dhcp_address_ranges`
 
-Data type: `Any`
+Data type: `Optional[Backuppc::DhcpAddressRange]`
 
-List of DHCP address ranges we search looking for PCs to backup. This is an array of
-hashes for each class C address range. This is only needed if hosts in the conf/hosts
-file have the dhcp flag set.
+
 
 Default value: []
 
 ##### `full_period`
 
-Data type: `Any`
+Data type: `Numeric`
 
-Minimum period in days between full backups. A full dump will only be done if at least
-this much time has elapsed since the last full dump, and at least $Conf{IncrPeriod}
-days has elapsed since the last successful dump.
 
-Default value: '6.97'
+
+Default value: 6.97
 
 ##### `full_keep_cnt`
 
-Data type: `Any`
+Data type: `Array[Integer]`
 
-Number of full backups to keep.
+
 
 Default value: [1]
 
 ##### `full_age_max`
 
-Data type: `Any`
+Data type: `Integer`
 
-Very old full backups are removed after $Conf{FullAgeMax} days. However, we keep
-at least $Conf{FullKeepCntMin} full backups no matter how old they are.
+
 
 Default value: 90
 
 ##### `incr_period`
 
-Data type: `Any`
+Data type: `Numeric`
 
-Minimum period in days between incremental backups (a user requested incremental
-backup will be done anytime on demand).
 
-Default value: '0.97'
+
+Default value: 0.97
 
 ##### `incr_keep_cnt`
 
-Data type: `Any`
+Data type: `Integer`
 
-Number of incremental backups to keep.
+
 
 Default value: 6
 
 ##### `incr_age_max`
 
-Data type: `Any`
+Data type: `Integer`
 
-Very old incremental backups are removed after $Conf{IncrAgeMax} days. However,
-we keep at least $Conf{IncrKeepCntMin} incremental backups no matter how old
-they are.
+
 
 Default value: 30
 
 ##### `incr_levels`
 
-Data type: `Any`
+Data type: `Array[Integer]`
 
-A full backup has level 0. A new incremental of level N will backup all files
-that have changed since the most recent backup of a lower level.
+
 
 Default value: [1]
 
-##### `partial_age_max`
-
-Data type: `Any`
-
-A failed full backup is saved as a partial backup. The rsync XferMethod can
-take advantage of the partial full when the next backup is run. This parameter
-sets the age of the partial full in days: if the partial backup is older than
-this number of days, then rsync will ignore (not use) the partial full when the
-next backup is run. If you set this to a negative value then no partials will be
-saved. If you set this to 0, partials will be saved, but will not be used by the
-next backup.
-
-Default value: 3
-
 ##### `incr_fill`
 
-Data type: `Any`
+Data type: `Boolean`
 
-Boolean. Whether incremental backups are filled. "Filling" means that the most recent fulli
-(or filled) dump is merged into the new incremental dump using hardlinks. This
-makes an incremental dump look like a full dump.
+
 
 Default value: `false`
 
+##### `partial_age_max`
+
+Data type: `Integer`
+
+
+
+Default value: 3
+
 ##### `restore_info_keep_cnt`
 
-Data type: `Any`
+Data type: `Integer`
 
-Number of restore logs to keep. BackupPC remembers information about each restore
-request. This number per client will be kept around before the oldest ones are pruned.
+
 
 Default value: 10
 
 ##### `archive_info_keep_cnt`
 
-Data type: `Any`
+Data type: `Integer`
 
-Number of archive logs to keep. BackupPC remembers information about each archive request.
-This number per archive client will be kept around before the oldest ones are pruned.
+
 
 Default value: 10
 
 ##### `blackout_good_cnt`
 
-Data type: `Any`
+Data type: `Integer`
 
-PCs that are always or often on the network can be backed up after hours, to reduce PC,
-network and server load during working hours. For each PC a count of consecutive good
-pings is maintained. Once a PC has at least $Conf{BlackoutGoodCnt} consecutive good pings
-it is subject to "blackout" and not backed up during hours and days specified by $Conf{BlackoutPeriods}.
+
 
 Default value: 7
 
+##### `cgi_url`
+
+Data type: `Stdlib::HTTPUrl`
+
+
+
+Default value: "http://${facts['networking']['fqdn']}/backuppc/index.cgi"
+
 ##### `blackout_periods`
 
-Data type: `Any`
+Data type: `Backuppc::BlackoutPeriods`
 
-TODO
+
 
 Default value: [ { hourBegin =>  7.0,
-                                    hourEnd   => 19.5,
-                                    weekDays  => [1, 2, 3, 4, 5],
-                                }, ]
+                                                                  hourEnd   => 19.5,
+                                                                  weekDays  => [1, 2, 3, 4, 5],
+                                                              }, ]
 
 ##### `backup_zero_files_is_fatal`
 
-Data type: `Any`
+Data type: `Boolean`
 
-Boolean. A backup of a share that has zero files is considered fatal. This is used to catch miscellaneous Xfer
-errors that result in no files being backed up. If you have shares that might be
-empty (and therefore an empty backup is valid) you should set this to false.
+
 
 Default value: `true`
 
 ##### `email_notify_min_days`
 
-Data type: `Any`
+Data type: `Numeric`
 
-Minimum period between consecutive emails to a single user. This tries to keep annoying email to users to
-a reasonable level.
+
 
 Default value: 2.5
 
 ##### `email_from_user_name`
 
-Data type: `Any`
+Data type: `String`
 
-Name to use as the "from" name for email.
+
 
 Default value: 'backuppc'
 
 ##### `email_admin_user_name`
 
-Data type: `Any`
+Data type: `String`
 
-Destination address to an administrative user who will receive a nightly email with warnings and errors.
+
 
 Default value: 'backuppc'
 
 ##### `email_user_dest_domain`
 
-Data type: `Any`
+Data type: `Optional[Stdlib::Fqdn]`
 
-Destination domain name for email sent to users.
 
-Default value: ''
+
+Default value: `undef`
 
 ##### `email_notify_old_backup_days`
 
-Data type: `Any`
+Data type: `Integer`
 
-How old the most recent backup has to be before notifying user. When there have been no backups in this
-number of days the user is sent an email.
+
 
 Default value: 7
 
 ##### `email_headers`
 
-Data type: `Any`
+Data type: `Hash`
 
-Additional email headers.
 
-Default value: { 'MIME-Version' => 1.0,
-                                  'Content-Type' => 'text/plain; charset="iso-8859-1"', }
+
+Default value: { 'MIME-Version' => 1.0, 'Content-Type' => 'text/plain; charset="iso-8859-1"', }
 
 ##### `apache_configuration`
 
-Data type: `Any`
+Data type: `Boolean`
 
-Boolean. Whether to install the apache configuration file that creates an alias for the /backuppc url.
-Disable this if you intend to install backuppc as a virtual host yourself.
+
 
 Default value: `true`
 
 ##### `apache_allow_from`
 
-Data type: `Any`
+Data type: `String`
 
-A space seperated list of hostnames, ip addresses and networks that are permitted to
-access the backuppc interface.
+
 
 Default value: 'all'
 
 ##### `apache_require_ssl`
 
-Data type: `Any`
+Data type: `Boolean`
 
-This directive forbids access unless HTTP over SSL (i.e. HTTPS) is used. Relies on mod_ssl.
+
 
 Default value: `false`
 
 ##### `backuppc_password`
 
-Data type: `Any`
+Data type: `String`
 
-Password for the backuppc user used to access the web interface.
+
 
 Default value: ''
 
-##### `user_cmd_check_status`
-
-Data type: `Any`
-
-Whether the exit status of each PreUserCmd and PostUserCmd is checked.
-If set and the Dump/Restore/Archive Pre/Post UserCmd returns a non-zero exit status then the dump/restore/archive is aborted. To maintain backward compatibility (where the exit status in early versions was always ignored), this flag defaults to 0.
-If this flag is set and the Dump/Restore/Archive PreUserCmd fails then the matching Dump/Restore/Archive PostUserCmd is not executed. If DumpPreShareCmd returns a non-exit status, then DumpPostShareCmd is not executed, but the DumpPostUserCmd is still run (since DumpPreUserCmd must have previously succeeded).
-An example of a DumpPreUserCmd that might fail is a script that snapshots or dumps a database which fails because of some database error.
-
-Default value: `true`
-
 ##### `topdir`
 
-Data type: `Any`
+Data type: `Stdlib::Absolutepath`
 
-Overwrite package default location for backuppc.
+
 
 Default value: $backuppc::params::topdir
 
+##### `cgi_image_dir_url`
+
+Data type: `Stdlib::Absolutepath`
+
+
+
+Default value: $backuppc::params::cgi_image_dir_url
+
+##### `cgi_admin_users`
+
+Data type: `String`
+
+
+
+Default value: 'backuppc'
+
+##### `cgi_admin_user_group`
+
+Data type: `String`
+
+
+
+Default value: 'backuppc'
+
+##### `cgi_date_format_mmdd`
+
+Data type: `Integer[0,2]`
+
+
+
+Default value: 1
+
+##### `user_cmd_check_status`
+
+Data type: `Boolean`
+
+
+
+Default value: `true`
+
 ##### `ping_max_msec`
 
-Data type: `Any`
+Data type: `Integer`
 
-Maximum RTT value (in ms) above which backup won't be started. Default to 20ms
 
-=== Authors
-
-Scott Barr <gsbarr@gmail.com>
 
 Default value: 20
 
 ##### `system_home_directory`
 
-Data type: `Any`
+Data type: `Stdlib::Absolutepath`
 
 
 
@@ -1299,54 +1141,37 @@ Default value: ''
 
 ## Data types
 
+### Backuppc::BackupFiles
+
+Backuop Files
+
+Alias of `Array[String]`
+
 ### Backuppc::BlackoutPeriods
 
 Blackout Periods
-One or more blackout periods can be specified. If a client is subject to blackout
-then no regular (non-manual) backups will be started during any of these periods.
-hourBegin and hourEnd specify hours from midnight and weekDays is a list of days of
-the week where 0 is Sunday, 1 is Monday etc.
-For example:
-
-This specifies one blackout period from 7:00am to 7:30pm local time on Mon-Fri, and
-a second period from 11pm to 5am on Friday and Saturday night.
-
-#### Examples
-
-##### Specify one blackout period from 7:00am to 7:30pm local time on Mon-Fri.
-
-```puppet
-blackout_periods => [
-     {
-         hourBegin =>  7.0,
-         hourEnd   => 19.5,
-         weekDays  => [1, 2, 3, 4, 5],
-     },
-];
-```
-
-##### The blackout period can also span midnight by setting hourBegin > hourEnd, eg:
-
-```puppet
-blackout_periods => [
-     {
-         hourBegin =>  7.0,
-         hourEnd   => 19.5,
-         weekDays  => [1, 2, 3, 4, 5],
-     },
-     {
-         hourBegin => 23,
-         hourEnd   =>  5,
-         weekDays  => [5, 6],
-     },
-];
-```
 
 Alias of `Array[Struct[{
-    hourBegin => Numeric[0,24],
-    hourEnd   => Numeric[0,24],
+    hourBegin => Variant[Integer[-24,24],Float[-24.0,24.0]],
+    hourEnd   => Variant[Integer[-24,24],Float[-24.0,24.0]],
     weekDays  => Array[Integer[0,6]]
   }]]`
+
+#### Parameters
+
+The following parameters are available in the `Backuppc::BlackoutPeriods` data type.
+
+##### `hourBegin`
+
+start of blackout period
+
+##### `hourEnd`
+
+end of blackoiut period
+
+##### `weekdays`
+
+days of black period
 
 ### Backuppc::DhcpAddressRange
 

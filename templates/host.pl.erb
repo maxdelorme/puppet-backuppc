@@ -1,48 +1,48 @@
-<%- if defined?(@client_name_alias) -%>
+<% if defined?(@client_name_alias) -%>
 $Conf{ClientNameAlias} = '<%= @client_name_alias%>';
 <% end -%>
 $Conf{XferMethod} = '<%= @xfer_method %>';
 $Conf{XferLogLevel} = <%= @xfer_loglevel %>;
-<%- if defined?(@backups_disable) -%>
+<% if defined?(@backups_disable) -%>
 $Conf{BackupsDisable} = <%= @real_backups_disable%>;
 <% end -%>
-<%- if defined?(@full_period) -%>
+<% if defined?(@full_period) -%>
 $Conf{FullPeriod} = <%= @full_period %>;
 <% end -%>
-<%- if defined?(@incr_period) -%>
+<% if defined?(@incr_period) -%>
 $Conf{IncrPeriod} = <%= @incr_period %>;
 <% end -%>
-<%- if defined?(@full_keep_cnt) -%>
+<% if defined?(@full_keep_cnt) -%>
 $Conf{FullKeepCnt} = <% if @full_keep_cnt.is_a?(Array) %>[<%= @full_keep_cnt.join(', ') %>]<% else %><%= @full_keep_cnt %><% end %>;
 <% end -%>
-<%- if defined?(@full_age_max) -%>
+<% if defined?(@full_age_max) -%>
 $Conf{FullAgeMax}     = <%= @full_age_max %>;
 <% end -%>
-<%- if defined?(@incr_keep_cnt) -%>
+<% if defined?(@incr_keep_cnt) -%>
 $Conf{IncrKeepCnt} = <%= @incr_keep_cnt %>;
 <% end -%>
-<%- if defined?(@incr_age_max) -%>
+<% if defined?(@incr_age_max) -%>
 $Conf{IncrAgeMax}     = <%= @incr_age_max %>;
 <% end -%>
-<%- if defined?(@incr_fill) -%>
+<% if defined?(@incr_fill) -%>
 $Conf{IncrFill} = <%= @real_incr_fill %>;
 <% end -%>
-<%- if defined?(@incr_levels) and @incr_levels.is_a?(Array) and  !@incr_levels.empty? -%>
+<% if defined?(@incr_levels) and @incr_levels.is_a?(Array) and  !@incr_levels.empty? -%>
 $Conf{IncrLevels} = [<%= @incr_levels.join(', ') %>];
 <% end -%>
-<%- if defined?(@partial_age_max) -%>
+<% if defined?(@partial_age_max) -%>
 $Conf{PartialAgeMax} = <%= @partial_age_max %>;
 <% end -%>
-<%- if defined?(@blackout_bad_ping_limit) -%>
+<% if defined?(@blackout_bad_ping_limit) -%>
 $Conf{BlackoutBadPingLimit} = <%= @blackout_bad_ping_limit %>;
 <% end -%>
-<%- if defined?(@ping_cmd) -%>
+<% if defined?(@ping_cmd) -%>
 $Conf{PingCmd} = '<%= @ping_cmd %>';
 <% end -%>
-<%- if defined?(@ping_max_msec) -%>
+<% if defined?(@ping_max_msec) -%>
 $Conf{PingMaxMsec} = <%= @ping_max_msec %>;
 <% end -%>
-<%- if defined?(@blackout_good_cnt) -%>
+<% if defined?(@blackout_good_cnt) -%>
 $Conf{BlackoutGoodCnt}      = <%= @blackout_good_cnt %>;
 <% end -%>
 <% if defined?(@backup_files_only) -%>
@@ -60,141 +60,141 @@ $Conf{BackupFilesOnly} = '<%= @backup_files_only %>';
 <% end -%>
 <% end -%>
 <% end -%>
-<%- if defined?(@backup_files_exclude) -%>
-<%- if !@backup_files_exclude.empty? -%>
-<%- if @backup_files_exclude.is_a?(Hash) -%>
+<% if defined?(@backup_files_exclude) -%>
+<% if !@backup_files_exclude.empty? -%>
+<% if @backup_files_exclude.is_a?(Hash) -%>
 $Conf{BackupFilesExclude} = {
 <% @backup_files_exclude.keys.sort.each do |key| -%>
 '<%= key %>'  => <% if @backup_files_exclude[key].is_a?(Array) %>['<%= @backup_files_exclude[key].join("', '") %>']<% else %><%= @backup_files_exclude[key] %><% end %>,
 <% end -%>
 };
-<%- elsif @backup_files_exclude.is_a?(Array) -%>
+<% elsif @backup_files_exclude.is_a?(Array) -%>
 $Conf{BackupFilesExclude} = ['<%= @backup_files_exclude.join("', '") %>'];
-<%- else -%>
+<% else -%>
 $Conf{BackupFilesExclude} = '<%= @backup_files_exclude %>';
 <% end -%>
 <% end -%>
 <% end -%>
-<%- if @smb_share_name and !@smb_share_name.empty? %>
+<% if @smb_share_name and !@smb_share_name.empty? %>
 $Conf{SmbShareName} = '<%= @smb_share_name %>';
 <% end -%>
-<%- if @smb_share_username and !@smb_share_username.empty? -%>
+<% if @smb_share_username and !@smb_share_username.empty? -%>
 $Conf{SmbShareUserName} = '<%= @smb_share_username %>';
 <% end -%>
-<%- if @smb_share_passwd and !@smb_share_passwd.empty? -%>
+<% if @smb_share_passwd and !@smb_share_passwd.empty? -%>
 $Conf{SmbSharePasswd} = '<%= @smb_share_passwd %>';
 <% end -%>
-<%- if @smb_client_full_cmd and !@smb_client_full_cmd.empty? -%>
+<% if @smb_client_full_cmd and !@smb_client_full_cmd.empty? -%>
 $Conf{SmbClientFullCmd} = '<%= @smb_client_full_cmd %>';
 <% end -%>
-<%- if @smb_client_incr_cmd and !@smb_client_incr_cmd.empty? -%>
+<% if @smb_client_incr_cmd and !@smb_client_incr_cmd.empty? -%>
 $Conf{SmbClientIncrCmd} = '<%= @smb_client_incr_cmd %>';
 <% end -%>
-<%- if @smb_client_restore_cmd and !@smb_client_restore_cmd.empty? -%>
+<% if @smb_client_restore_cmd and !@smb_client_restore_cmd.empty? -%>
 $Conf{SmbClientRestoreCmd} = '<%= @smb_client_restore_cmd %>';
 <% end -%>
-<%- if @tar_share_name and !@tar_share_name.empty? -%>
-<%- if @tar_share_name.is_a?(Array) -%>
+<% if @tar_share_name and !@tar_share_name.empty? -%>
+<% if @tar_share_name.is_a?(Array) -%>
 $Conf{TarShareName} = ['<%= @tar_share_name.join("', '") %>'];
 <% else -%>
 $Conf{TarShareName} = '<%= @tar_share_name %>';
 <% end -%>
 <% end -%>
-<%- if @tar_client_cmd and !@tar_client_cmd.empty? -%>
+<% if @tar_client_cmd and !@tar_client_cmd.empty? -%>
 $Conf{TarClientCmd} = '<%= @tar_client_cmd %>';
 <% elsif !@system_account.empty? -%>
 $Conf{TarClientCmd} = '$sshPath -q -x -n -l <%= @system_account %> $host'
 . ' env LC_ALL=C $tarPath -c -v -f - -C $shareName+'
 . ' --totals';
 <% end -%>
-<%- if @tar_full_args and !@tar_full_args.empty? -%>
+<% if @tar_full_args and !@tar_full_args.empty? -%>
 $Conf{TarFullArgs} = '<%= @tar_full_args %>';
 <% end -%>
-<%- if @tar_incr_args and !@tar_incr_args.empty? -%>
+<% if @tar_incr_args and !@tar_incr_args.empty? -%>
 $Conf{TarIncrArgs} = '<%= @tar_incr_args %>';
 <% end -%>
-<%- if @tar_client_restore_cmd and !@tar_client_restore_cmd.empty? -%>
+<% if @tar_client_restore_cmd and !@tar_client_restore_cmd.empty? -%>
 $Conf{TarClientRestoreCmd} = '<%= @tar_client_restore_cmd %>';
 <% elsif not @system_account.empty? -%>
 $Conf{TarClientRestoreCmd} = '$sshPath -q -x -l <%= @system_account %> $host'
 . ' env LC_ALL=C $tarPath -x -p --numeric-owner --same-owner'
 . ' -v -f - -C $shareName+';
 <% end -%>
-<%- if @rsync_client_cmd and !@rsync_client_cmd.empty? -%>
+<% if @rsync_client_cmd and !@rsync_client_cmd.empty? -%>
 $Conf{RsyncClientCmd} = '<%= @rsync_client_cmd %>';
 <% elsif !@system_account.empty? %>
 $Conf{RsyncClientCmd} = '$sshPath -q -x -l <%= @system_account %> $host $rsyncPath $argList+';
 <% end -%>
-<%- if @rsync_client_restore_cmd and !@rsync_client_restore_cmd.empty? -%>
+<% if @rsync_client_restore_cmd and !@rsync_client_restore_cmd.empty? -%>
 $Conf{RsyncClientRestoreCmd} = '<%= @rsync_client_restore_cmd %>';
 <% elsif !@system_account.empty? -%>
 $Conf{RsyncClientRestoreCmd} = '$sshPath -q -x -l <%= @system_account %> $host $rsyncPath $argList+';
 <% end -%>
-<%- if @rsync_share_name and !@rsync_share_name.empty? -%>
-<%- if defined?(@rsync_share_name.is_a?(Array)) -%>
+<% if @rsync_share_name and !@rsync_share_name.empty? -%>
+<% if defined?(@rsync_share_name.is_a?(Array)) -%>
 $Conf{RsyncShareName} = ['<%= @rsync_share_name.join("', '") %>'];
 <% else -%>
 $Conf{RsyncShareName} = '<%= @rsync_share_name %>';
 <% end -%>
 <% end -%>
-<%- if defined?(@rsyncd_client_port) -%>
+<% if defined?(@rsyncd_client_port) -%>
 $Conf{RsyncdClientPort} = <%= @rsyncd_client_port %>;
 <% end -%>
-<%- if @rsyncd_user_name and !@rsyncd_user_name.empty? -%>
+<% if @rsyncd_user_name and !@rsyncd_user_name.empty? -%>
 $Conf{RsyncdUserName} = '<%= @rsyncd_user_name %>';
 <% end -%>
-<%- if @rsyncd_passwd and !@rsyncd_passwd.empty? -%>
+<% if @rsyncd_passwd and !@rsyncd_passwd.empty? -%>
 $Conf{RsyncdPasswd} = '<%= @rsyncd_passwd %>';
 <% end -%>
-<%- if defined?(@rsyncd_auth_required) -%>
+<% if defined?(@rsyncd_auth_required) -%>
 $Conf{RsyncdAuthRequired} = <%= @real_rsyncd_auth_required %>;
 <% end -%>
-<%- if defined?(@rsync_csum_cache_verify_prob) -%>
+<% if defined?(@rsync_csum_cache_verify_prob) -%>
 $Conf{RsyncCsumCacheVerifyProb} = <%= @rsync_csum_cache_verify_prob %>;
 <% end -%>
-<%- if defined?(@rsync_args) and @rsync_args.is_a?(Array) and !@rsync_args.empty? -%>
+<% if defined?(@rsync_args) and @rsync_args.is_a?(Array) and !@rsync_args.empty? -%>
 $Conf{RsyncArgs} = ['<%= @rsync_args.join("', '") %>'];
 <% end -%>
-<%- if defined?(@rsync_restore_args) and @rsync_restore_args.is_a?(Array) and !@rsync_restore_args.empty? -%>
+<% if defined?(@rsync_restore_args) and @rsync_restore_args.is_a?(Array) and !@rsync_restore_args.empty? -%>
 $Conf{RsyncRestoreArgs} = ['<%= @rsync_restore_args.join("', '") %>'];
 <% end -%>
-<%- if @dump_pre_user_cmd and !@dump_pre_user_cmd.empty? -%>
+<% if @dump_pre_user_cmd and !@dump_pre_user_cmd.empty? -%>
 $Conf{DumpPreUserCmd} = '<%= @dump_pre_user_cmd %>';
 <% end -%>
-<%- if @dump_post_user_cmd and !@dump_post_user_cmd.empty? -%>
+<% if @dump_post_user_cmd and !@dump_post_user_cmd.empty? -%>
 $Conf{DumpPostUserCmd}    = '<%= @dump_post_user_cmd %>';
 <% end -%>
-<%- if @dump_pre_share_cmd and !@dump_pre_share_cmd.empty? -%>
+<% if @dump_pre_share_cmd and !@dump_pre_share_cmd.empty? -%>
 $Conf{DumpPreShareCmd}    = '<%= @dump_pre_share_cmd %>';
 <% end -%>
-<%- if @dump_post_share_cmd and !@dump_post_share_cmd.empty? -%>
+<% if @dump_post_share_cmd and !@dump_post_share_cmd.empty? -%>
 $Conf{DumpPostShareCmd}   = '<%= @dump_post_share_cmd %>';
 <% end -%>
-<%- if @restore_pre_user_cmd and !@restore_pre_user_cmd.empty? -%>
+<% if @restore_pre_user_cmd and !@restore_pre_user_cmd.empty? -%>
 $Conf{RestorePreUserCmd}  = '<%= @restore_pre_user_cmd %>';
 <% end -%>
-<%- if @restore_post_user_cmd and !@restore_post_user_cmd.empty? -%>
+<% if @restore_post_user_cmd and !@restore_post_user_cmd.empty? -%>
 $Conf{RestorePostUserCmd} = '<%= @restore_post_user_cmd %>';
 <% end -%>
 <% if not @user_cmd_check_status -%>
 $Conf{UserCmdCheckStatus} = 0;
 <% end -%>
-<%- if defined?(@email_notify_min_days) -%>
+<% if defined?(@email_notify_min_days) -%>
 $Conf{EMailNotifyMinDays} = <%= @email_notify_min_days %>;
 <% end -%>
-<%- if @email_from_user_name and !@email_from_user_name.empty? -%>
+<% if @email_from_user_name and !@email_from_user_name.empty? -%>
 $Conf{EMailFromUserName} = '<%= @email_from_user_name %>';
 <% end -%>
-<%- if @email_admin_user_name and !@email_admin_user_name.empty? -%>
+<% if @email_admin_user_name and !@email_admin_user_name.empty? -%>
 $Conf{EMailAdminUserName} = '<%= @email_admin_user_name %>';
 <% end -%>
-<%- if @email_destination_domain and !@email_destination_domain.empty? -%>
+<% if @email_destination_domain and !@email_destination_domain.empty? -%>
 $Conf{EMailUserDestDomain} = '<%= @email_destination_domain %>';
 <% end -%>
-<%- if defined?(@email_notify_old_backup_days) -%>
+<% if defined?(@email_notify_old_backup_days) -%>
 $Conf{EMailNotifyOldBackupDays} = <%= @email_notify_old_backup_days %>;
 <% end -%>
-<%- if defined?(@blackout_periods) -%>
+<% if defined?(@blackout_periods) -%>
 $Conf{BlackoutPeriods} = [
 <% @blackout_periods.each do |period| -%>
 <% if period.is_a?(Hash) -%>{

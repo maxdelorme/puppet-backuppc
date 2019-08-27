@@ -15,4 +15,8 @@ backuppc::params::topdir:             '/var/lib/backuppc'
 backuppc::params::config_directory:   '/etc/backuppc'
 backuppc::params::group_apache:       'www-data'
 
-# vim:                                sw=2:ai:nu expandtab
+backuppc::params::manage_apache:      true
+backuppc::params::preseed_file:
+  '/var/cache/debconf/backuppc.seeds':
+    ensure: 'present'
+    content: "template('backuppc/Debian-preeseed.erb')"

@@ -73,6 +73,6 @@ class backuppc::params (
   Stdlib::Absolutepath $gzip_path               = '/bin/gzip',
   Stdlib::Absolutepath $tar_path                = '/bin/tar',
   Variant[Stdlib::Absolutepath,Undef] $par_path = '/usr/bin/par2',
-
+  Optional[Hash] $preseed_file                  = undef
 ) {
 }

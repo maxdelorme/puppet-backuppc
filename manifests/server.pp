@@ -317,11 +317,8 @@ class backuppc::server (
 
   # TODO move this to hiera
   # Include preseeding for debian packages
-  if $facts['os']['family'] == 'Debian' {
-    file { '/var/cache/debconf/backuppc.seeds':
-      ensure => $ensure,
-      source => 'puppet:///modules/backuppc/backuppc.preseed',
-    }
+  unless empty ($backuppc::params::preseed_file) {
+    create_resources(file, $backuppc::params::preseed_file)
   }
 
   # BackupPC package and service configuration

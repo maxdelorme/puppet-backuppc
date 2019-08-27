@@ -230,7 +230,8 @@
 #   Additional user names, separate by commas and with no white space, can
 #   be specified. These users will also have full permission in the CGI
 #   interface to stop/start/browse/restore backups for this host. These
-#   users will not be sent email about this host.
+#   users will not be sent email about this host. Comma seperated list.
+#
 #
 # @param sudo_prepend
 #   Prepend a command to the sudo command, as run in backuppc.sh. This is
@@ -303,7 +304,7 @@ class backuppc::client (
   Optional[Integer] $email_notify_old_backup_days            = undef,
   Optional[Stdlib::Absolutepath] $hosts_file_dhcp            = undef,
   Optional[String] $hosts_file_user                          = 'backuppc',
-  Optional[Array[String]] $hosts_file_more_users             = undef,
+  Optional[String] $hosts_file_more_users                    = undef,
   Optional[String] $sudo_prepend                             = undef,
     ) inherits backuppc::params {
 

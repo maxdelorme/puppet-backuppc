@@ -278,7 +278,7 @@ class backuppc::client (
   Optional[String] $tar_client_restore_cmd                   = undef,
   Optional[String] $rsync_client_cmd                         = undef,
   Optional[String] $rsync_client_restore_cmd                 = undef,
-  Optional[String] $rsync_share_name                         = undef,
+  Optional[Array[String]] $rsync_share_name                  = undef,
   Optional[Integer] $rsyncd_client_port                      = undef,
   Optional[String] $rsyncd_user_name                         = undef,
   Optional[String] $rsyncd_passwd                            = undef,

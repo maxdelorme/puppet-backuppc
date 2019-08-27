@@ -2,7 +2,7 @@ set 01/host <%= @config_name %>
 set 01/dhcp <%= @hosts_file_dhcp %>
 set 01/user <%= @hosts_file_user %>
 <% if defined?(@hosts_file_more_users) %>
-<% if ! hosts_file_more_users.empty? -%>
-set 01/moreusers[<%= hosts_file_more_users.join(',') -%>
+<% if ! @hosts_file_more_users.empty? -%>
+set 01/moreusers[<%= @hosts_file_more_users.join(',') -%>
 <% end -%>
 <% end -%>

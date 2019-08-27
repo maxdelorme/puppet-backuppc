@@ -302,7 +302,7 @@ class backuppc::client (
   Optional[String] $email_admin_user_name                    = undef,
   Optional[Stdlib::Fqdn] $email_destination_domain           = undef,
   Optional[Integer] $email_notify_old_backup_days            = undef,
-  Optional[Stdlib::Absolutepath] $hosts_file_dhcp            = undef,
+  Optional[Integer] $hosts_file_dhcp                         = 0,
   Optional[String] $hosts_file_user                          = 'backuppc',
   Optional[String] $hosts_file_more_users                    = undef,
   Optional[String] $sudo_prepend                             = undef,

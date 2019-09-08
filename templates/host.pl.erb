@@ -152,6 +152,9 @@ $Conf{RsyncdAuthRequired} = <%= @real_rsyncd_auth_required %>;
 <% if defined?(@rsync_csum_cache_verify_prob) -%>
 $Conf{RsyncCsumCacheVerifyProb} = <%= @rsync_csum_cache_verify_prob %>;
 <% end -%>
+<% if defined?(@rsync_args_extra) and @rsync_args_extra.is_a?(Array) and !@rsync_args_extra.empty? -%>
+$Conf{RsyncArgsExtra} = ['<%= @rsync_args_extra.join("', '") %>'];
+<% end -%>
 <% if defined?(@rsync_args) and @rsync_args.is_a?(Array) and !@rsync_args.empty? -%>
 $Conf{RsyncArgs} = ['<%= @rsync_args.join("', '") %>'];
 <% end -%>

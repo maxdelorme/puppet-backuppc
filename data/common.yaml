@@ -1,11 +1,17 @@
 ---
 
-#Set default values for clinet and server eg.
-backuppc::server::blackout_good_cnt: 7
-backuppc::server::blackout_periods:
-  - hourBegin:                       7.0
-    hourEnd:                         19.5
-    weekDays:                        [1,2,3,4,5]
-backuppc::server::full_age_max:      370
-backuppc::server::full_keep_cnt:     [4,0,12]
-backuppc::server::full_period:       6.97
+#Set default values for client and server eg.
+#backuppc::server::blackout_good_cnt: 7
+#backuppc::server::blackout_periods:
+#  - hourBegin:                       7.0
+#    hourEnd:                         19.5
+#    weekDays:                        [1,2,3,4,5]
+#backuppc::server::full_age_max:      370
+#backuppc::server::full_keep_cnt:     [4,0,12]
+#backuppc::server::full_period:       6.97
+
+
+lookup_options:
+  "^backuppc::(.*)::(.*)$":
+    merge: deep
+    knockout_prefix: '--'

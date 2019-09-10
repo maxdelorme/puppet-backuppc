@@ -240,7 +240,7 @@ class backuppc::server (
   Integer $trash_clean_sleep_sec                            = 300,
   Optional[Backuppc::DhcpAddressRange] $dhcp_address_ranges = [],
   Numeric $full_period                                      = 6.97,
-  Array[Integer] $full_keep_cnt                             = [1],
+  Variant[Integer,Array[Integer]] $full_keep_cnt            = 1,
   Integer $full_age_max                                     = 90,
   Numeric $incr_period                                      = 0.97,
   Integer $incr_keep_cnt                                    = 6,

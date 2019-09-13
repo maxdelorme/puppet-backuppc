@@ -15,5 +15,6 @@ backuppc::params::par_path:
 
 backuppc::params::config_directory:  '/etc/BackupPC'
 backuppc::params::group_apache:      'apache'
+backuppc::params::preseed_file:
 
 # vim:                               sw=2:ai:nu expandtab

@@ -4,18 +4,20 @@ describe 'backuppc::client' do
   on_supported_os.each do |os, facts|
     context "on #{os}" do
       let(:facts) { facts }
-      case facts[:os]['family']
-      when 'RedHat'
-        let(:file_host) { '/etc/BackupPC/pc/testhost.pl' }
-      when 'Debian'
-        let(:file_host) { '/etc/backuppc/pc/testhost.pl' }
+      let(:file_host) do
+        case facts[:os]['family']
+        when 'RedHat'
+          '/etc/BackupPC/pc/testhost.pl'
+        when 'Debian'
+          '/etc/backuppc/pc/testhost.pl'
+        end
       end
-
-      let(:params) { {
+      let(:params) do
+        {
           'backuppc_hostname' => 'backuppc.test.com',
-          'config_name' => 'testhost'
+          'config_name' => 'testhost',
         }
-      }
+      end
 
       it { is_expected.to contain_class('backuppc::client') }
       it { is_expected.to contain_class('backuppc::params') }
@@ -25,7 +27,7 @@ describe 'backuppc::client' do
       it { is_expected.to contain_package('rsync') }
       it { is_expected.to contain_user('backup') }
 
-      # TODO add tests for content
+      # TODO: add tests for content
       it { is_expected.to contain_file('/var/backups/backuppc.sh') }
       it { is_expected.to contain_file('/etc/sudoers.d/backuppc') }
       it { is_expected.to contain_file('/etc/sudoers.d/backuppc_noexec') }
@@ -33,7 +35,7 @@ describe 'backuppc::client' do
       context 'exported resources' do
         subject { exported_resources }
 
-        it {is_expected.to contain_file(file_host) }
+        it { is_expected.to contain_file(file_host) }
         it { is_expected.to contain_augeas('backuppc_host_testhost-create') }
         it { is_expected.to contain_augeas('backuppc_host_testhost-update') }
       end

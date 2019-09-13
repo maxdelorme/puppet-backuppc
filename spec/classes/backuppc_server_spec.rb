@@ -44,6 +44,13 @@ describe 'backuppc::server' do
         it { is_expected.to contain_file('topdir_ssh').with_ensure('directory') }
         it { is_expected.to contain_file('apache_config').with_ensure('present') }
         it { is_expected.to contain_backuppc__server__user('backuppc').with_password('test_password') }
+        # Workaround for imported resourcses
+        case facts[:os]['family']
+        when 'RedHat'
+          it { is_expected.to contain_file('/etc/backuppc').with_ensure('link') }
+        when 'Debian'
+          it { is_expected.to contain_file('/etc/BackupPC').with_ensure('link') }
+        end
       end
 
       test_params = {

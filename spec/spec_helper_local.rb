@@ -25,7 +25,7 @@ def config_content(tparam, tvalue)
              Regexp.escape('[' + tvalue.join(', ') + ']')
            else
              tvalue
-    end
+           end
 
   %r{^\$Conf{#{fparam}}\s+=\s+#{fvalue};}
 end

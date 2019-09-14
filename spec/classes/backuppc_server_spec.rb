@@ -94,31 +94,8 @@ describe 'backuppc::server' do
         context "with #{tparam} = #{tvalue}" do
           let(:params) { default_params.merge(tparam => tvalue) }
 
-          fparam = tparam.split('_').map { |e|
-            case e
-            when 'backuppc'
-              'BackupPC'
-            when 'email'
-              'EMail'
-            when 'url', 'mmdd'
-              e.upcase
-            else
-              e.capitalize
-            end
-          }.join
-
-          fvalue = case tvalue
-                   when String
-                     "'" + Regexp.escape(tvalue) + "'"
-                   when FalseClass, TrueClass
-                     tvalue ? 1 : 0
-                   when Array
-                     Regexp.escape('[' + tvalue.join(', ') + ']')
-                   else
-                     tvalue
-                   end
-
-          it { is_expected.to contain_file('config.pl').with_content(%r{^\$Conf{#{fparam}}\s+=\s+#{fvalue};}) }
+          content = config_content(tparam, tvalue)
+          it { is_expected.to contain_file('config.pl').with_content(content) }
         end
       end
     end

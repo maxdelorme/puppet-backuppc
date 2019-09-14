@@ -17,16 +17,15 @@ def config_content(tparam, tvalue)
   }.join
 
   fvalue = case tvalue
-    when String
-      "'" + Regexp.escape(tvalue) + "'"
-    when FalseClass, TrueClass
-      tvalue ? 1 : 0
-    when Array
-      Regexp.escape('[' + tvalue.join(', ') + ']')
-    else
-      tvalue
+           when String
+             "'" + Regexp.escape(tvalue) + "'"
+           when FalseClass, TrueClass
+             tvalue ? 1 : 0
+           when Array
+             Regexp.escape('[' + tvalue.join(', ') + ']')
+           else
+             tvalue
     end
 
-  #[fparam, fvalue]
   %r{^\$Conf{#{fparam}}\s+=\s+#{fvalue};}
 end

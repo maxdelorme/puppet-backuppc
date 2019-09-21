@@ -8,9 +8,10 @@
 * [`backuppc::client`](#backuppcclient): Configures a host for backup with the backuppc server.
 Uses storedconfigs to provide the backuppc server with
 required information.
-* [`backuppc::params`](#backuppcparams): Params class for backuppc used as a vehicle to pick up OS specific
-defaults from hiera. The defaults in this class are suitable for Debian
-systems.
+* [`backuppc::params`](#backuppcparams): Params class for backuppc used as a vehicle to pick up OS specific defaults
+and shared parameters from hiera.
+
+The defaults in this class are suitable for Debian systems.
 * [`backuppc::server`](#backuppcserver): Configures the backuppc server.
 
 **Defined types**
@@ -67,7 +68,8 @@ Default value: $facts['networking']['fqdn']
 
 Data type: `Optional[Stdlib::Fqdn]`
 
-The name of the backuppc server.
+The name of the backuppc server. This is marked as optional as there is no
+default, but is mandatory to be set by the caller of this class.
 
 Default value: `undef`
 
@@ -81,6 +83,7 @@ config file and is only used by BackupPC at the last moment prior to
 generating the command used to backup that machine (ie: the value of
 $Conf{ClientNameAlias} is invisible everywhere else in BackupPC).
 he setting can be a host name or IP address. eg.
+
       $Conf{ClientNameAlias} = 'realHostName';
       $Conf{ClientNameAlias} = '192.1.1.15';
 
@@ -177,13 +180,20 @@ midnight and weekDays is a list of days of the week where 0 is Sunday,
 1 is Monday etc.
 To specify one blackout period from 7:00am to 7:30pm local time on Mon-Fri.
 
-  $Conf{BlackoutPeriods} = [
-       {
+     $Conf{BlackoutPeriods} = [
+        {
            hourBegin =>  7.0,
            hourEnd   => 19.5,
            weekDays  => [1, 2, 3, 4, 5],
-       },
-  ];
+        },
+     ];
+```$Conf{BlackoutPeriods} = [
+     {
+       hourBegin =>  7.0,
+       hourEnd   => 19.5,
+       weekDays  => [1, 2, 3, 4, 5],
+     },
+   ];```
 
 Default value: `undef`
 
@@ -667,9 +677,10 @@ Default value: 'backuppc'
 
 ### backuppc::params
 
-Params class for backuppc used as a vehicle to pick up OS specific
-defaults from hiera. The defaults in this class are suitable for Debian
-systems.
+Params class for backuppc used as a vehicle to pick up OS specific defaults
+and shared parameters from hiera.
+
+The defaults in this class are suitable for Debian systems.
 
 #### Parameters
 
@@ -703,7 +714,8 @@ Default value: '/etc/backuppc'
 
 Data type: `Stdlib::Absolutepath`
 
-TODO
+he backuppc data directory, below which all the BackupPC data is stored.
+This needs to have enough capacity for your backups.
 
 Default value: '/var/lib/backuppc'
 
@@ -711,7 +723,8 @@ Default value: '/var/lib/backuppc'
 
 Data type: `Stdlib::Absolutepath`
 
-The name of the main configuration file. This sets the defaults for all hosts/clients.
+The name of the main configuration file. This sets the defaults for all
+hosts/clients.
 
 Default value: "${backuppc::params::config_directory}/config.pl"
 
@@ -719,7 +732,7 @@ Default value: "${backuppc::params::config_directory}/config.pl"
 
 Data type: `Stdlib::Absolutepath`
 
-The name of the main configuration file. This sets the defaults for all hosts/clients.
+The name of the hosts file. This contains the list of clients to backup.
 
 Default value: "${backuppc::params::config_directory}/hosts"
 
@@ -727,7 +740,7 @@ Default value: "${backuppc::params::config_directory}/hosts"
 
 Data type: `Stdlib::Absolutepath`
 
-TODO
+Install location for BackupPC scripts, libraries and documentation.
 
 Default value: '/usr/share/backuppc'
 
@@ -735,7 +748,8 @@ Default value: '/usr/share/backuppc'
 
 Data type: `Stdlib::Absolutepath`
 
-TODO
+Location for BackupPC CGI script. This will usually be below Apache's
+cgi-bin directory.
 
 Default value: "${backuppc::params::install_directory}/cgi-bin"
 
@@ -743,7 +757,9 @@ Default value: "${backuppc::params::install_directory}/cgi-bin"
 
 Data type: `Stdlib::Absolutepath`
 
-TODO
+The directory where BackupPC's images are stored so that Apache can serve
+them. You should ensure this directory is readable by Apache and create a
+symlink to this directory from the BackupPC CGI bin Directory.
 
 Default value: "${backuppc::params::install_directory}/image"
 
@@ -751,7 +767,8 @@ Default value: "${backuppc::params::install_directory}/image"
 
 Data type: `Stdlib::Absolutepath`
 
-TODO
+URL (without the leading http://host) for BackupPC's image directory. The
+CGI script uses this value to serve up image files.
 
 Default value: '/backuppc/image'
 
@@ -759,7 +776,7 @@ Default value: '/backuppc/image'
 
 Data type: `Stdlib::Absolutepath`
 
-TODO
+Location for log files.
 
 Default value: "${backuppc::params::topdir}/log"
 
@@ -775,7 +792,7 @@ Default value: '/etc/apache2/conf.d/backuppc.conf'
 
 Data type: `String[1]`
 
-TODO
+BackupPC config files are set to this group.
 
 Default value: 'www-data'
 
@@ -811,19 +828,12 @@ Path to tar executable
 
 Default value: '/bin/tar'
 
-##### `htpasswd_apache`
-
-Data type: `Stdlib::Absolutepath`
-
-
-
-Default value: "${backuppc::params::config_directory}/htpasswd"
-
 ##### `preseed_file`
 
 Data type: `Optional[Hash]`
 
-
+The location for the preseed file to support BackupPC installation by
+providing preset answers.
 
 Default value: {
     '/var/cache/debconf/backuppc.seeds' => {
@@ -831,6 +841,14 @@ Default value: {
       content => "template('backuppc/Debian-preeseed.erb')"
     }
   }
+
+##### `htpasswd_apache`
+
+Data type: `Stdlib::Absolutepath`
+
+
+
+Default value: "${backuppc::params::config_directory}/htpasswd"
 
 ### backuppc::server
 

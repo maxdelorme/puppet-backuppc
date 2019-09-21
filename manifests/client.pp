@@ -106,7 +106,7 @@
 # @param xfer_method
 #   What transport method to use to backup each host.
 #
-# @param xfer_loglevel
+# @param xfer_log_level
 #   Level of verbosity in Xfer log files. 0 means be quiet, 1 will give will
 #   give one line per file, 2 will also show skipped files on incrementals,
 #   higher values give more output.
@@ -265,7 +265,7 @@ class backuppc::client (
   Optional[Backuppc::BlackoutPeriods] $blackout_periods      = undef,
   Boolean $backups_disable                                   = false,
   Backuppc::XferMethod $xfer_method                          = 'rsync',
-  Backuppc::XferLogLevel $xfer_loglevel                      = 1,
+  Backuppc::XferLogLevel $xfer_log_level                     = 1,
   Optional[Backuppc::ShareName] $smb_share_name              = undef,
   Optional[String] $smb_share_username                       = undef,
   Optional[String] $smb_share_passwd                         = undef,

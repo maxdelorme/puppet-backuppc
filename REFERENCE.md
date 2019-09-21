@@ -19,12 +19,19 @@ systems.
 
 **Data types**
 
-* [`Backuppc::BackupFiles`](#backuppcbackupfiles): List of filws to ne included or excluded.
+* [`Backuppc::BackupFiles`](#backuppcbackupfiles): List of directories or files to backup. If this is defined, only these
+directories or files will be backed up.
+This can be set to a string, an array of strings, or, in the case of
+multiple shares, a hash of strings or arrays.
 * [`Backuppc::BlackoutPeriods`](#backuppcblackoutperiods): Periods where scheduled backups do not take place.  One or more blackout
 periods can be specified. If a client is subject to blackout then no regular
 (non-manual) backups will be started during any of these periods.  hourBegin
 and hourEnd specify hours from midnight and weekDays is a list of days of
 * [`Backuppc::DhcpAddressRange`](#backuppcdhcpaddressrange): List of DHCP address ranges we search looking for PCs to backup.
+* [`Backuppc::Hours`](#backuppchours): Hours of the daya. Times are measured in hours since midnight. Can be
+fractional if necessary (eg: 4.25 means 4:15am).
+* [`Backuppc::ShareName`](#backuppcsharename): List of shares (used in other types).
+This can be set to a string or an array of strings.
 * [`Backuppc::XferLogLevel`](#backuppcxferloglevel): Level of verbosity in Xfer log files.
 * [`Backuppc::XferMethod`](#backuppcxfermethod): What transport method to use to backup each host.
 
@@ -169,6 +176,7 @@ during any of these periods. hourBegin and hourEnd specify hours fro
 midnight and weekDays is a list of days of the week where 0 is Sunday,
 1 is Monday etc.
 To specify one blackout period from 7:00am to 7:30pm local time on Mon-Fri.
+
   $Conf{BlackoutPeriods} = [
        {
            hourBegin =>  7.0,
@@ -184,9 +192,9 @@ Default value: `undef`
 Data type: `Optional[Integer]`
 
 Maximum latency between backuppc server and client to schedule
-a backup. Default to 20ms.
+a backup.
 
-Default value: `undef`
+Default value: 20
 
 ##### `ping_cmd`
 
@@ -223,7 +231,7 @@ What transport method to use to backup each host.
 
 Default value: 'rsync'
 
-##### `xfer_loglevel`
+##### `xfer_log_level`
 
 Data type: `Backuppc::XferLogLevel`
 
@@ -235,7 +243,7 @@ Default value: 1
 
 ##### `smb_share_name`
 
-Data type: `Optional[String]`
+Data type: `Optional[Backuppc::ShareName]`
 
 Name of the host share that is backed up when using SMB. This can be a
 string or an array of strings if there are multiple shares per host.
@@ -285,7 +293,7 @@ Default value: `undef`
 
 ##### `tar_share_name`
 
-Data type: `Optional[String]`
+Data type: `Optional[Backuppc::ShareName]`
 
 Which host directories to backup when using tar transport. This can be
 a string or an array of strings if there are multiple directories to
@@ -345,7 +353,7 @@ Default value: `undef`
 
 ##### `rsync_share_name`
 
-Data type: `Optional[String]`
+Data type: `Optional[Backuppc::ShareName]`
 
 Share name to backup. For $Conf{XferMethod} = "rsync" this should be a
 file system path, eg '/' or '/home'.
@@ -388,7 +396,7 @@ Default value: `false`
 
 ##### `rsync_csum_cache_verify_prob`
 
-Data type: `Optional[Integer]`
+Data type: `Optional[Float]`
 
 When rsync checksum caching is enabled (by adding the
 --checksum-seed=32761 option to rsync_args), the cached checksums can
@@ -500,22 +508,22 @@ Default value: `undef`
 
 ##### `hosts_file_dhcp`
 
-Data type: `Optional[Stdlib::Absolutepath]`
+Data type: `Optional[Integer]`
 
 The way hosts are discovered has changed and now in most cases you
 should use the default of 0 for the DHCP flag, even if the host has
 a dynamically assigned IP address.
 
-Default value: `undef`
+Default value: 0
 
 ##### `hosts_file_more_users`
 
-Data type: `Optional[Array[String]]`
+Data type: `Optional[String]`
 
 Additional user names, separate by commas and with no white space, can
 be specified. These users will also have full permission in the CGI
 interface to stop/start/browse/restore backups for this host. These
-users will not be sent email about this host.
+users will not be sent email about this host. Comma seperated list.
 
 Default value: `undef`
 
@@ -539,7 +547,7 @@ Default value: `undef`
 
 ##### `full_keep_cnt`
 
-Data type: `Optional[Integer]`
+Data type: `Optional[Variant[Integer,Array[Integer]]]`
 
 
 
@@ -811,6 +819,19 @@ Data type: `Stdlib::Absolutepath`
 
 Default value: "${backuppc::params::config_directory}/htpasswd"
 
+##### `preseed_file`
+
+Data type: `Optional[Hash]`
+
+
+
+Default value: {
+    '/var/cache/debconf/backuppc.seeds' => {
+      ensure => 'present',
+      content => "template('backuppc/Debian-preeseed.erb')"
+    }
+  }
+
 ### backuppc::server
 
 Configures the backuppc server.
@@ -838,14 +859,14 @@ Default value: `true`
 
 ##### `wakeup_schedule`
 
-Data type: `Array[Integer[0,24]]`
+Data type: `Array[Backuppc::Hours]`
 
 Times at which we wake up, check all the PCs,
 and schedule necessary backups. Times are measured
 in hours since midnight. Can be fractional if
 necessary (eg: 4.25 means 4:15am).
 
-Default value: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+Default value: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
 
 ##### `max_backups`
 
@@ -1022,11 +1043,11 @@ Default value: 6.97
 
 ##### `full_keep_cnt`
 
-Data type: `Array[Integer]`
+Data type: `Variant[Integer,Array[Integer]]`
 
 Number of full backups to keep.
 
-Default value: [1]
+Default value: 1
 
 ##### `full_age_max`
 
@@ -1135,9 +1156,9 @@ Data type: `Backuppc::BlackoutPeriods`
 
 TODO
 
-Default value: [ { hourBegin =>  7.0,
+Default value: [ { hourBegin => 7.0,
                                                                   hourEnd   => 19.5,
-                                                                  weekDays  => [1, 2, 3, 4, 5],
+                                                                  weekDays  => [1,2,3,4,5],
                                                               }, ]
 
 ##### `backup_zero_files_is_fatal`
@@ -1321,15 +1342,15 @@ Default value: ''
 
 Backuop Files
 
-Alias of `Array[String]`
+Alias of `Variant[Backuppc::ShareName, Hash[String, Backuppc::ShareName]]`
 
 ### Backuppc::BlackoutPeriods
 
 Blackout Periods
 
 Alias of `Array[Struct[{
-    hourBegin => Variant[Integer[-24,24],Float[-24.0,24.0]],
-    hourEnd   => Variant[Integer[-24,24],Float[-24.0,24.0]],
+    hourBegin => Backuppc::Hours,
+    hourEnd   => Backuppc::Hours,
     weekDays  => Array[Integer[0,6]]
   }]]`
 
@@ -1391,6 +1412,18 @@ Alias of `Array[Struct[{
     first => Integer[0,255],
     last => Integer[0,255]
   }]]`
+
+### Backuppc::Hours
+
+Hours
+
+Alias of `Variant[Integer[0,23], Float[0.0,23.0]]`
+
+### Backuppc::ShareName
+
+Share name
+
+Alias of `Variant[String, Array[String]]`
 
 ### Backuppc::XferLogLevel
 

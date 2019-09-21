@@ -2,7 +2,7 @@
 $Conf{ClientNameAlias} = '<%= @client_name_alias %>';
 <% end -%>
 $Conf{XferMethod} = '<%= @xfer_method %>';
-$Conf{XferLogLevel} = <%= @xfer_loglevel %>;
+$Conf{XferLogLevel} = <%= @xfer_log_level %>;
 <% if defined?(@backups_disable) -%>
 $Conf{BackupsDisable} = <%= @real_backups_disable %>;
 <% end -%>

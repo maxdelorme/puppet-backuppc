@@ -1,6 +1,7 @@
 # @summary
 #   Params class for backuppc used as a vehicle to pick up OS specific
-#   defaults from hiera. The defaults in this class are suitable for Debian
+#   defaults from hiera. Also used to set shared parameters between clients
+#   and server. The defaults in this class are suitable for Debian
 #   systems.
 #
 # @param package
@@ -13,34 +14,40 @@
 #   The location of the backuppc configuration
 #
 # @param topdir
-#   TODO
+#   he backuppc data directory, below which all the BackupPC data is stored.
+#   This needs to have enough capacity for your backups.
 #
 # @param config
-#   The name of the main configuration file. This sets the defaults for all hosts/clients.
+#   The name of the main configuration file. This sets the defaults for all
+#   hosts/clients.
 #
 # @param hosts
-#   The name of the main configuration file. This sets the defaults for all hosts/clients.
+#   The name of the hosts file. This contains the list of clients to backup.
 #
 # @param install_directory
-#   TODO
+#   Install location for BackupPC scripts, libraries and documentation.
 #
 # @param cgi_directory
-#   TODO
+#   Location for BackupPC CGI script. This will usually be below Apache's
+#   cgi-bin directory.
 #
 # @param cgi_image_dir
-#   TODO
+#   The directory where BackupPC's images are stored so that Apache can serve
+#   them. You should ensure this directory is readable by Apache and create a
+#   symlink to this directory from the BackupPC CGI bin Directory.
 #
 # @param cgi_image_dir_url
-#   TODO
+#   URL (without the leading http://host) for BackupPC's image directory. The
+#   CGI script uses this value to serve up image files.
 #
 # @param log_directory
-#   TODO
+#   Location for log files.
 #
 # @param config_apache
 #   The file where the backuppc specifc config for apache is stored.
 #
 # @param group_apache
-#   TODO
+#   BackupPC config files are set to this group.
 #
 # @param par_path
 #   Path to par executable
@@ -53,6 +60,10 @@
 #
 # @param tar_path
 #   Path to tar executable
+#
+# @param preseed_file
+#   The location for the preseed file to support BackupPC installation by
+#   providing preset answers.
 #
 class backuppc::params (
   String[1] $package                            = 'backuppc',

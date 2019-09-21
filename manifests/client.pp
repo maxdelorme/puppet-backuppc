@@ -9,7 +9,8 @@
 #   Name of the this host used for the configuration file.
 #
 # @param backuppc_hostname
-#   The name of the backuppc server.
+#   The name of the backuppc server. This is marked as optional as there is no
+#   default, but is mandatory to be set by the caller of this class.
 #
 # @param client_name_alias
 #   Override the client's host name. This allows multiple clients to all
@@ -17,9 +18,10 @@
 #   config file and is only used by BackupPC at the last moment prior to
 #   generating the command used to backup that machine (ie: the value of
 #   $Conf{ClientNameAlias} is invisible everywhere else in BackupPC). 
-#   he setting can be a host name or IP address. eg.
-#         $Conf{ClientNameAlias} = 'realHostName';
-#         $Conf{ClientNameAlias} = '192.1.1.15';
+#   The setting can be a host name or IP address. eg.
+#
+#         client_name_alias => 'realHostName',
+#         client_name_alias => '192.1.1.15',
 #
 #   will cause the relevant smb/tar/rsync backup/restore commands
 #   to be directed to realHostName, not the client name.
@@ -74,13 +76,13 @@
 #   1 is Monday etc.
 #   To specify one blackout period from 7:00am to 7:30pm local time on Mon-Fri.
 #
-#     $Conf{BlackoutPeriods} = [
-#          {
+#        $Conf{BlackoutPeriods} = [
+#           {
 #              hourBegin =>  7.0,
 #              hourEnd   => 19.5,
 #              weekDays  => [1, 2, 3, 4, 5],
-#          },
-#     ];
+#           },
+#        ];
 #
 # @param ping_max_msec
 #   Maximum latency between backuppc server and client to schedule
@@ -88,8 +90,10 @@
 #
 # @param ping_cmd
 #   Ping command. The following variables are substituted at run-time:
-#      $pingPath      path to ping ($Conf{PingPath})
-#      $host          host name
+#
+#       $pingPath      path to ping ($Conf{PingPath})
+#       $host          host name
+#
 #   Wade Brown reports that on solaris 2.6 and 2.7 ping -s returns the
 #   wrong exit status (0 even on failure). Replace with "ping $host 1",
 #   which gets the correct exit status but we don't get the round-trip time.

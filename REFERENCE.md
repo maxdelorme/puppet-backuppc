@@ -8,10 +8,8 @@
 * [`backuppc::client`](#backuppcclient): Configures a host for backup with the backuppc server.
 Uses storedconfigs to provide the backuppc server with
 required information.
-* [`backuppc::params`](#backuppcparams): Params class for backuppc used as a vehicle to pick up OS specific defaults
-and shared parameters from hiera.
-
-The defaults in this class are suitable for Debian systems.
+* [`backuppc::params`](#backuppcparams): Used as a vehicle to pick up OS specific defaults and shared parameters
+from hiera.
 * [`backuppc::server`](#backuppcserver): Configures the backuppc server.
 
 **Defined types**
@@ -82,10 +80,10 @@ refer to the same physical host. This should only be set in the per-PC
 config file and is only used by BackupPC at the last moment prior to
 generating the command used to backup that machine (ie: the value of
 $Conf{ClientNameAlias} is invisible everywhere else in BackupPC).
-he setting can be a host name or IP address. eg.
+The setting can be a host name or IP address. eg.
 
-      $Conf{ClientNameAlias} = 'realHostName';
-      $Conf{ClientNameAlias} = '192.1.1.15';
+      client_name_alias => 'realHostName',
+      client_name_alias => '192.1.1.15',
 
 will cause the relevant smb/tar/rsync backup/restore commands
 to be directed to realHostName, not the client name.
@@ -187,13 +185,6 @@ To specify one blackout period from 7:00am to 7:30pm local time on Mon-Fri.
            weekDays  => [1, 2, 3, 4, 5],
         },
      ];
-```$Conf{BlackoutPeriods} = [
-     {
-       hourBegin =>  7.0,
-       hourEnd   => 19.5,
-       weekDays  => [1, 2, 3, 4, 5],
-     },
-   ];```
 
 Default value: `undef`
 
@@ -211,8 +202,10 @@ Default value: 20
 Data type: `Optional[String]`
 
 Ping command. The following variables are substituted at run-time:
-   $pingPath      path to ping ($Conf{PingPath})
-   $host          host name
+
+    $pingPath      path to ping ($Conf{PingPath})
+    $host          host name
+
 Wade Brown reports that on solaris 2.6 and 2.7 ping -s returns the
 wrong exit status (0 even on failure). Replace with "ping $host 1",
 which gets the correct exit status but we don't get the round-trip time.
@@ -677,10 +670,8 @@ Default value: 'backuppc'
 
 ### backuppc::params
 
-Params class for backuppc used as a vehicle to pick up OS specific defaults
-and shared parameters from hiera.
-
-The defaults in this class are suitable for Debian systems.
+Used as a vehicle to pick up OS specific defaults and shared parameters
+from hiera.
 
 #### Parameters
 

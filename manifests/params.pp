@@ -1,8 +1,6 @@
 # @summary
-#   Params class for backuppc used as a vehicle to pick up OS specific
-#   defaults from hiera. Also used to set shared parameters between clients
-#   and server. The defaults in this class are suitable for Debian
-#   systems.
+#   Used as a vehicle to pick up OS specific defaults and shared parameters
+#   from hiera.
 #
 # @param package
 #   The name of the backuppc package.

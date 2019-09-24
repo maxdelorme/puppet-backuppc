@@ -1,9 +1,18 @@
 # DHCP Address Range
-# @summary List of DHCP address ranges we search looking for PCs to backup.
-# This is an array of hashes for each class C address range. This is only needed
-# if hosts in the conf/hosts file have the dhcp flag set.
+# @summary
+#   List of DHCP address ranges we search looking for PCs to backup.  This is
+#   only needed if hosts in the conf/hosts file have the dhcp flag set.
 #
-# @example to specify 192.10.10.20 to 192.10.10.250 as the DHCP address pool
+# @param ipAddressBase
+#   Type C address range for the pool
+#
+# @param first
+#   First in range
+#
+# @param last
+#   Last in range
+#
+# @example Specify 192.10.10.20 to 192.10.10.250 as the DHCP address pool
 #   dhcp_address_ranges => [
 #       {
 #           ipAddrBase => '192.10.10',
@@ -11,7 +20,7 @@
 #           last  => 250,
 #       },
 #   ];
-# @example to specify two pools (192.10.10.20-250 and 192.10.11.10-50)
+# @example Specify two pools (192.10.10.20-250 and 192.10.11.10-50)
 #   dhcp_address_ranges => [
 #       {
 #           ipAddrBase => '192.10.10',

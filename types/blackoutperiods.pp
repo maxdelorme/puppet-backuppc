@@ -1,16 +1,15 @@
 # Blackout Periods
 # @summary
-#   Periods where scheduled backups do not take place.  One or more blackout
-#   periods can be specified. If a client is subject to blackout then no regular
-#   (non-manual) backups will be started during any of these periods.  hourBegin
-#   and hourEnd specify hours from midnight and weekDays is a list of days of
+#   One or more blackout periods can be specified. If a client is subject to
+#   blackout then no regular (non-manual) backups will be started during any of
+#   these periods.
 #
 # @param hourBegin
-#   start of blackout period
+#   start of blackout period (hours from midnight)
 # @param hourEnd
-#   end of blackoiut period
+#   end of blackout period (hours from midnight)
 # @param weekdays
-#   days of black period
+#   days of black period (days of the week with Sunday = 0)
 #
 type Backuppc::BlackoutPeriods = Array[
   Struct[{

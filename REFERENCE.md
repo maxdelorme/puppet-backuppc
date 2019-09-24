@@ -20,19 +20,36 @@ from hiera.
 
 * [`Backuppc::BackupFiles`](#backuppcbackupfiles): List of directories or files to backup. If this is defined, only these
 directories or files will be backed up.
-This can be set to a string, an array of strings, or, in the case of
-multiple shares, a hash of strings or arrays.
-* [`Backuppc::BlackoutPeriods`](#backuppcblackoutperiods): Periods where scheduled backups do not take place.  One or more blackout
-periods can be specified. If a client is subject to blackout then no regular
-(non-manual) backups will be started during any of these periods.  hourBegin
-and hourEnd specify hours from midnight and weekDays is a list of days of
-* [`Backuppc::DhcpAddressRange`](#backuppcdhcpaddressrange): List of DHCP address ranges we search looking for PCs to backup.
+* [`Backuppc::BlackoutPeriods`](#backuppcblackoutperiods): One or more blackout periods can be specified. If a client is subject to
+blackout then no regular (non-manual) backups will be started during any of
+these periods.
+* [`Backuppc::DhcpAddressRange`](#backuppcdhcpaddressrange): List of DHCP address ranges we search looking for PCs to backup.  This is
+only needed if hosts in the conf/hosts file have the dhcp flag set.
 * [`Backuppc::Hours`](#backuppchours): Hours of the daya. Times are measured in hours since midnight. Can be
 fractional if necessary (eg: 4.25 means 4:15am).
-* [`Backuppc::ShareName`](#backuppcsharename): List of shares (used in other types).
-This can be set to a string or an array of strings.
+* [`Backuppc::ShareName`](#backuppcsharename): List of shares (used in other types).  This can be set to a string or an
+array of strings.
 * [`Backuppc::XferLogLevel`](#backuppcxferloglevel): Level of verbosity in Xfer log files.
+0 means be quiet, 1 will give will give one line per file, 2 will also show skipped files
+on incrementals, higher values give more output.
 * [`Backuppc::XferMethod`](#backuppcxfermethod): What transport method to use to backup each host.
+If you have a mixed set of WinXX and linux/unix hosts you will need to override this
+in the per-PC config.pl.
+
+The valid values are:
+
+ - `smb`:     backup and restore via smbclient and the SMB protocol.
+              Easiest choice for WinXX.
+
+ - `rsync`:   backup and restore via rsync (via rsh or ssh).
+              Best choice for linux/unix.  Good choice also for WinXX.
+
+ - `rsyncd`:  backup and restore via rsync daemon on the client.
+              Best choice for linux/unix if you have rsyncd running on
+              the client.  Good choice also for WinXX.
+
+ - `tar`:    backup and restore via tar, tar over ssh, rsh or nfs.
+             Good choice for linux/unix.
 
 ## Classes
 
@@ -79,11 +96,11 @@ Override the client's host name. This allows multiple clients to all
 refer to the same physical host. This should only be set in the per-PC
 config file and is only used by BackupPC at the last moment prior to
 generating the command used to backup that machine (ie: the value of
-$Conf{ClientNameAlias} is invisible everywhere else in BackupPC).
+`$Conf{ClientNameAlias}` is invisible everywhere else in BackupPC).
 The setting can be a host name or IP address. eg.
 
-      client_name_alias => 'realHostName',
-      client_name_alias => '192.1.1.15',
+      backuppc::client::client_name_alias: 'realHostName',
+      backuppc::client::client_name_alias: '192.1.1.15',
 
 will cause the relevant smb/tar/rsync backup/restore commands
 to be directed to realHostName, not the client name.
@@ -203,11 +220,11 @@ Data type: `Optional[String]`
 
 Ping command. The following variables are substituted at run-time:
 
-    $pingPath      path to ping ($Conf{PingPath})
-    $host          host name
+     $pingPath      path to ping ($Conf{PingPath})
+     $host          host name
 
-Wade Brown reports that on solaris 2.6 and 2.7 ping -s returns the
-wrong exit status (0 even on failure). Replace with "ping $host 1",
+Wade Brown reports that on solaris 2.6 and 2.7 `ping -s` returns the
+wrong exit status (0 even on failure). Replace with `"ping $host 1"`,
 which gets the correct exit status but we don't get the round-trip time.
 Note: all Cmds are executed directly without a shell, so the prog
 name needs to be a full path and you can't include shell syntax like
@@ -358,7 +375,7 @@ Default value: `undef`
 
 Data type: `Optional[Backuppc::ShareName]`
 
-Share name to backup. For $Conf{XferMethod} = "rsync" this should be a
+Share name to backup. For `$Conf{XferMethod} = "rsync"` this should be a
 file system path, eg '/' or '/home'.
 
 Default value: `undef`
@@ -402,7 +419,7 @@ Default value: `false`
 Data type: `Optional[Float]`
 
 When rsync checksum caching is enabled (by adding the
---checksum-seed=32761 option to rsync_args), the cached checksums can
+`--checksum-seed=32761` option to rsync_args), the cached checksums can
 be occasionally verified to make sure the file
 contents matches the cached checksums.
 
@@ -1369,25 +1386,23 @@ The following parameters are available in the `Backuppc::BlackoutPeriods` data t
 
 ##### `hourBegin`
 
-start of blackout period
+start of blackout period (hours from midnight)
 
 ##### `hourEnd`
 
-end of blackoiut period
+end of blackout period (hours from midnight)
 
 ##### `weekdays`
 
-days of black period
+days of black period (days of the week with Sunday = 0)
 
 ### Backuppc::DhcpAddressRange
 
 DHCP Address Range
-This is an array of hashes for each class C address range. This is only needed
-if hosts in the conf/hosts file have the dhcp flag set.
 
 #### Examples
 
-##### to specify 192.10.10.20 to 192.10.10.250 as the DHCP address pool
+##### Specify 192.10.10.20 to 192.10.10.250 as the DHCP address pool
 
 ```puppet
 dhcp_address_ranges => [
@@ -1399,7 +1414,7 @@ dhcp_address_ranges => [
 ];
 ```
 
-##### to specify two pools (192.10.10.20-250 and 192.10.11.10-50)
+##### Specify two pools (192.10.10.20-250 and 192.10.11.10-50)
 
 ```puppet
 dhcp_address_ranges => [
@@ -1422,6 +1437,22 @@ Alias of `Array[Struct[{
     last => Integer[0,255]
   }]]`
 
+#### Parameters
+
+The following parameters are available in the `Backuppc::DhcpAddressRange` data type.
+
+##### `ipAddressBase`
+
+Type C address range for the pool
+
+##### `first`
+
+First in range
+
+##### `last`
+
+Last in range
+
 ### Backuppc::Hours
 
 Hours
@@ -1437,31 +1468,12 @@ Alias of `Variant[String, Array[String]]`
 ### Backuppc::XferLogLevel
 
 Xfer Log Level
-0 means be quiet, 1 will give will give one line per file, 2 will also show skipped files
-on incrementals, higher values give more output.
 
 Alias of `Integer[0, 2]`
 
 ### Backuppc::XferMethod
 
 Numeric user ID.
-If you have a mixed set of WinXX and linux/unix hosts you will need to override this
-in the per-PC config.pl.
-
-The valid values are:
-
- - 'smb':     backup and restore via smbclient and the SMB protocol.
-              Easiest choice for WinXX.
-
- - 'rsync':   backup and restore via rsync (via rsh or ssh).
-              Best choice for linux/unix.  Good choice also for WinXX.
-
- - 'rsyncd':  backup and restore via rsync daemon on the client.
-              Best choice for linux/unix if you have rsyncd running on
-              the client.  Good choice also for WinXX.
-
- - 'tar':    backup and restore via tar, tar over ssh, rsh or nfs.
-             Good choice for linux/unix.
 
 Alias of `Enum['smb', 'rsync', 'rsyncd', 'tar']`
 

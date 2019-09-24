@@ -17,11 +17,11 @@
 #   refer to the same physical host. This should only be set in the per-PC
 #   config file and is only used by BackupPC at the last moment prior to
 #   generating the command used to backup that machine (ie: the value of
-#   $Conf{ClientNameAlias} is invisible everywhere else in BackupPC). 
+#   `$Conf{ClientNameAlias}` is invisible everywhere else in BackupPC). 
 #   The setting can be a host name or IP address. eg.
 #
-#         client_name_alias => 'realHostName',
-#         client_name_alias => '192.1.1.15',
+#         backuppc::client::client_name_alias: 'realHostName',
+#         backuppc::client::client_name_alias: '192.1.1.15',
 #
 #   will cause the relevant smb/tar/rsync backup/restore commands
 #   to be directed to realHostName, not the client name.
@@ -91,11 +91,11 @@
 # @param ping_cmd
 #   Ping command. The following variables are substituted at run-time:
 #
-#       $pingPath      path to ping ($Conf{PingPath})
-#       $host          host name
+#        $pingPath      path to ping ($Conf{PingPath})
+#        $host          host name
 #
-#   Wade Brown reports that on solaris 2.6 and 2.7 ping -s returns the
-#   wrong exit status (0 even on failure). Replace with "ping $host 1",
+#   Wade Brown reports that on solaris 2.6 and 2.7 `ping -s` returns the
+#   wrong exit status (0 even on failure). Replace with `"ping $host 1"`,
 #   which gets the correct exit status but we don't get the round-trip time.
 #   Note: all Cmds are executed directly without a shell, so the prog
 #   name needs to be a full path and you can't include shell syntax like
@@ -161,7 +161,7 @@
 #   Full command to run rsync for restore on the client.
 #
 # @param rsync_share_name
-#   Share name to backup. For $Conf{XferMethod} = "rsync" this should be a
+#   Share name to backup. For `$Conf{XferMethod} = "rsync"` this should be a
 #   file system path, eg '/' or '/home'.
 #
 # @param rsyncd_client_port
@@ -180,7 +180,7 @@
 #
 # @param rsync_csum_cache_verify_prob
 #   When rsync checksum caching is enabled (by adding the
-#   --checksum-seed=32761 option to rsync_args), the cached checksums can
+#   `--checksum-seed=32761` option to rsync_args), the cached checksums can
 #   be occasionally verified to make sure the file
 #   contents matches the cached checksums.
 #
@@ -235,7 +235,6 @@
 #   be specified. These users will also have full permission in the CGI
 #   interface to stop/start/browse/restore backups for this host. These
 #   users will not be sent email about this host. Comma seperated list.
-#
 #
 # @param sudo_prepend
 #   Prepend a command to the sudo command, as run in backuppc.sh. This is

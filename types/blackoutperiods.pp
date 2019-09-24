@@ -1,11 +1,7 @@
 # Blackout Periods
 # @summary
-#   Perios in which backups do not take place.
+#   Periods in which backups do not take place.
 #
-# @note
-#   One or more blackout periods can be specified. If a client is subject to
-#   blackout then no regular (non-manual) backups will be started during any of
-#   these periods.
 #
 # @param hourBegin
 #   start of blackout period (hours from midnight)

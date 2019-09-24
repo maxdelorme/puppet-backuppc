@@ -19,14 +19,14 @@ from hiera.
 **Data types**
 
 * [`Backuppc::BackupFiles`](#backuppcbackupfiles): List of directories or files to backup.
-* [`Backuppc::BlackoutPeriods`](#backuppcblackoutperiods): Perios in which backups do not take place.
+* [`Backuppc::BlackoutPeriods`](#backuppcblackoutperiods): Periods in which backups do not take place.
 * [`Backuppc::DhcpAddressRange`](#backuppcdhcpaddressrange): List of DHCP address ranges we search looking for PCs to backup.
 * [`Backuppc::Hours`](#backuppchours): Hours of the daya. Times are measured in hours since midnight. Can be
 fractional if necessary (eg: 4.25 means 4:15am).
 * [`Backuppc::ShareName`](#backuppcsharename): List of shares (used in other types).  This can be set to a string or an
 array of strings.
 * [`Backuppc::XferLogLevel`](#backuppcxferloglevel): Level of verbosity in Xfer log files.
-* [`Backuppc::XferMethod`](#backuppcxfermethod): What transport method to use to backup each host.
+* [`Backuppc::XferMethod`](#backuppcxfermethod): The transport method to use to backup each host.
 
 ## Classes
 
@@ -1345,17 +1345,11 @@ Default value: ''
 
 Backup Files
 
-* **Note** If this is defined, only these directories or files will be backed up.
-
 Alias of `Variant[Backuppc::ShareName, Hash[String, Backuppc::ShareName]]`
 
 ### Backuppc::BlackoutPeriods
 
 Blackout Periods
-
-* **Note** One or more blackout periods can be specified. If a client is subject to
-blackout then no regular (non-manual) backups will be started during any of
-these periods.
 
 Alias of `Array[Struct[{
     hourBegin => Backuppc::Hours,
@@ -1462,24 +1456,6 @@ Alias of `Integer[0, 2]`
 ### Backuppc::XferMethod
 
 Numeric user ID.
-
-* **Note** If you have a mixed set of WinXX and linux/unix hosts you will need to override this
-in the per-PC config.pl.
-
-The valid values are:
-
- - `smb`:     backup and restore via smbclient and the SMB protocol.
-              Easiest choice for WinXX.
-
- - `rsync`:   backup and restore via rsync (via rsh or ssh).
-              Best choice for linux/unix.  Good choice also for WinXX.
-
- - `rsyncd`:  backup and restore via rsync daemon on the client.
-              Best choice for linux/unix if you have rsyncd running on
-              the client.  Good choice also for WinXX.
-
- - `tar`:    backup and restore via tar, tar over ssh, rsh or nfs.
-             Good choice for linux/unix.
 
 Alias of `Enum['smb', 'rsync', 'rsyncd', 'tar']`
 

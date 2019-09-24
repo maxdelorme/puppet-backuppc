@@ -1,7 +1,9 @@
 # DHCP Address Range
 # @summary
-#   List of DHCP address ranges we search looking for PCs to backup.  This is
-#   only needed if hosts in the conf/hosts file have the dhcp flag set.
+#   List of DHCP address ranges we search looking for PCs to backup.
+#
+# @note 
+#   This is only needed if hosts in the conf/hosts file have the dhcp flag set.
 #
 # @param ipAddressBase
 #   Type C address range for the pool

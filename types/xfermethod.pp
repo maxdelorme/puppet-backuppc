@@ -1,5 +1,8 @@
 # Numeric user ID.
-# @summary What transport method to use to backup each host.
+# @summary
+#   What transport method to use to backup each host.
+#
+# @note
 #   If you have a mixed set of WinXX and linux/unix hosts you will need to override this
 #   in the per-PC config.pl.
 #

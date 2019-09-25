@@ -89,8 +89,8 @@ $Conf{TarClientRestoreCmd} = "$sshPath -q -x -l root $host'
        . ' -v -f - -C $shareName+";
 $Conf{TarClientPath} = "<%= scope['backuppc::params::tar_path'] %>";
 $Conf{RsyncClientPath} = "/usr/bin/rsync";
-$Conf{RsyncClientCmd} = "$sshPath -q -x -l root $host $rsyncPath $argList+";
-$Conf{RsyncClientRestoreCmd} = "$sshPath -q -x -l root $host $rsyncPath $argList+";
+$Conf{RsyncClientCmd} = "$sshPath -q -x -l root $host $rsyncPath $argList+';
+$Conf{RsyncClientRestoreCmd} = "$sshPath -q -x -l root $host $rsyncPath $argList+';
 $Conf{RsyncShareName} = "/";
 $Conf{RsyncdClientPort} = 873;
 $Conf{RsyncdUserName} = "";
@@ -123,6 +123,9 @@ $Conf{RsyncArgs} = [
       # Add additional arguments here
       #
 ];
+<% if defined?(@rsync_args_extra) and !@rsync_args_extra.empty? -%>
+$Conf{RsyncArgsExtra} = <%= PP.pp(@rsync_args_extra,'').chomp -%>;
+<% end -%>
 $Conf{RsyncRestoreArgs} = [
       #
       # Do not edit these!
@@ -159,10 +162,10 @@ $Conf{ArchiveDest} = "/tmp";
 $Conf{ArchiveComp} = "gzip";
 $Conf{ArchivePar} = 0;
 $Conf{ArchiveSplit} = 0;
-$Conf{ArchiveClientCmd} = "$Installdir/bin/BackupPC_archiveHost'
+$Conf{ArchiveClientCmd} = '$Installdir/bin/BackupPC_archiveHost'
   . ' $tarCreatePath $splitpath $parpath $host $backupnumber'
   . ' $compression $compext $splitsize $archiveloc $parfile *";
-$Conf{SshPath} = "/usr/bin/ssh' if -x '/usr/bin/ssh";
+$Conf{SshPath} = '/usr/bin/ssh' if -x '/usr/bin/ssh';
 $Conf{NmbLookupPath} = "/usr/bin/nmblookup";
 $Conf{NmbLookupCmd} = "$nmbLookupPath -A $host";
 $Conf{NmbLookupFindHostCmd} = "$nmbLookupPath $host";
@@ -233,7 +236,7 @@ $Conf{CgiStatusHilightColor} = {
     Disabled_OnlyManualBackups     => '#d1d1d1',
     Disabled_AllBackupsDisabled    => '#d1d1d1',
 };
-$Conf{CgiHeaders} = "<meta http-equiv="pragma" content="no-cache">";
+$Conf{CgiHeaders} = '<meta http-equiv="pragma" content="no-cache">';
 $Conf{CgiImageDir} = "<%= scope['backuppc::params::cgi_image_dir'] %>";
 $Conf{CgiExt2ContentType} = { };
 $Conf{CgiImageDirURL} = "<%= @cgi_image_dir_url %>";

@@ -130,9 +130,32 @@ describe 'backuppc::client' do
           subject { exported_resources }
 
           config_params = {
-            # 'backup_files_exclude' => ['exclude1','exclude2'],
-            # 'backup_files_only' => ['/'],
-            # 'blackout_periods' => [ { 'hourBegin' => 7, 'hourEnd' => 23, 'weekDays' => [1,2,3,4,5] } ],
+            'backup_files_exclude' => ['exclude1','exclude2'],
+            'backup_files_only' => ['/'],
+            'blackout_periods' => [ { 'hourBegin' => 7, 'hourEnd' => 23, 'weekDays' => [1,2,3,4,5] } ],
+          }
+          config_params.each do |tparam, tvalue|
+            context "with #{tparam} = #{tvalue}" do
+              let(:params) { default_params.merge(tparam => tvalue) }
+
+              content = config_content(tparam, tvalue)
+              it { is_expected.to contain_file(file_host).with_content(content) }
+            end
+          end
+        end
+      end
+
+      context 'with more complex parameters' do
+        context 'exported resources' do
+          subject { exported_resources }
+
+          config_params = {
+            'backup_files_only' => { '*' => ['/'] },
+            'backup_files_exclude' => { 'a' => 'everything', 'b' => 'nothing' },
+            'blackout_periods' => [
+              { 'hourBegin' => 7, 'hourEnd' => 23, 'weekDays' => [1,2,3,4,5] },
+              { 'hourBegin' => 9, 'hourEnd' => 18, 'weekDays' => [0,6] },
+            ],
           }
           config_params.each do |tparam, tvalue|
             context "with #{tparam} = #{tvalue}" do

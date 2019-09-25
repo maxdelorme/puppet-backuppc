@@ -103,7 +103,7 @@ $Conf{RsyncClientRestoreCmd} = "<%= @rsync_client_restore_cmd %>";
 $Conf{RsyncClientRestoreCmd} = '$sshPath -q -x -l <%= @system_account %> $host $rsyncPath $argList+';
 <% end -%>
 <% if defined?(@rsync_share_name) and !@rsync_share_name.empty? -%>
-$Conf{RsyncShareName} = <%= PP.pp(@rsync_share_name,'').chomp -%>
+$Conf{RsyncShareName} = <%= PP.pp(@rsync_share_name,'').chomp -%>;
 <% end -%>
 <% if defined?(@rsyncd_client_port) -%>
 $Conf{RsyncdClientPort} = <%= @rsyncd_client_port %>;
@@ -121,10 +121,10 @@ $Conf{RsyncdAuthRequired} = <%= @real_rsyncd_auth_required %>;
 $Conf{RsyncCsumCacheVerifyProb} = <%= @rsync_csum_cache_verify_prob %>;
 <% end -%>
 <% if defined?(@rsync_args) and !@rsync_args.empty? -%>
-$Conf{RsyncArgs} = <%= PP.pp(@rsync_args,'').chomp -%>
+$Conf{RsyncArgs} = <%= PP.pp(@rsync_args,'').chomp -%>;
 <% end -%>
 <% if defined?(@rsync_args_extra) and !@rsync_args_extra.empty? -%>
-$Conf{RsyncArgsExtra} = <%= PP.pp(@rsync_args_extra,'').chomp -%>
+$Conf{RsyncArgsExtra} = <%= PP.pp(@rsync_args_extra,'').chomp -%>;
 <% end -%>
 <% if defined?(@rsync_restore_args) and !@rsync_restore_args.empty? -%>
 $Conf{RsyncRestoreArgs} = <%= PP.pp(@rsync_restore_args,'').chomp -%>;

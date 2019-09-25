@@ -65,7 +65,7 @@ $Conf{XferMethod} = "rsync";
 $Conf{XferLogLevel} = 1;
 $Conf{ClientCharset} = "";
 $Conf{ClientCharsetLegacy} = "iso-8859-1";
-$Conf{SmbShareName} = "C\$";
+$Conf{SmbShareName} = 'C$';
 $Conf{SmbShareUserName} = "";
 $Conf{SmbSharePasswd} = "";
 $Conf{SmbClientPath} = "/usr/bin/smbclient";
@@ -162,7 +162,7 @@ $Conf{ArchiveDest} = "/tmp";
 $Conf{ArchiveComp} = "gzip";
 $Conf{ArchivePar} = 0;
 $Conf{ArchiveSplit} = 0;
-$Conf{ArchiveClientCmd} = '$Installdir/bin/BackupPC_archiveHost'
+$Conf{ArchiveClientCmd} = "$Installdir/bin/BackupPC_archiveHost'
   . ' $tarCreatePath $splitpath $parpath $host $backupnumber'
   . ' $compression $compext $splitsize $archiveloc $parfile *";
 $Conf{SshPath} = '/usr/bin/ssh' if -x '/usr/bin/ssh';

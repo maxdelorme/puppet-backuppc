@@ -20,12 +20,11 @@ def extractkey(tparam)
 end
 
 def extractvalue(tvalue)
-
   fvalue = case tvalue
            when FalseClass, TrueClass
              tvalue ? 1 : 0
            else
-             Regexp.escape(PP.pp(tvalue,'').chomp)
+             Regexp.escape(PP.pp(tvalue, '').chomp)
            end
 
   fvalue

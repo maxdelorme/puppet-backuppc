@@ -1,19 +1,19 @@
 ---
 
+backuppc::params::install_directory: '/usr/share/BackupPC'
+backuppc::params::config_directory:  '/etc/BackupPC'
+backuppc::params::cgi_directory:     "%{backuppc::params::install_directory}/sbin"
+backuppc::params::cgi_image_dir:     "%{backuppc::params::install_directory}/html"
+backuppc::params::cgi_image_dir_url: '/BackupPC/images'
+backuppc::params::config_apache:     '/etc/httpd/conf.d/BackupPC.conf'
+backuppc::params::config:            "%{backuppc::params::config_directory}/config.pl"
+backuppc::params::hosts:             "%{backuppc::params::config_directory}/hosts"
+backuppc::params::log_directory:     '/var/log/BackupPC'
 backuppc::params::package:           'BackupPC'
+backuppc::params::par_path:
 backuppc::params::service:           'backuppc'
 backuppc::params::topdir:            '/var/lib/BackupPC'
-backuppc::params::config:            "%{backuppc::config_directory}/config.pl"
-backuppc::params::hosts:             "%{backuppc::config_directory}/hosts"
-backuppc::params::install_directory: '/usr/share/BackupPC'
-backuppc::params::cgi_directory:     "%{backuppc::server::install_directory}/sbin"
-backuppc::params::cgi_image_dir:     "%{backuppc::server::install_directory}/html"
-backuppc::params::cgi_image_dir_url: '/BackupPC/images'
-backuppc::params::log_directory:     '/var/log/BackupPC'
-backuppc::params::config_apache:     '/etc/httpd/conf.d/BackupPC.conf'
-backuppc::params::par_path:
 
-backuppc::params::config_directory:  '/etc/BackupPC'
 backuppc::params::group_apache:      'apache'
 backuppc::params::preseed_file:
 

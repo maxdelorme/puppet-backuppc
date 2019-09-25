@@ -303,7 +303,7 @@ class backuppc::client (
   Optional[Integer] $email_notify_min_days                   = undef,
   Optional[String] $email_from_user_name                     = undef,
   Optional[String] $email_admin_user_name                    = undef,
-  Optional[Stdlib::Fqdn] $email_destination_domain           = undef,
+  Optional[Backuppc::Domain] $email_user_dest_domain         = undef,
   Optional[Integer] $email_notify_old_backup_days            = undef,
   Optional[Integer] $hosts_file_dhcp                         = 0,
   Optional[String] $hosts_file_user                          = 'backuppc',

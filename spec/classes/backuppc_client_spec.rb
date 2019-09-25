@@ -66,35 +66,34 @@ describe 'backuppc::client' do
           # it { is_expected.to contain_augeas('backuppc_host_testhost-update') }
 
           config_params = {
-            'backup_files_exclude' => ['/junk'],
-            'backup_files_only' => ['/'],
+            'backup_files_exclude' => 'junk',
+            'backup_files_only' => '/',
             'backups_disable' => true,
             'blackout_bad_ping_limit' => 100,
             'blackout_good_cnt' => 10,
-            # 'blackout_periods' => [ { 'hourBegin' => 7, 'hourEnd' => 23, 'weekDays' => [1,2,3,4,5] } ],
-            # 'client_name_alias' => 'clientname',
-            # 'dump_post_share_cmd' => ,
-            # 'dump_post_user_cmd' => ,
-            # 'dump_pre_share_cmd' => ,
-            # 'dump_pre_user_cmd' => ,
-            # 'email_admin_user_name' => ,
-            # 'email_destination_domain' => ,
-            # 'email_from_user_name' => ,
-            # 'email_notify_min_days' => ,
-            # 'email_notify_old_backup_days' => ,
-            # 'full_age_max' => ,
-            # 'full_keep_cnt' => ,
-            # 'full_period' => ,
-            # 'incr_age_max' => ,
-            # 'incr_fill' => ,
-            # 'incr_keep_cnt' => ,
-            # 'incr_levels' => ,
-            # 'incr_period' => ,
-            # 'partial_age_max' => ,
-            # 'ping_cmd' => ,
-            # 'ping_max_msec' => ,
-            # 'restore_post_user_cmd' => ,
-            # 'restore_pre_user_cmd' => ,
+            'client_name_alias' => 'clientname',
+            'dump_post_share_cmd' => '/dump/post/share/cmd',
+            'dump_post_user_cmd' => '/dump/post/user/cmd',
+            'dump_pre_share_cmd' => '/dump/pre/share/cmd',
+            'dump_pre_user_cmd' => '/dump/pre/user/cmd',
+            'email_admin_user_name' => 'username',
+            'email_user_dest_domain' => '@destdomain',
+            'email_from_user_name' => 'fromusername',
+            'email_notify_min_days' => 99,
+            'email_notify_old_backup_days' => 88,
+            'full_age_max' => 90,
+            'full_keep_cnt' => [4, 2, 3],
+            'full_period' => 6.97,
+            'incr_age_max' => 12,
+            'incr_fill' => true,
+            'incr_keep_cnt' => 10,
+            'incr_levels' => [1, 2],
+            'incr_period' => 0.97,
+            'partial_age_max' => 2,
+            'ping_cmd' => '/ping/cmd',
+            'ping_max_msec' => 111,
+            'restore_post_user_cmd' => '/restore/post/user/cmd',
+            'restore_pre_user_cmd' => 'restore/pre/user/cmd',
             # 'rsync_args' => ,
             # 'rsync_args_extra' => ,
             # 'rsync_client_cmd' => ,
@@ -115,6 +114,26 @@ describe 'backuppc::client' do
             # 'user_cmd_check_status' => ,
           }
 
+          config_params.each do |tparam, tvalue|
+            context "with #{tparam} = #{tvalue}" do
+              let(:params) { default_params.merge(tparam => tvalue) }
+
+              content = config_content(tparam, tvalue)
+              it { is_expected.to contain_file(file_host).with_content(content) }
+            end
+          end
+        end
+      end
+
+      context 'with complex parameters' do
+        context 'exported resources' do
+          subject { exported_resources }
+
+          config_params = {
+            # 'backup_files_exclude' => ['exclude1','exclude2'],
+            # 'backup_files_only' => ['/'],
+            # 'blackout_periods' => [ { 'hourBegin' => 7, 'hourEnd' => 23, 'weekDays' => [1,2,3,4,5] } ],
+          }
           config_params.each do |tparam, tvalue|
             context "with #{tparam} = #{tvalue}" do
               let(:params) { default_params.merge(tparam => tvalue) }

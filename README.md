@@ -39,6 +39,10 @@ file for notes on system_account).
 The module is designed to work alongside the BackupPC web administration interface, meaning hosts that are configured but not managed by this
 module will still work.
 
+### Changed parameters
+email_destination_domain = email_user_dest_domain
+xfer_loglevel = xfer_log_level
+
 ## Usage
 
 ### Minimal server configuration

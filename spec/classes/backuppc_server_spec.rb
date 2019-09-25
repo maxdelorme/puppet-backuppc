@@ -81,7 +81,7 @@ describe 'backuppc::server' do
         'email_notify_min_days' => 2.1,
         'email_from_user_name' => 'backup_user',
         'email_admin_user_name' => 'backup_user',
-        'email_user_dest_domain' => 'example.com',
+        'email_user_dest_domain' => '@example.com',
         'email_notify_old_backup_days' => 11,
         'cgi_image_dir_url' => '/images',
         'cgi_admin_users' => 'backup',

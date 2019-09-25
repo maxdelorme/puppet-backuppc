@@ -260,7 +260,7 @@ class backuppc::server (
   Numeric $email_notify_min_days                            = 2.5,
   String $email_from_user_name                              = 'backuppc',
   String $email_admin_user_name                             = 'backuppc',
-  Optional[Stdlib::Fqdn] $email_user_dest_domain            = undef,
+  Optional[Backuppc::Domain] $email_user_dest_domain        = undef,
   Integer $email_notify_old_backup_days                     = 7,
   Hash $email_headers = { 'MIME-Version' => 1.0, 'Content-Type' => 'text/plain; charset="iso-8859-1"', },
   Boolean $apache_configuration                             = true,

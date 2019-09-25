@@ -1,12 +1,12 @@
 ---
 
 backuppc::params::install_directory:  '/usr/share/backuppc'
-backuppc::params::cgi_directory:      "%{backuppc::params::install_directory}/cgi-bin"
-backuppc::params::cgi_image_dir:      "%{backuppc::params::install_directory}/image"
+backuppc::params::cgi_directory:      "%{hiera('backuppc::params::install_directory')}/cgi-bin"
+backuppc::params::cgi_image_dir:      "%{hiera('backuppc::params::install_directory')}/image"
 backuppc::params::cgi_image_dir_url:  '/backuppc/image'
 backuppc::params::config_apache:      '/etc/apache2/conf.d/backuppc.conf'
-backuppc::params::config:             "%{backuppc::params::config_directory}/config.pl"
-backuppc::params::hosts:              "%{backuppc::params::config_directory}/hosts"
+backuppc::params::config:             "%{hiera('backuppc::params::config_directory')}/config.pl"
+backuppc::params::hosts:              "%{hiera('backuppc::params::config_directory')}/hosts"
 backuppc::params::log_directory:      '/var/lib/backuppc/log'
 backuppc::params::package:            'backuppc'
 backuppc::params::par_path:           '/usr/bin/par2'

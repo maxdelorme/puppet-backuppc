@@ -37,7 +37,8 @@ def extractvalue(tvalue)
            when FalseClass, TrueClass
              tvalue ? 1 : 0
            when Array
-             Regexp.escape('[' + tvalue.join(', ') + ']')
+             #Regexp.escape('[' + tvalue.join(', ') + ']')
+             Regexp.escape('[' + tvalue.map{|item| %Q{#{item}}}.join(', ') + ']')
            else
              tvalue
            end

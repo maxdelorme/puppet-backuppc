@@ -40,8 +40,11 @@ The module is designed to work alongside the BackupPC web administration interfa
 module will still work.
 
 ### Changed parameters
+```puppet
 email_destination_domain = email_user_dest_domain
 xfer_loglevel = xfer_log_level
+smb_share_username = smb_share_user_name
+```
 
 ## Usage
 

@@ -54,8 +54,8 @@ $Conf{BackupFilesExclude} = <%= PP.pp(@backup_files_exclude,'').chomp -%>;
 <% if defined?(@smb_share_name) and !@smb_share_name.empty? %>
 $Conf{SmbShareName} = <%= PP.pp(@smb_share_name,'').chomp -%>;
 <% end -%>
-<% if defined?(@smb_share_username) and !@smb_share_username.empty? -%>
-$Conf{SmbShareUserName} = "<%= @smb_share_username %>";
+<% if defined?(@smb_share_user_name) and !@smb_share_user_name.empty? -%>
+$Conf{SmbShareUserName} = "<%= @smb_share_user_name %>";
 <% end -%>
 <% if defined?(@smb_share_passwd) and !@smb_share_passwd.empty? -%>
 $Conf{SmbSharePasswd} = "<%= @smb_share_passwd %>";
@@ -147,8 +147,8 @@ $Conf{RestorePreUserCmd}  = "<%= @restore_pre_user_cmd %>";
 <% if defined?(@restore_post_user_cmd) and !@restore_post_user_cmd.empty? -%>
 $Conf{RestorePostUserCmd} = "<%= @restore_post_user_cmd %>";
 <% end -%>
-<% if not defined?(@user_cmd_check_status) -%>
-$Conf{UserCmdCheckStatus} = 0;
+<% if defined?(@real_user_cmd_check_status) -%>
+$Conf{UserCmdCheckStatus} = <%= @real_user_cmd_check_status %>;
 <% end -%>
 <% if defined?(@email_notify_min_days) -%>
 $Conf{EMailNotifyMinDays} = <%= @email_notify_min_days %>;

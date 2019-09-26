@@ -119,7 +119,7 @@
 #   Name of the host share that is backed up when using SMB. This can be a
 #   string or an array of strings if there are multiple shares per host.
 #
-# @param smb_share_username
+# @param smb_share_user_name
 #   Smbclient share user name. This is passed to smbclient's -U argument.
 #
 # @param smb_share_passwd
@@ -270,7 +270,7 @@ class backuppc::client (
   Backuppc::XferMethod $xfer_method                          = 'rsync',
   Backuppc::XferLogLevel $xfer_log_level                     = 1,
   Optional[Backuppc::ShareName] $smb_share_name              = undef,
-  Optional[String] $smb_share_username                       = undef,
+  Optional[String] $smb_share_user_name                      = undef,
   Optional[String] $smb_share_passwd                         = undef,
   Optional[String] $smb_client_full_cmd                      = undef,
   Optional[String] $smb_client_incr_cmd                      = undef,
@@ -324,7 +324,9 @@ class backuppc::client (
   $real_incr_fill = bool2num($incr_fill)
   $real_backups_disable = bool2num($backups_disable)
   $real_rsyncd_auth_required = bool2num($rsyncd_auth_required)
-  $real_user_cmd_check_status = bool2num($user_cmd_check_status)
+  if $user_cmd_check_status != undef {
+    $real_user_cmd_check_status = bool2num($user_cmd_check_status)
+  }
 
   # With these xfer_methods we require sudo to grant access
   # from the backuppc server to this client. It may be managed

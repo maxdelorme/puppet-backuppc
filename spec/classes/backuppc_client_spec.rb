@@ -133,7 +133,7 @@ describe 'backuppc::client' do
             'backup_files_exclude' => ['exclude1', 'exclude2'],
             'backup_files_only' => ['/'],
             'blackout_periods' => [{ 'hourBegin' => 7, 'hourEnd' => 23, 'weekDays' => [1, 2, 3, 4, 5] }],
-            'smb_share_name' => ['c','d'],
+            'smb_share_name' => ['c', 'd'],
           }
           config_params.each do |tparam, tvalue|
             context "with #{tparam} = #{tvalue}" do

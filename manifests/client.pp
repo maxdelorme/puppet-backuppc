@@ -244,14 +244,19 @@
 class backuppc::client (
   Enum['present','absent'] $ensure                           = 'present',
   Stdlib::Fqdn $config_name                                  = $facts['networking']['fqdn'],
+  Stdlib::Absolutepath $system_home_directory                = '/var/backups',
+  Backuppc::XferMethod $xfer_method                          = 'rsync',
+  Backuppc::XferLogLevel $xfer_log_level                     = 1,
+  Boolean $manage_sudo                                       = false,
+  Boolean $manage_rsync                                      = true,
+  Boolean $manage_sshkey                                     = true,
+  Boolean $backups_disable                                   = false,
+  Boolean $rsyncd_auth_required                              = false,
   Optional[Stdlib::Fqdn] $backuppc_hostname                  = undef,
   Optional[Stdlib::Fqdn] $client_name_alias                  = undef,
   Optional[String] $system_account                           = 'backup',
-  Stdlib::Absolutepath $system_home_directory                = '/var/backups',
   Optional[Array[String]] $system_additional_commands        = undef,
   Optional[Array[String]] $system_additional_commands_noexec = undef,
-  Boolean $manage_sudo                                       = false,
-  Boolean $manage_rsync                                      = true,
   Optional[Numeric] $full_period                             = undef,
   Optional[Variant[Integer,Array[Integer]]] $full_keep_cnt   = undef,
   Optional[Integer] $full_age_max                            = undef,
@@ -266,9 +271,6 @@ class backuppc::client (
   Optional[String] $ping_cmd                                 = undef,
   Optional[Integer] $blackout_good_cnt                       = undef,
   Optional[Backuppc::BlackoutPeriods] $blackout_periods      = undef,
-  Boolean $backups_disable                                   = false,
-  Backuppc::XferMethod $xfer_method                          = 'rsync',
-  Backuppc::XferLogLevel $xfer_log_level                     = 1,
   Optional[Backuppc::ShareName] $smb_share_name              = undef,
   Optional[String] $smb_share_user_name                      = undef,
   Optional[String] $smb_share_passwd                         = undef,
@@ -286,7 +288,6 @@ class backuppc::client (
   Optional[Integer] $rsyncd_client_port                      = undef,
   Optional[String] $rsyncd_user_name                         = undef,
   Optional[String] $rsyncd_passwd                            = undef,
-  Boolean $rsyncd_auth_required                              = false,
   Optional[Float] $rsync_csum_cache_verify_prob              = undef,
   Optional[Array[String]] $rsync_args                        = undef,
   Optional[Array[String]] $rsync_args_extra                  = undef,
@@ -434,14 +435,16 @@ class backuppc::client (
     }
   }
 
-#  if $facts['networking']['fqdn'] != $backuppc_hostname {
-#    @@sshkey { $facts['networking']['fqdn']:
-#      ensure => $ensure,
-#      type   => 'ssh-rsa',
-#      key    => $facts['ssh']['rsa']['key'],
-#      tag    => "backuppc_sshkeys_${backuppc_hostname}",
-#    }
-#  }
+  if $manage_sshkey {
+    #if $facts['networking']['fqdn'] != $backuppc_hostname {
+      @@sshkey { $facts['networking']['fqdn']:
+        ensure => $ensure,
+        type   => 'ssh-rsa',
+        key    => $facts['ssh']['rsa']['key'],
+        tag    => "backuppc_sshkeys_${backuppc_hostname}",
+      }
+    #}
+  }
 
   if $ensure == 'present' {
     @@augeas { "backuppc_host_${config_name}-create":

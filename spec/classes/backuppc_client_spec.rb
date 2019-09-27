@@ -36,19 +36,42 @@ describe 'backuppc::client' do
         it { is_expected.to contain_file('/etc/sudoers.d/backuppc') }
         it { is_expected.to contain_file('/etc/sudoers.d/backuppc_noexec') }
 
-        context 'testing exported resources' do
+        context 'testing exported augeas' do
           subject { exported_resources }
 
-          let(:params) { default_params }
+          it {
+            is_expected.to contain_augeas('backuppc_host_testhost-create').with(
+              'changes' => <<-DOC.gsub(%r{^\s+}, '')
+                  set 01/host testhost
+                  set 01/dhcp 0
+                  set 01/user backuppc
+                DOC
+            )
+          }
 
-          it { is_expected.to contain_augeas('backuppc_host_testhost-create') }
-          it { is_expected.to contain_augeas('backuppc_host_testhost-update') }
+          it {
+            is_expected.to contain_augeas('backuppc_host_testhost-update').with(
+              'changes' => <<-DOC.gsub(%r{^\s+}, '')
+                  set *[host = 'testhost']/dhcp 0
+                  set *[host = 'testhost']/user backuppc
+                  rm *[host = 'testhost']/moreusers
+                DOC
+            )
+          }
+        end
+
+        context 'testing exported sshkey' do
+          subject { exported_resources }
 
           it {
             is_expected.to contain_sshkey('testhost.test.com').with('type' => 'ssh-rsa',
                                                                     'key'  => facts['ssh']['rsa']['key'],
                                                                     'tag'  => 'backuppc_sshkeys_backuppc.test.com')
           }
+        end
+
+        context 'testing exported host config' do
+          subject { exported_resources }
 
           config_params = {
             'xfer_log_level' => 1,

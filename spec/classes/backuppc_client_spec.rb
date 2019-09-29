@@ -64,9 +64,11 @@ describe 'backuppc::client' do
           subject { exported_resources }
 
           it {
-            is_expected.to contain_sshkey('testhost.test.com').with('type' => 'ssh-rsa',
-                                                                    'key'  => facts['ssh']['rsa']['key'],
-                                                                    'tag'  => 'backuppc_sshkeys_backuppc.test.com')
+            is_expected.to contain_sshkey('testhost.test.com').with(
+              'type' => 'ssh-rsa',
+              'key'  => facts['ssh']['rsa']['key'],
+              'tag'  => 'backuppc_sshkeys_backuppc.test.com',
+            )
           }
         end
 

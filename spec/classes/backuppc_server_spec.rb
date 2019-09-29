@@ -17,6 +17,9 @@ describe 'backuppc::server' do
             topdir: '/var/lib/backuppc' }
         end
       end
+      let(:command) do
+        "test -f #{options[:config_directory]}/htpasswd   || OPT='-c';htpasswd -bs ${OPT}   #{options[:config_directory]}/htpasswd backuppc 'test_password'"
+      end
 
       default_params = { backuppc_password: 'test_password' }
 
@@ -53,10 +56,6 @@ describe 'backuppc::server' do
         when 'Debian'
           it { is_expected.to contain_file('/etc/BackupPC').with_ensure('link') }
         end
-
-        let(:command) {
-          "test -f #{options[:config_directory]}/htpasswd   || OPT='-c';htpasswd -bs ${OPT}   #{options[:config_directory]}/htpasswd backuppc 'test_password'"
-        }
 
         it { is_expected.to contain_exec(command).with_command(command) }
       end

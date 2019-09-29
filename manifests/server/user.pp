@@ -40,8 +40,8 @@ define backuppc::server::user (
       test -f ${backuppc::params::htpasswd_apache} \
         || OPT='-c';\
       htpasswd -bs \${OPT} \
-        ${backuppc::params::htpasswd_apache} ${real_username} '${password}'":
-      | END
+        ${backuppc::params::htpasswd_apache} ${real_username} '${password}'
+      | - END
     exec {$command:
       unless  => "grep -q ${real_username}:${real_password} ${backuppc::params::htpasswd_apache}",
     }

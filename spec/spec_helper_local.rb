@@ -1,6 +1,14 @@
 require 'pp'
-# require 'simplecov'
-# SimpleCov.start { add_filter '/spec/' }
+require 'simplecov'
+require 'coveralls'
+SimpleCov.formatters = [
+  SimpleCov::Formatter::HTMLFormatter,
+  Coveralls::SimpleCov::Formatter
+]
+
+SimpleCov.start do
+  add_filter '/spec/'
+end
 
 # method to convert between puppet and backuppc names, and to convert values
 def extractkey(tparam)

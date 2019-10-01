@@ -3,6 +3,7 @@ require 'spec_helper'
 describe 'backuppc::server' do
   on_supported_os.each do |os, facts|
     let(:node) { 'testhost.test.com' }
+
     context "on #{os}" do
       let(:facts) { facts }
 
@@ -11,14 +12,12 @@ describe 'backuppc::server' do
         when 'RedHat'
           { group_apache: 'apache',
             config_directory: '/etc/BackupPC',
-            topdir: '/var/lib/BackupPC'
-          }
+            topdir: '/var/lib/BackupPC' }
         when 'Debian'
           { group_apache: 'www-data',
             config_directory: '/etc/backuppc',
             topdir: '/var/lib/backuppc',
-            preseed_file: '/var/cache/debconf/backuppc.seeds',
-          }
+            preseed_file: '/var/cache/debconf/backuppc.seeds' }
         end
       end
       let(:htpasswd_command) do
@@ -57,13 +56,15 @@ describe 'backuppc::server' do
         it { is_expected.to contain_backuppc__server__user('backuppc').with_password('test_password') }
         it { is_expected.to contain_exec(htpasswd_command).with_command(htpasswd_command) }
 
-        it { is_expected.to contain_exec('backuppc-ssh-keygen').with_command(
-          "ssh-keygen -f #{options[:topdir]}/.ssh/id_rsa -C 'BackupPC on #{node}' -N ''"
-          )}
+        it {
+          is_expected.to contain_exec('backuppc-ssh-keygen').with_command(
+            "ssh-keygen -f #{options[:topdir]}/.ssh/id_rsa -C 'BackupPC on #{node}' -N ''",
+          )
+        }
 
         case facts[:os]['family']
         when 'Debian'
-          it { is_expected.to contain_file(options[:preseed_file]).with_ensure('present') } 
+          it { is_expected.to contain_file(options[:preseed_file]).with_ensure('present') }
         end
 
         # Workaround for imported resourcses
@@ -129,11 +130,11 @@ describe 'backuppc::server' do
       test_params.each do |tparam, tvalue|
         context "with #{tparam} = #{tvalue}" do
           let(:params) { default_params.merge(tparam => tvalue) }
+
           it { is_expected.not_to contain_file('apache_config') }
           it { is_expected.not_to contain_backuppc__server__user('backuppc') }
         end
       end
-
     end
   end
 end

@@ -10,8 +10,6 @@ appveyor.yml:
     - '.onceover/'
     - '.covered.db'
 .travis.yml:
-  global_env:
-  - COVERAGE=PartialSummary,Coveralls
   notifications:
     email:
       recipients:

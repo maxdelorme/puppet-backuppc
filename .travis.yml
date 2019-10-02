@@ -13,9 +13,6 @@ script:
 bundler_args: --without system_tests
 rvm:
   - 2.5.3
-env:
-  global:
-    - COVERAGE=PartialSummary,Coveralls
 stages:
   - static
   - spec

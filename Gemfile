@@ -34,7 +34,7 @@ group :test do
   gem "coveralls",         require: false
   gem "simplecov",         require: false
   gem "simplecov-console", require: false
-  gem "codecov",           require: false
+  gem "covered",           require: false
 end
 
 puppet_version = ENV['PUPPET_GEM_VERSION']

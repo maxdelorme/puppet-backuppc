@@ -1,5 +1,6 @@
 require 'pp'
 require 'simplecov'
+require 'covered/rspec'
 
 if ENV['SIMPLECOV']
   SimpleCov.formatters = [

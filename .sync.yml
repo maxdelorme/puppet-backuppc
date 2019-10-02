@@ -33,7 +33,6 @@ Gemfile:
       - gem: coveralls
       - gem: simplecov
       - gem: simplecov-console
-      - gem: covered
   optional:
     ':development':
       - gem: 'github_changelog_generator'

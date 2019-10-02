@@ -1,13 +1,11 @@
 require 'pp'
 require 'simplecov'
-require 'covered/rspec'
 
 if ENV['SIMPLECOV']
   SimpleCov.formatters = [
     SimpleCov::Formatter::HTMLFormatter,
   ]
   SimpleCov.start { add_filter '/spec/' }
-
 elsif ENV['TRAVIS'] && RUBY_VERSION.to_f >= 1.9
   require 'coveralls'
   SimpleCov.formatters = [
@@ -15,7 +13,6 @@ elsif ENV['TRAVIS'] && RUBY_VERSION.to_f >= 1.9
     Coveralls::SimpleCov::Formatter,
   ]
   Coveralls.wear! { add_filter '/spec/' }
-
 end
 
 # method to convert between puppet and backuppc names, and to convert values

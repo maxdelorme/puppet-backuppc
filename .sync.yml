@@ -8,6 +8,7 @@ appveyor.yml:
 .gitignore:
   required: &ignorepaths
     - '.onceover/'
+    - '.covered.db'
 .travis.yml:
   notifications:
     email:

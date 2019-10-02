@@ -1,7 +1,7 @@
 require 'pp'
+require 'simplecov'
 
 if ENV['SIMPLECOV']
-  require 'simplecov'
   SimpleCov.formatters = [
     SimpleCov::Formatter::HTMLFormatter,
   ]

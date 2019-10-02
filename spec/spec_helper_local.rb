@@ -1,18 +1,24 @@
 require 'pp'
-require 'simplecov'
-require 'coveralls'
-SimpleCov.formatters = [
-  SimpleCov::Formatter::HTMLFormatter,
-  Coveralls::SimpleCov::Formatter,
-]
 
-SimpleCov.start do
-  add_filter '/spec/'
+if ENV['SIMPLECOV']
+  require 'simplecov'
+  SimpleCov.formatters = [
+    SimpleCov::Formatter::HTMLFormatter,
+  ]
+  SimpleCov.start { add_filter '/spec/' }
+
+elsif ENV['TRAVIS'] && RUBY_VERSION.to_f >= 1.9
+  require 'coveralls'
+  SimpleCov.formatters = [
+    SimpleCov::Formatter::HTMLFormatter,
+    Coveralls::SimpleCov::Formatter,
+  ]
+  Coveralls.wear! { add_filter '/spec/' }
+
 end
-require 'puppetlabs_spec_helper/module_spec_helper'
 
 # method to convert between puppet and backuppc names, and to convert values
-def extractkey(tparam)
+def config_content(tparam, tvalue)
   fparam = tparam.split('_').map { |e|
     case e
     when 'backuppc'
@@ -25,24 +31,13 @@ def extractkey(tparam)
       e.capitalize
     end
   }.join
-  fparam
-end
 
-def extractvalue(tvalue)
   fvalue = case tvalue
            when FalseClass, TrueClass
              tvalue ? 1 : 0
            else
              Regexp.escape(PP.pp(tvalue, '').chomp)
            end
-
-  fvalue
-end
-
-def config_content(tparam, tvalue)
-  fparam = extractkey(tparam)
-
-  fvalue = extractvalue(tvalue)
 
   %r{^\$Conf{#{fparam}}\s+=\s+#{fvalue};}m
 end

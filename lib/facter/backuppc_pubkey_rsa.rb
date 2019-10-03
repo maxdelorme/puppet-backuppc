@@ -1,4 +1,5 @@
 Facter.add('backuppc_pubkey_rsa') do
+  confine 'osfamily' => ['RedHat', 'Debian']
   setcode do
     sshkey_path ||= case Facter.value(:osfamily)
                     when 'RedHat'

@@ -21,6 +21,7 @@ from hiera.
 * [`Backuppc::BackupFiles`](#backuppcbackupfiles): List of directories or files to backup.
 * [`Backuppc::BlackoutPeriods`](#backuppcblackoutperiods): Periods in which backups do not take place.
 * [`Backuppc::DhcpAddressRange`](#backuppcdhcpaddressrange): List of DHCP address ranges we search looking for PCs to backup.
+* [`Backuppc::Domain`](#backuppcdomain): FQDN preceeded by @ eg `@domain.com`. Based on `Stdlib::Fqdn`.
 * [`Backuppc::Hours`](#backuppchours): Hours of the daya. Times are measured in hours since midnight. Can be
 fractional if necessary (eg: 4.25 means 4:15am).
 * [`Backuppc::ShareName`](#backuppcsharename): List of shares (used in other types).  This can be set to a string or an
@@ -247,7 +248,7 @@ string or an array of strings if there are multiple shares per host.
 
 Default value: `undef`
 
-##### `smb_share_username`
+##### `smb_share_user_name`
 
 Data type: `Optional[String]`
 
@@ -534,6 +535,14 @@ reduce the impact of large backups on the client.
 
 Default value: `undef`
 
+##### `manage_sshkey`
+
+Data type: `Boolean`
+
+
+
+Default value: `true`
+
 ##### `full_period`
 
 Data type: `Optional[Numeric]`
@@ -638,9 +647,9 @@ Data type: `Optional[String]`
 
 Default value: `undef`
 
-##### `email_destination_domain`
+##### `email_user_dest_domain`
 
-Data type: `Optional[Stdlib::Fqdn]`
+Data type: `Optional[Backuppc::Domain]`
 
 
 
@@ -1203,7 +1212,7 @@ Default value: 'backuppc'
 
 ##### `email_user_dest_domain`
 
-Data type: `Optional[Stdlib::Fqdn]`
+Data type: `Optional[Backuppc::Domain]`
 
 Destination domain name for email sent to users.
 
@@ -1431,6 +1440,12 @@ First in range
 ##### `last`
 
 Last in range
+
+### Backuppc::Domain
+
+Domain
+
+Alias of `Pattern[/^@(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/]`
 
 ### Backuppc::Hours
 

@@ -28,6 +28,7 @@ describe 'backuppc::client' do
         it { is_expected.to contain_class('backuppc::params') }
         it { is_expected.to compile.with_all_deps }
 
+        # These tests relate to system_account being set
         it { is_expected.to contain_file('/var/backups/.ssh').with_ensure('directory') }
         it { is_expected.to contain_package('rsync') }
         it { is_expected.to contain_user('backup') }

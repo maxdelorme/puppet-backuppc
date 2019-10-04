@@ -27,17 +27,6 @@
 #   to be directed to realHostName, not the client name.
 #   Note: this setting doesn't work for hosts with DHCP set to 1.
 #
-# @param system_account
-#   Name of the user that will be created to allow backuppc
-#   access to the system via ssh. This only applies to xfer
-#   methods that require it. To override this set the system_account
-#   to an empty string and configure access to the client yourself as
-#   the default in the global config file (root) or change the
-#   rsync_client_cmd or tar_client_cmd to suit your setup.
-#
-# @param system_home_directory
-#   Absolute path to the home directory of the system account.
-#
 # @param system_additional_commands
 #   Additional sudo commands to whitelist for the system_account. This
 #   is useful if you need to execute any pre dump *scripts* on client before

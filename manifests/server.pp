@@ -274,7 +274,6 @@ class backuppc::server (
   Integer[0,2] $cgi_date_format_mmdd                        = 1,
   Boolean $user_cmd_check_status                            = true,
   Integer $ping_max_msec                                    = 20,
-  Stdlib::Absolutepath $system_home_directory               = '/var/backups'
 ) inherits backuppc::params  {
 
   if empty($backuppc_password) {
@@ -430,36 +429,53 @@ class backuppc::server (
   # Export backuppc's authorized key to all clients
   # TODO don't rely on facter to obtain the ssh key.
   if $facts['backuppc_pubkey_rsa'] != undef {
-    @@ssh_authorized_key { "backuppc_${facts['networking']['fqdn']}":
-      ensure  => present,
-      key     => $facts['backuppc_pubkey_rsa'],
-      name    => "backuppc_${facts['networking']['fqdn']}",
-      user    => 'backup',
-      options => [
-        "command=\"${system_home_directory}/backuppc.sh\"",
-        'no-agent-forwarding',
-        'no-port-forwarding',
-        'no-pty',
-        'no-X11-forwarding',
-      ],
-      type    => 'ssh-rsa',
-      tag     => "backuppc_${facts['networking']['fqdn']}",
+    if ! empty($backuppc::params::system_account) {
+      @@ssh_authorized_key { "backuppc_${facts['networking']['fqdn']}":
+        ensure  => present,
+        key     => $facts['backuppc_pubkey_rsa'],
+        name    => "backuppc_${facts['networking']['fqdn']}",
+        user    => $backuppc::params::system_account,
+        options => [
+          "command=\"${backuppc::params::system_home_directory}/backuppc.sh\"",
+          'no-agent-forwarding',
+          'no-port-forwarding',
+          'no-pty',
+          'no-X11-forwarding',
+        ],
+        type    => 'ssh-rsa',
+        tag     => "backuppc_${facts['networking']['fqdn']}",
+      }
+    } else {
+      @@ssh_authorized_key { "backuppc_${facts['networking']['fqdn']}":
+        ensure  => present,
+        key     => $facts['backuppc_pubkey_rsa'],
+        name    => "backuppc_${facts['networking']['fqdn']}",
+        user    => 'root',
+        options => [
+          'no-agent-forwarding',
+          'no-port-forwarding',
+          'no-pty',
+          'no-X11-forwarding',
+        ],
+        type    => 'ssh-rsa',
+        tag     => "backuppc_${facts['networking']['fqdn']}",
+      }
     }
   }
 
-  # Hosts
-  File <<| tag == "backuppc_config_${facts['networking']['fqdn']}" |>> {
-    group   => $backuppc::params::group_apache,
-    notify  => Service['backuppc'],
-    require => File['pc_directory_symlink'],
-  }
+# Hosts
+File <<| tag == "backuppc_config_${facts['networking']['fqdn']}" |>> {
+  group   => $backuppc::params::group_apache,
+  notify  => Service['backuppc'],
+  require => File['pc_directory_symlink'],
+}
 
-  Augeas <<| tag == "backuppc_hosts_${facts['networking']['fqdn']}" |>> {
-    notify  => Service['backuppc'],
-    require => Package['backuppc'],
-  }
+Augeas <<| tag == "backuppc_hosts_${facts['networking']['fqdn']}" |>> {
+  notify  => Service['backuppc'],
+  require => Package['backuppc'],
+}
 
-  Sshkey <<| tag == "backuppc_sshkeys_${facts['networking']['fqdn']}" |>>
+Sshkey <<| tag == "backuppc_sshkeys_${facts['networking']['fqdn']}" |>>
 }
 
 # vim: sw=2:ai:nu expandtab

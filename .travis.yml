@@ -43,7 +43,5 @@ branches:
     - /^v\d/
 notifications:
   email:
-    recipients:
-    - gary@theclarkhome.com
-    on_success: change
+    on_success: always
     on_failure: always

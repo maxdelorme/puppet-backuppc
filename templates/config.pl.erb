@@ -27,7 +27,7 @@ $Conf{GzipPath}  = '<%= scope['backuppc::params::gzip_path'] %>';
 $Conf{Bzip2Path} = '<%= scope['backuppc::params::bzip2_path'] %>';
 $Conf{DfMaxUsagePct} = <%= @df_max_usage_pct %>;
 $Conf{TrashCleanSleepSec} = <%= @trash_clean_sleep_sec %>;
-$Conf{DHCPAddressRanges} =  <%= PP.pp(@dhcp_address_ranges,'').chomp -%>;
+$Conf{DHCPAddressRanges} =  <%= PP.pp(@dhcp_address_ranges,'').chomp.tr(?", ?') -%>;
 $Conf{BackupPCUser} = 'backuppc';
 $Conf{TopDir}      = '<%= scope['backuppc::server::real_topdir'] %>';
 $Conf{ConfDir}     = '<%= scope['backuppc::params::config_directory'] %>';
@@ -41,7 +41,7 @@ $Conf{ServerInitdPath} = '';
 $Conf{ServerInitdStartCmd} = '';
 $Conf{FullPeriod} = <%= @full_period %>;
 $Conf{IncrPeriod} = <%= @incr_period %>;
-$Conf{FullKeepCnt} = <%= PP.pp(@full_keep_cnt,'').chomp -%>;
+$Conf{FullKeepCnt} = <%= PP.pp(@full_keep_cnt,'').chomp.tr(?", ?') -%>;
 $Conf{FullKeepCntMin} = 1;
 $Conf{FullAgeMax}     = <%= @full_age_max %>;
 $Conf{IncrKeepCnt} = <%= @incr_keep_cnt %>;
@@ -58,7 +58,7 @@ $Conf{BackupFilesExclude} = undef;
 $Conf{BlackoutBadPingLimit} = 3;
 $Conf{BlackoutGoodCnt}      = <%= @blackout_good_cnt %>;
 <% if defined?(@blackout_periods) -%>
-$Conf{BlackoutPeriods} = <%= PP.pp(@blackout_periods,'').chomp -%>;
+$Conf{BlackoutPeriods} = <%= PP.pp(@blackout_periods,'').chomp.tr(?", ?') -%>;
 <% end -%>
 $Conf{BackupZeroFilesIsFatal} = <%= @real_bzfif %>;
 $Conf{XferMethod} = 'rsync';
@@ -124,7 +124,7 @@ $Conf{RsyncArgs} = [
       #
 ];
 <% if defined?(@rsync_args_extra) and !@rsync_args_extra.empty? -%>
-$Conf{RsyncArgsExtra} = <%= PP.pp(@rsync_args_extra,'').chomp -%>;
+$Conf{RsyncArgsExtra} = <%= PP.pp(@rsync_args_extra,'').chomp.tr(?", ?') -%>;
 <% end -%>
 $Conf{RsyncRestoreArgs} = [
       #

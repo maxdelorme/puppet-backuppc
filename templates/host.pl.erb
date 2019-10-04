@@ -13,7 +13,7 @@ $Conf{FullPeriod} = <%= @full_period %>;
 $Conf{IncrPeriod} = <%= @incr_period %>;
 <% end -%>
 <% if defined?(@full_keep_cnt) -%>
-$Conf{FullKeepCnt} = <%= PP.pp(@full_keep_cnt,'').chomp -%>;
+$Conf{FullKeepCnt} = <%= PP.pp(@full_keep_cnt,'').chomp.tr(?", ?') -%>;
 <% end -%>
 <% if defined?(@full_age_max) -%>
 $Conf{FullAgeMax}     = <%= @full_age_max %>;
@@ -28,7 +28,7 @@ $Conf{IncrAgeMax}     = <%= @incr_age_max %>;
 $Conf{IncrFill} = <%= @real_incr_fill %>;
 <% end -%>
 <% if defined?(@incr_levels) and !@incr_levels.empty? -%>
-$Conf{IncrLevels} = <%= PP.pp(@incr_levels,'').chomp -%>;
+$Conf{IncrLevels} = <%= PP.pp(@incr_levels,'').chomp.tr(?", ?') -%>;
 <% end -%>
 <% if defined?(@partial_age_max) -%>
 $Conf{PartialAgeMax} = <%= @partial_age_max %>;
@@ -46,13 +46,13 @@ $Conf{PingMaxMsec} = <%= @ping_max_msec %>;
 $Conf{BlackoutGoodCnt}      = <%= @blackout_good_cnt %>;
 <% end -%>
 <% if defined?(@backup_files_only) and !@backup_files_only.empty? -%>
-$Conf{BackupFilesOnly} = <%= PP.pp(@backup_files_only,'').chomp -%>;
+$Conf{BackupFilesOnly} = <%= PP.pp(@backup_files_only,'').chomp.tr(?", ?') -%>;
 <% end -%>
 <% if defined?(@backup_files_exclude) and !@backup_files_exclude.empty? -%>
-$Conf{BackupFilesExclude} = <%= PP.pp(@backup_files_exclude,'').chomp -%>;
+$Conf{BackupFilesExclude} = <%= PP.pp(@backup_files_exclude,'').chomp.tr(?", ?') -%>;
 <% end -%>
 <% if defined?(@smb_share_name) and !@smb_share_name.empty? %>
-$Conf{SmbShareName} = <%= PP.pp(@smb_share_name,'').chomp -%>;
+$Conf{SmbShareName} = <%= PP.pp(@smb_share_name,'').chomp.tr(?", ?') -%>;
 <% end -%>
 <% if defined?(@smb_share_user_name) and !@smb_share_user_name.empty? -%>
 $Conf{SmbShareUserName} = '<%= @smb_share_user_name %>';
@@ -70,7 +70,7 @@ $Conf{SmbClientIncrCmd} = '<%= @smb_client_incr_cmd %>';
 $Conf{SmbClientRestoreCmd} = '<%= @smb_client_restore_cmd %>';
 <% end -%>
 <% if @tar_share_name and !@tar_share_name.empty? -%>
-$Conf{TarShareName} = <%= PP.pp(@tar,'').chomp -%>;
+$Conf{TarShareName} = <%= PP.pp(@tar,'').chomp.tr(?", ?') -%>;
 <% end -%>
 <% if @tar_client_cmd and !@tar_client_cmd.empty? -%>
 $Conf{TarClientCmd} = '<%= @tar_client_cmd %>';
@@ -103,7 +103,7 @@ $Conf{RsyncClientRestoreCmd} = '<%= @rsync_client_restore_cmd %>';
 $Conf{RsyncClientRestoreCmd} = '$sshPath -q -x -l <%= @system_account %> $host $rsyncPath $argList+';
 <% end -%>
 <% if defined?(@rsync_share_name) and !@rsync_share_name.empty? -%>
-$Conf{RsyncShareName} = <%= PP.pp(@rsync_share_name,'').chomp -%>;
+$Conf{RsyncShareName} = <%= PP.pp(@rsync_share_name,'').chomp.tr(?", ?') -%>;
 <% end -%>
 <% if defined?(@rsyncd_client_port) -%>
 $Conf{RsyncdClientPort} = <%= @rsyncd_client_port %>;
@@ -121,13 +121,13 @@ $Conf{RsyncdAuthRequired} = <%= @real_rsyncd_auth_required %>;
 $Conf{RsyncCsumCacheVerifyProb} = <%= @rsync_csum_cache_verify_prob %>;
 <% end -%>
 <% if defined?(@rsync_args) and !@rsync_args.empty? -%>
-$Conf{RsyncArgs} = <%= PP.pp(@rsync_args,'').chomp -%>;
+$Conf{RsyncArgs} = <%= PP.pp(@rsync_args,'').chomp.tr(?", ?') -%>;
 <% end -%>
 <% if defined?(@rsync_args_extra) and !@rsync_args_extra.empty? -%>
-$Conf{RsyncArgsExtra} = <%= PP.pp(@rsync_args_extra,'').chomp -%>;
+$Conf{RsyncArgsExtra} = <%= PP.pp(@rsync_args_extra,'').chomp.tr(?", ?') -%>;
 <% end -%>
 <% if defined?(@rsync_restore_args) and !@rsync_restore_args.empty? -%>
-$Conf{RsyncRestoreArgs} = <%= PP.pp(@rsync_restore_args,'').chomp -%>;
+$Conf{RsyncRestoreArgs} = <%= PP.pp(@rsync_restore_args,'').chomp.tr(?", ?') -%>;
 <% end -%>
 <% if defined?(@dump_pre_user_cmd) and !@dump_pre_user_cmd.empty? -%>
 $Conf{DumpPreUserCmd} = '<%= @dump_pre_user_cmd %>';
@@ -166,5 +166,5 @@ $Conf{EMailUserDestDomain} = '<%= @email_user_dest_domain %>';
 $Conf{EMailNotifyOldBackupDays} = <%= @email_notify_old_backup_days %>;
 <% end -%>
 <% if defined?(@blackout_periods) -%>
-$Conf{BlackoutPeriods} = <%= PP.pp(@blackout_periods,'').chomp -%>;
+$Conf{BlackoutPeriods} = <%= PP.pp(@blackout_periods,'').chomp.tr(?", ?') -%>;
 <% end -%>

@@ -34,7 +34,7 @@ def config_content(tparam, tvalue)
            when FalseClass, TrueClass
              tvalue ? 1 : 0
            else
-             Regexp.escape(PP.pp(tvalue, '').chomp)
+             Regexp.escape(PP.pp(tvalue, '').chomp.tr('"', "'"))
            end
 
   %r{^\$Conf{#{fparam}}\s+=\s+#{fvalue};}m

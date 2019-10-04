@@ -2,15 +2,11 @@
   "name": "wyrie-backuppc",
   "version": "3.0.0-alpha.1",
   "author": "Scott Barr",
-  "author": "mergwyn",
   "summary": "BackupPC module",
   "license": "Apache-2.0",
   "source": "https://bitbucket.org/wyrie/puppet-backuppc/src",
   "project_page": "https://bitbucket.org/wyrie/puppet-backuppc",
   "issues_url": "https://bitbucket.org/wyrie/puppet-backuppc/issues",
-  "source": "https://github.com/mergwyn/mergwyn-backuppc.git",
-  "project_page": "https://github.com/mergwyn/mergwyn-backuppc",
-  "issues_url": "https://github.com/mergwyn/mergwyn-backuppc/issues",
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",

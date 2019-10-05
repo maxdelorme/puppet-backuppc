@@ -225,6 +225,9 @@
 #   Maximum RTT value (in ms) above which backup won't be started. Default to
 #   20ms
 #
+# @param rsync_args_extra
+#   Additional arguments to rsync for backup.
+#
 class backuppc::server (
   Enum['present','absent'] $ensure                          = 'present',
   Boolean $service_enable                                   = true,
@@ -274,6 +277,7 @@ class backuppc::server (
   Integer[0,2] $cgi_date_format_mmdd                        = 1,
   Boolean $user_cmd_check_status                            = true,
   Integer $ping_max_msec                                    = 20,
+  Optional[Array[String]] $rsync_args_extra                 = undef,
 ) inherits backuppc::params  {
 
   if empty($backuppc_password) {

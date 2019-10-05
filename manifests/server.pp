@@ -433,14 +433,14 @@ class backuppc::server (
   # Export backuppc's authorized key to all clients
   # TODO don't rely on facter to obtain the ssh key.
   if $facts['backuppc_pubkey_rsa'] != undef {
-    if ! empty($::system_account) {
+    if ! empty($backuppc::params::system_account) {
       @@ssh_authorized_key { "backuppc_${facts['networking']['fqdn']}":
         ensure  => present,
         key     => $facts['backuppc_pubkey_rsa'],
         name    => "backuppc_${facts['networking']['fqdn']}",
-        user    => $::system_account,
+        user    => $backuppc::params::system_account,
         options => [
-          "command=\"${::system_home_directory}/backuppc.sh\"",
+          "command=\"${backuppc::params::system_home_directory}/backuppc.sh\"",
           'no-agent-forwarding',
           'no-port-forwarding',
           'no-pty',

@@ -16,5 +16,3 @@ backuppc::params::topdir:            '/var/lib/BackupPC'
 
 backuppc::params::group_apache:      'apache'
 backuppc::params::preseed_file:
-
-# vim:                               sw=2:ai:nu expandtab

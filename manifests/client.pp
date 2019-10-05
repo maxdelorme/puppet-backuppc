@@ -41,16 +41,17 @@
 #   backup.
 #
 # @param manage_sudo
-#   Boolean. Set to true to configure and install sudo and the
-#   sudoers.d directory. Defaults to false and is only applied
-#   if 1) xfer_method requires ssh access and 2) you're using
-#   the system_account parameter.
+#   Set to true to configure and install sudo and the sudoers.d directory.
+#   Defaults to false and is only applied if 1) xfer_method requires ssh access
+#   and 2) you're using the system_account parameter.
 #
 # @param manage_rsync
-#   Boolean. By default will install the rsync package. If you
-#   manage this elsewhere set it to false. Defaults to true and
-#   is only applied if 1) the xfer_method is rsync and 2) you're
-#   using the system_account parameter.
+#   sSet to true to install the rsync package. If you manage this elsewhere set
+#   it to false. Defaults to true and is only applied if 1) the xfer_method is
+#   rsync and 2) you're using the system_account parameter.
+#
+# @param manage_sshkey
+#   Set to true to create the sshkey for the client.
 #
 # @param blackout_bad_ping_limit
 #   To allow for periodic rebooting of a PC or other brief periods when a
@@ -229,6 +230,72 @@
 #   Prepend a command to the sudo command, as run in backuppc.sh. This is
 #   mostly useful for running the backup via nice or ionice, in order to
 #   reduce the impact of large backups on the client.
+#
+# @param full_period
+#   Minimum period in days between full backups. A full dump will only be done
+#   if at least this much time has elapsed since the last full dump, and at
+#   least $Conf{IncrPeriod} days has elapsed since the last successful dump.
+#
+# @param full_keep_cnt
+#   Number of full backups to keep.
+#
+# @param full_age_max
+#   Very old full backups are removed after $Conf{FullAgeMax} days. However, we
+#   keep at least $Conf{FullKeepCntMin} full backups no matter how old they are.
+#
+# @param incr_period
+#   Minimum period in days between incremental backups (a user requested
+#   incremental backup will be done anytime on demand).
+#
+# @param incr_keep_cnt
+#   Number of incremental backups to keep.
+#
+# @param incr_age_max
+#   Very old incremental backups are removed after $Conf{IncrAgeMax} days.
+#   However, we keep at least $Conf{IncrKeepCntMin} incremental backups no
+#   matter how old they are.
+#
+# @param incr_levels
+#   A full backup has level 0. A new incremental of level N will backup all files
+#   that have changed since the most recent backup of a lower level.
+#
+# @param partial_age_max
+#   A failed full backup is saved as a partial backup. The rsync XferMethod can
+#   take advantage of the partial full when the next backup is run. This
+#   parameter sets the age of the partial full in days: if the partial backup is
+#   older than this number of days, then rsync will ignore (not use) the partial
+#   full when the next backup is run. If you set this to a negative value then
+#   no partials will be saved. If you set this to 0, partials will be saved, but
+#   will not be used by the next backup.
+#
+# @param incr_fill
+#   Boolean. Whether incremental backups are filled. "Filling" means that the
+#   most recent fulli (or filled) dump is merged into the new incremental dump
+#   using hardlinks. This makes an incremental dump look like a full dump.
+#
+# @param blackout_good_cnt
+#   PCs that are always or often on the network can be backed up after hours, to
+#   reduce PC, network and server load during working hours. For each PC a count
+#   of consecutive good pings is maintained. Once a PC has at least
+#   $Conf{BlackoutGoodCnt} consecutive good pings it is subject to "blackout"
+#   and not backed up during hours and days specified by $Conf{BlackoutPeriods}.
+#
+# @param email_notify_min_days
+#   Minimum period between consecutive emails to a single user. This tries to
+#   keep annoying email to users to a reasonable level.
+#
+# @param email_from_user_name
+#   Name to use as the "from" name for email.
+#
+# @param email_admin_user_name
+#   Destination address to an administrative user who will receive a nightly
+#   email with warnings and errors.
+#
+# @param email_user_dest_domain
+#   Destination domain name for email sent to users.
+#
+# @param hosts_file_user
+#   Default user to use in the backuppc hosts file.
 #
 class backuppc::client (
   Enum['present','absent'] $ensure                           = 'present',

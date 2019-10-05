@@ -8,8 +8,8 @@
 * [`backuppc::client`](#backuppcclient): Configures a host for backup with the backuppc server.
 Uses storedconfigs to provide the backuppc server with
 required information.
-* [`backuppc::params`](#backuppcparams): Used as a vehicle to pick up OS specific defaults and shared parameters
-from hiera.
+* [`backuppc::params`](#backuppcparams): Used as a vehicle to pick up OS specific defaults and common parameters
+across client and server.
 * [`backuppc::server`](#backuppcserver): Configures the backuppc server.
 
 **Defined types**
@@ -22,7 +22,7 @@ from hiera.
 * [`Backuppc::BlackoutPeriods`](#backuppcblackoutperiods): Periods in which backups do not take place.
 * [`Backuppc::DhcpAddressRange`](#backuppcdhcpaddressrange): List of DHCP address ranges we search looking for PCs to backup.
 * [`Backuppc::Domain`](#backuppcdomain): FQDN preceeded by @ eg `@domain.com`. Based on `Stdlib::Fqdn`.
-* [`Backuppc::Hours`](#backuppchours): Hours of the daya. Times are measured in hours since midnight. Can be
+* [`Backuppc::Hours`](#backuppchours): Hours of the day. Times are measured in hours since midnight. Can be
 fractional if necessary (eg: 4.25 means 4:15am).
 * [`Backuppc::ShareName`](#backuppcsharename): List of shares (used in other types).  This can be set to a string or an
 array of strings.
@@ -86,27 +86,6 @@ Note: this setting doesn't work for hosts with DHCP set to 1.
 
 Default value: `undef`
 
-##### `system_account`
-
-Data type: `Optional[String]`
-
-Name of the user that will be created to allow backuppc
-access to the system via ssh. This only applies to xfer
-methods that require it. To override this set the system_account
-to an empty string and configure access to the client yourself as
-the default in the global config file (root) or change the
-rsync_client_cmd or tar_client_cmd to suit your setup.
-
-Default value: 'backup'
-
-##### `system_home_directory`
-
-Data type: `Stdlib::Absolutepath`
-
-Absolute path to the home directory of the system account.
-
-Default value: '/var/backups'
-
 ##### `system_additional_commands`
 
 Data type: `Optional[Array[String]]`
@@ -134,10 +113,9 @@ Default value: `undef`
 
 Data type: `Boolean`
 
-Boolean. Set to true to configure and install sudo and the
-sudoers.d directory. Defaults to false and is only applied
-if 1) xfer_method requires ssh access and 2) you're using
-the system_account parameter.
+Set to true to configure and install sudo and the sudoers.d directory.
+Defaults to false and is only applied if 1) xfer_method requires ssh access
+and 2) you're using the system_account parameter.
 
 Default value: `false`
 
@@ -145,10 +123,17 @@ Default value: `false`
 
 Data type: `Boolean`
 
-Boolean. By default will install the rsync package. If you
-manage this elsewhere set it to false. Defaults to true and
-is only applied if 1) the xfer_method is rsync and 2) you're
-using the system_account parameter.
+sSet to true to install the rsync package. If you manage this elsewhere set
+it to false. Defaults to true and is only applied if 1) the xfer_method is
+rsync and 2) you're using the system_account parameter.
+
+Default value: `true`
+
+##### `manage_sshkey`
+
+Data type: `Boolean`
+
+Set to true to create the sshkey for the client.
 
 Default value: `true`
 
@@ -535,19 +520,13 @@ reduce the impact of large backups on the client.
 
 Default value: `undef`
 
-##### `manage_sshkey`
-
-Data type: `Boolean`
-
-
-
-Default value: `true`
-
 ##### `full_period`
 
 Data type: `Optional[Numeric]`
 
-
+Minimum period in days between full backups. A full dump will only be done
+if at least this much time has elapsed since the last full dump, and at
+least $Conf{IncrPeriod} days has elapsed since the last successful dump.
 
 Default value: `undef`
 
@@ -555,7 +534,7 @@ Default value: `undef`
 
 Data type: `Optional[Variant[Integer,Array[Integer]]]`
 
-
+Number of full backups to keep.
 
 Default value: `undef`
 
@@ -563,7 +542,8 @@ Default value: `undef`
 
 Data type: `Optional[Integer]`
 
-
+Very old full backups are removed after $Conf{FullAgeMax} days. However, we
+keep at least $Conf{FullKeepCntMin} full backups no matter how old they are.
 
 Default value: `undef`
 
@@ -571,7 +551,8 @@ Default value: `undef`
 
 Data type: `Optional[Numeric]`
 
-
+Minimum period in days between incremental backups (a user requested
+incremental backup will be done anytime on demand).
 
 Default value: `undef`
 
@@ -579,7 +560,7 @@ Default value: `undef`
 
 Data type: `Optional[Integer]`
 
-
+Number of incremental backups to keep.
 
 Default value: `undef`
 
@@ -587,7 +568,9 @@ Default value: `undef`
 
 Data type: `Optional[Integer]`
 
-
+Very old incremental backups are removed after $Conf{IncrAgeMax} days.
+However, we keep at least $Conf{IncrKeepCntMin} incremental backups no
+matter how old they are.
 
 Default value: `undef`
 
@@ -595,15 +578,8 @@ Default value: `undef`
 
 Data type: `Optional[Array[Integer]]`
 
-
-
-Default value: `undef`
-
-##### `incr_fill`
-
-Data type: `Optional[Boolean]`
-
-
+A full backup has level 0. A new incremental of level N will backup all files
+that have changed since the most recent backup of a lower level.
 
 Default value: `undef`
 
@@ -611,7 +587,23 @@ Default value: `undef`
 
 Data type: `Optional[Integer]`
 
+A failed full backup is saved as a partial backup. The rsync XferMethod can
+take advantage of the partial full when the next backup is run. This
+parameter sets the age of the partial full in days: if the partial backup is
+older than this number of days, then rsync will ignore (not use) the partial
+full when the next backup is run. If you set this to a negative value then
+no partials will be saved. If you set this to 0, partials will be saved, but
+will not be used by the next backup.
 
+Default value: `undef`
+
+##### `incr_fill`
+
+Data type: `Optional[Boolean]`
+
+Boolean. Whether incremental backups are filled. "Filling" means that the
+most recent fulli (or filled) dump is merged into the new incremental dump
+using hardlinks. This makes an incremental dump look like a full dump.
 
 Default value: `undef`
 
@@ -619,7 +611,11 @@ Default value: `undef`
 
 Data type: `Optional[Integer]`
 
-
+PCs that are always or often on the network can be backed up after hours, to
+reduce PC, network and server load during working hours. For each PC a count
+of consecutive good pings is maintained. Once a PC has at least
+$Conf{BlackoutGoodCnt} consecutive good pings it is subject to "blackout"
+and not backed up during hours and days specified by $Conf{BlackoutPeriods}.
 
 Default value: `undef`
 
@@ -627,7 +623,8 @@ Default value: `undef`
 
 Data type: `Optional[Integer]`
 
-
+Minimum period between consecutive emails to a single user. This tries to
+keep annoying email to users to a reasonable level.
 
 Default value: `undef`
 
@@ -635,7 +632,7 @@ Default value: `undef`
 
 Data type: `Optional[String]`
 
-
+Name to use as the "from" name for email.
 
 Default value: `undef`
 
@@ -643,7 +640,8 @@ Default value: `undef`
 
 Data type: `Optional[String]`
 
-
+Destination address to an administrative user who will receive a nightly
+email with warnings and errors.
 
 Default value: `undef`
 
@@ -651,9 +649,33 @@ Default value: `undef`
 
 Data type: `Optional[Backuppc::Domain]`
 
-
+Destination domain name for email sent to users.
 
 Default value: `undef`
+
+##### `hosts_file_user`
+
+Data type: `Optional[String]`
+
+Default user to use in the backuppc hosts file.
+
+Default value: 'backuppc'
+
+##### `system_home_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+
+
+Default value: $backuppc::params::system_home_directory
+
+##### `system_account`
+
+Data type: `Optional[String]`
+
+
+
+Default value: $backuppc::params::system_account
 
 ##### `email_notify_old_backup_days`
 
@@ -663,18 +685,10 @@ Data type: `Optional[Integer]`
 
 Default value: `undef`
 
-##### `hosts_file_user`
-
-Data type: `Optional[String]`
-
-
-
-Default value: 'backuppc'
-
 ### backuppc::params
 
-Used as a vehicle to pick up OS specific defaults and shared parameters
-from hiera.
+Used as a vehicle to pick up OS specific defaults and common parameters
+across client and server.
 
 #### Parameters
 
@@ -695,6 +709,27 @@ Data type: `String[1]`
 The name of the backuppc service.
 
 Default value: 'backuppc'
+
+##### `system_account`
+
+Data type: `Optional[String]`
+
+Name of the user that will be created to allow backuppc
+access to the system via ssh. This only applies to xfer
+methods that require it. To override this set the system_account
+to an empty string and configure access to the client yourself as
+the default in the global config file (root) or change the
+rsync_client_cmd or tar_client_cmd to suit your setup.
+
+Default value: 'backup'
+
+##### `system_home_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+Absolute path to the home directory of the system account.
+
+Default value: '/var/backups'
 
 ##### `config_directory`
 
@@ -1306,13 +1341,13 @@ Maximum RTT value (in ms) above which backup won't be started. Default to
 
 Default value: 20
 
-##### `system_home_directory`
+##### `rsync_args_extra`
 
-Data type: `Stdlib::Absolutepath`
+Data type: `Optional[Array[String]]`
 
+Additional arguments to rsync for backup.
 
-
-Default value: '/var/backups'
+Default value: `undef`
 
 ## Defined types
 
@@ -1451,7 +1486,7 @@ Alias of `Pattern[/^@(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-
 
 Hours
 
-Alias of `Variant[Integer[0,23], Float[0.0,23.0]]`
+Alias of `Variant[Integer[0,23], Float[0.0,23.9]]`
 
 ### Backuppc::ShareName
 

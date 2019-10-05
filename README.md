@@ -11,40 +11,44 @@
 1. [Overview](#overview)
 2. [Module Description](#module-description)
 3. [Usage](#usage)
-4. [Reference](#reference)
+4. [Reference](REFERENCE.md)
+5. [Limitations - OS compatibility, etc.](#limitations)
 
 ## Overview
 
-This module will install and configure a BackupPC server and allow you to add other puppet managed nodes as clients/hosts. It
-uses exported resources to create the client's configuration file, add it to the hosts file and setup ssh access if needed.
+This module will install and configure a BackupPC server and allow you to add
+other puppet managed nodes as clients/hosts. It uses exported resources to
+create the client's configuration file, add it to the hosts file and setup ssh
+access if needed.
 
 This module started as a fork of https://github.com/codec/puppet-backuppc.
 
 ## Module Description
 
-BackupPC has many configuration options and this module should provide you access to most of them. BackupPC's global configuration
-file is managed by backuppc::server and is intended to setup useful defaults that can be overridden by the client if needed.
+BackupPC has many configuration options and this module should provide you
+access to most of them. BackupPC's global configuration file is managed by
+backuppc::server and is intended to setup useful defaults that can be
+overridden by the client if needed.
 
-Where BackupPC's configuration file uses camel case for the config variables the module's class parameters would use the same names but
-replacing the uppercase characters with lowercase and an underscore prefix.
+Where BackupPC's configuration file uses camel case for the config variables
+the module's class parameters would use the same names but replacing the
+uppercase characters with lowercase and an underscore prefix.
 
 For xfer methods that require ssh the module can:
-* Create a non-privledged account on the client and allow it access to rsync or tar via sudo.
+* Optionally create a non-privledged account on the client and allow it access to rsync or tar via sudo.
 * Install the server's ssh key.
 * Add the client's ssh key to the list of known hosts.
 
-By default the account name is 'backup'. You can choose to do the ssh configuration yourself if it doesn't suit your environment (see the client.pp
-file for notes on system_account).
+By default the account name is 'backup'. You can choose to do the ssh
+configuration yourself if it doesn't suit your environment (see the params.pp
+file for notes on `system_account`).
 
-The module is designed to work alongside the BackupPC web administration interface, meaning hosts that are configured but not managed by this
-module will still work.
+You can use the `manage_ssakey` in the client to control whether sshkeys are
+generated.
 
-### Changed parameters
-```puppet
-email_destination_domain = email_user_dest_domain
-xfer_loglevel = xfer_log_level
-smb_share_username = smb_share_user_name
-```
+The module is designed to work alongside the BackupPC web administration
+interface, meaning hosts that are configured but not managed by this module
+will still work.
 
 ## Usage
 
@@ -55,10 +59,19 @@ class { 'backuppc::server':
   backuppc_password => 'somesecret'
 }
 ```
-This will do the typical install, configure and service management. The module does not manage apache. It will, if the apache_configuation parameter is true,
-install an apache configuration file that creates an alias from the /backuppc url to the backuppc files on the system. Additionally it will create a htpasswd
-file with the default backuppc user and the password that you provide for access to the web based administration. You will however need to inform the apache
-service that something has changed. Alternatively you can install backuppc as a virtual host or whatever else suits your needs.
+or using hiera:
+```puppet
+backuppc::server::backuppc_password: 'somesecret'
+```
+
+This will do the typical install, configure and service management. The module
+does not manage apache. It will, if the apache_configuation parameter is true,
+install an apache configuration file that creates an alias from the /backuppc
+url to the backuppc files on the system. Additionally it will create a htpasswd
+file with the default backuppc user and the password that you provide for
+access to the web based administration. You will however need to inform the
+apache service that something has changed. Alternatively you can install
+backuppc as a virtual host or whatever else suits your needs.
 
 ### Additional login accounts
 
@@ -67,8 +80,9 @@ backuppc::server::user { 'john':
   password => 'mypassword'
 }
 ```
-The default path to the htpasswd file is in the [config_directory]/htpasswd. You can add additional login accounts and assign these to hosts (see client examples
-for this).
+The default path to the htpasswd file is in the [config_directory]/htpasswd.
+You can add additional login accounts and assign these to hosts (see client
+examples for this).
 
 ### More server configuration
 
@@ -80,10 +94,12 @@ class { 'backuppc::server':
   max_user_backups  => 1,
 }
 ```
-Please consult the BackupPC documentation for explanations on configuration options: http://backuppc.sourceforge.net/faq/BackupPC.html
+Please consult the BackupPC documentation for explanations on configuration
+options: http://backuppc.sourceforge.net/faq/BackupPC.html
 
-Some configuration options, like xfer_method, is more useful to set when adding a client. Where a configuration parameter is ommited backuppc's default is applied
-in the main/global configuration file.
+Some configuration options, like `xfer_method`, is more useful to set when adding
+a client. Where a configuration parameter is ommited backuppc's default is
+applied in the main/global configuration file.
 
 ### Client configuration
 
@@ -94,11 +110,14 @@ class { 'backuppc::client':
   hosts_file_more_users => 'john',
 }
 ```
-You'll need to specify the hostname of the node on which you installed backuppc server. This value should be the same as the facter value for fqdn. By default the
-xfer_method is rsync and you can specify the paths to backup with the parameter rsync_share_name. With rsync and tar methods the module will create on the client
-an system account and allow the server access to it (see the description section in this readme).
+You'll need to specify the hostname of the node on which you installed backuppc
+server. This value should be the same as the facter value for fqdn. By default
+the `xfer_method` is `rsync` and you can specify the paths to backup with the
+parameter `rsync_share_name`. With `rsync` and `tar` methods the module will
+create on the client an system account and allow the server access to it (see
+the description section in this readme).
 
-### Backuping up the backuppc server itself
+### Backing up the backuppc server itself
 
 ```puppet
 class { 'backuppc::client':
@@ -110,19 +129,11 @@ class { 'backuppc::client':
   tar_incr_args     => '--newer=$incrDate $fileList',
 }
 ```
-Debian by default installs a 'localhost' host, but if you want to managed it with puppet or if you're on Centos/RHEL this example will use the tar method to backup
-the paths you sepcify. The example uses sudo which is not configured in the module itself.
+Debian by default installs a 'localhost' host, but if you want to managed it
+with puppet or if you're on Centos/RHEL this example will use the tar method to
+backup the paths you specify. The example uses sudo which is not configured in
+the module itself.
 
-## Reference
+## Limitations
 
-### Classes
-
-#### Public Classes
-
-* backuppc:server: Class used to install backuppc.
-* backuppc::client: Configures host for backup through backuppc.
-
-#### Private Classes
-
-* backuppc::params: Default values.
-
+This module is limited to RedHat and Debian os families.

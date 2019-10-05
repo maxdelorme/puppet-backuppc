@@ -1,6 +1,6 @@
 # @summary
-#   Used as a vehicle to pick up OS specific defaults and shared parameters
-#   from hiera.
+#   Used as a vehicle to pick up OS specific defaults and common parameters
+#   across client and server.
 #
 # @param package
 #   The name of the backuppc package.

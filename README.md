@@ -40,8 +40,8 @@ For xfer methods that require ssh the module can:
 * Add the client's ssh key to the list of known hosts.
 
 By default the account name is 'backup'. You can choose to do the ssh
-configuration yourself if it doesn't suit your environment (see the params.pp
-file for notes on `system_account`).
+configuration yourself if it doesn't suit your environment (see 
+[`system_account`](REFERENCE.md#system_account)).
 
 You can use the `manage_ssakey` in the client to control whether sshkeys are
 generated.
@@ -65,7 +65,7 @@ backuppc::server::backuppc_password: 'somesecret'
 ```
 
 This will do the typical install, configure and service management. The module
-does not manage apache. It will, if the apache_configuation parameter is true,
+does not manage apache. It will, if the `apache_configuation` parameter is true,
 install an apache configuration file that creates an alias from the /backuppc
 url to the backuppc files on the system. Additionally it will create a htpasswd
 file with the default backuppc user and the password that you provide for

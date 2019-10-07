@@ -352,7 +352,6 @@ class backuppc::client (
   Optional[String] $smb_share_passwd                         = undef,
   Optional[String] $smb_share_user_name                      = undef,
   Optional[String] $sudo_prepend                             = undef,
-  Optional[String] $system_account                           = $backuppc::params::system_account,
   Optional[Array[String]] $system_additional_commands_noexec = undef,
   Optional[Array[String]] $system_additional_commands        = undef,
   Optional[String] $tar_client_cmd                           = undef,
@@ -383,7 +382,7 @@ class backuppc::client (
   # from the backuppc server to this client. It may be managed
   # elsewhere so we allow it to be overridden with the manage_sudo
   # parameter.
-  if $xfer_method in ['rsync', 'tar'] and ! empty($system_account)
+  if $xfer_method in ['rsync', 'tar'] and ! empty($system_account) # lint:ignore:variable_scope
   {
   #  validate_absolute_path($system_home_directory)
 
@@ -437,7 +436,7 @@ class backuppc::client (
         owner   => 'root',
         group   => 'root',
         mode    => '0440',
-        content => "${system_account} ALL=(ALL:ALL) NOPASSWD: ${sudo_commands}\n",
+        content => "${system_account} ALL=(ALL:ALL) NOPASSWD: ${sudo_commands}\n", # lint:ignore:variable_scope
       }
     } else {
       file { '/etc/sudoers.d/backuppc':
@@ -450,10 +449,10 @@ class backuppc::client (
       owner   => 'root',
       group   => 'root',
       mode    => '0440',
-      content => "${system_account} ALL=(ALL:ALL) NOEXEC:NOPASSWD: ${sudo_commands_noexec}\n",
+      content => "${system_account} ALL=(ALL:ALL) NOEXEC:NOPASSWD: ${sudo_commands_noexec}\n", # lint:ignore:variable_scope
     }
 
-    user { $system_account:
+    user { $system_account: # lint:ignore:variable_scope
       ensure     => $ensure,
       home       => $system_home_directory, # lint:ignore:variable_scope
       managehome => true,
@@ -466,8 +465,8 @@ class backuppc::client (
     file { "${system_home_directory}/.ssh": # lint:ignore:variable_scope
       ensure => $directory_ensure,
       mode   => '0700',
-      owner  => $system_account,
-      group  => $system_account,
+      owner  => $system_account, # lint:ignore:variable_scope
+      group  => $system_account, # lint:ignore:variable_scope
     }
 
     file { "${system_home_directory}/backuppc.sh": # lint:ignore:variable_scope
@@ -476,7 +475,7 @@ class backuppc::client (
       group   => 'root',
       mode    => '0755',
       content => template('backuppc/client/backuppc.sh.erb'),
-      require => User[$system_account],
+      require => User[$system_account], # lint:ignore:variable_scope
     }
 
     Ssh_authorized_key <<| tag == "backuppc_${backuppc_hostname}" |>> {

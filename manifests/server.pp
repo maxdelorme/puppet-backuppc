@@ -428,14 +428,14 @@ class backuppc::server (
   # Export backuppc's authorized key to all clients
   # TODO don't rely on facter to obtain the ssh key.
   if $facts['backuppc_pubkey_rsa'] != undef {
-    if ! empty($backuppc::params::system_account) {
+    if ! empty($system_account) { # lint:ignore:variable_scope
       @@ssh_authorized_key { "backuppc_${facts['networking']['fqdn']}":
         ensure  => present,
         key     => $facts['backuppc_pubkey_rsa'],
         name    => "backuppc_${facts['networking']['fqdn']}",
-        user    => $backuppc::params::system_account,
+        user    => $system_account,                           # lint:ignore:variable_scope
         options => [
-          "command=\"${backuppc::params::system_home_directory}/backuppc.sh\"",
+          "command=\"${system_home_directory}/backuppc.sh\"", # lint:ignore:variable_scope
           'no-agent-forwarding',
           'no-port-forwarding',
           'no-pty',

@@ -20,6 +20,9 @@ describe 'backuppc::server' do
             preseed_file: '/var/cache/debconf/backuppc.seeds' }
         end
       end
+      let(:pre_condition) do
+        [setup_common('backup', '/var/backups')]
+      end
       let(:htpasswd_command) do
         "test -f #{options[:config_directory]}/htpasswd   || OPT='-c';htpasswd -bs ${OPT}   #{options[:config_directory]}/htpasswd backuppc 'test_password'"
       end
@@ -33,6 +36,7 @@ describe 'backuppc::server' do
 
         it { is_expected.to contain_class('backuppc::server') }
         it { is_expected.to contain_class('backuppc::params') }
+        it { is_expected.to contain_class('backuppc::common') }
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_package('backuppc') }
         it do

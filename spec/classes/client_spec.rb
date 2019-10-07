@@ -13,19 +13,21 @@ describe 'backuppc::client' do
           '/etc/backuppc/pc/testhost.pl'
         end
       end
+      let(:pre_condition) do
+        [setup_common('backup', '/var/backups')]
+      end
 
       default_params = {
         'backuppc_hostname' => 'backuppc.test.com',
         'config_name' => 'testhost',
         'hosts_file_user' => 'backuppc',
-        'system_account' => 'backup',
-        'system_home_directory' => '/var/backups',
       }
       context 'with defaults' do
         let(:params) { default_params }
 
         it { is_expected.to contain_class('backuppc::client') }
         it { is_expected.to contain_class('backuppc::params') }
+        it { is_expected.to contain_class('backuppc::common') }
         it { is_expected.to compile.with_all_deps }
 
         # These tests relate to system_account being set

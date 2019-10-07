@@ -10,8 +10,7 @@ hierarchy:
 - name: 'In module hierachy'
   paths:
     - "%{facts.virtual}.yaml"
-    - "%{facts.os.family}/%{facts.os.name}/%{facts.os.release.major}.yaml"
+    - "%{facts.os.family}/%{facts.os.name}-%{facts.os.release.major}.yaml"
     - "%{facts.os.family}/%{facts.os.name}.yaml"
-    - "%{facts.os.family}/%{facts.os.release.major}.yaml"
     - "%{facts.os.family}.yaml"
     - 'common.yaml'

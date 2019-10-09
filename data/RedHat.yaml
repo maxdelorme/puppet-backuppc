@@ -1,18 +1,23 @@
 ---
 
-backuppc::params::install_directory: '/usr/share/BackupPC'
-backuppc::params::config_directory:  '/etc/BackupPC'
-backuppc::params::cgi_directory:     "%{hiera('backuppc::params::install_directory')}/sbin"
-backuppc::params::cgi_image_dir:     "%{hiera('backuppc::params::install_directory')}/html"
-backuppc::params::cgi_image_dir_url: '/BackupPC/images'
-backuppc::params::config_apache:     '/etc/httpd/conf.d/BackupPC.conf'
-backuppc::params::config:            "%{hiera('backuppc::params::config_directory')}/config.pl"
-backuppc::params::hosts:             "%{hiera('backuppc::params::config_directory')}/hosts"
-backuppc::params::log_directory:     '/var/log/BackupPC'
-backuppc::params::package:           'BackupPC'
-backuppc::params::par_path:
-backuppc::params::service:           'backuppc'
-backuppc::params::topdir:            '/var/lib/BackupPC'
+backuppc::common::config_directory:  '/etc/BackupPC'
 
-backuppc::params::group_apache:      'apache'
-backuppc::params::preseed_file:
+backuppc::server::topdir:            '/var/lib/BackupPC'
+backuppc::server::install_directory: '/usr/share/BackupPC'
+backuppc::server::cgi_directory:     "%{hiera('backuppc::server::install_directory')}/sbin"
+backuppc::server::cgi_image_dir:     "%{hiera('backuppc::server::install_directory')}/html"
+backuppc::server::cgi_image_dir_url: '/BackupPC/images'
+backuppc::server::config:            "%{hiera('backuppc::common::config_directory')}/config.pl"
+backuppc::server::config_apache:     '/etc/httpd/conf.d/BackupPC.conf'
+backuppc::server::group_apache:      'www-data'
+backuppc::server::hosts:             "%{hiera('backuppc::common::config_directory')}/hosts"
+backuppc::server::log_directory:     '/var/log/BackupPC'
+backuppc::server::package:           'BackupPC'
+backuppc::server::par_path:
+backuppc::server::rsync_path:        '/usr/bin/rsync'
+backuppc::server::service:           'backuppc'
+backuppc::server::tar_path:          '/bin/tar'
+backuppc::server::preseed_file:
+
+backuppc::client::rsync_path:         '/usr/bin/rsync'
+backuppc::client::tar_path:           '/bin/tar'

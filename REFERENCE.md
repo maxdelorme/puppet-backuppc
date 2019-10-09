@@ -62,6 +62,14 @@ Name of the this host used for the configuration file.
 
 Default value: $facts['networking']['fqdn']
 
+##### `config_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+The location of the backuppc configuration
+
+Default value: lookup('backuppc::common::config_directory')
+
 ##### `ensure`
 
 Data type: `Enum['present','absent']`
@@ -659,6 +667,38 @@ Whether the exit status of each PreUserCmd and PostUserCmd is checked.
 
 Default value: `undef`
 
+##### `rsync_path`
+
+Data type: `Stdlib::Absolutepath`
+
+
+
+Default value: '/bin/rsync'
+
+##### `system_account`
+
+Data type: `String`
+
+
+
+Default value: lookup('backuppc::common::system_account')
+
+##### `system_home_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+
+
+Default value: lookup('backuppc::common::system_home_directory')
+
+##### `tar_path`
+
+Data type: `Stdlib::Absolutepath`
+
+
+
+Default value: '/bin/tar'
+
 ##### `email_notify_old_backup_days`
 
 Data type: `Optional[Integer]`
@@ -666,14 +706,6 @@ Data type: `Optional[Integer]`
 
 
 Default value: `undef`
-
-##### `system_account`
-
-Data type: `Optional[String]`
-
-
-
-Default value: $backuppc::params::system_account
 
 ### backuppc::common
 
@@ -1012,7 +1044,7 @@ The CGI script uses this value to serve up image files.
 Example:
     $Conf{CgiImageDirURL} = '/BackupPC';
 
-Default value: $backuppc::params::cgi_image_dir_url
+Default value: '/backuppc/image'
 
 ##### `cgi_url`
 
@@ -1279,7 +1311,7 @@ Data type: `Stdlib::Absolutepath`
 
 Overwrite package default location for backuppc.
 
-Default value: $backuppc::params::topdir
+Default value: '/var/lib/backuppc'
 
 ##### `trash_clean_sleep_sec`
 
@@ -1312,12 +1344,19 @@ Default value: `true`
 
 Data type: `Array[Backuppc::Hours]`
 
-Times at which we wake up, check all the PCs,
-and schedule necessary backups. Times are measured
-in hours since midnight. Can be fractional if
-necessary (eg: 4.25 means 4:15am).
+Times at which we wake up, check all the PCs, and schedule necessary
+backups. Times are measured in hours since midnight. Can be fractional if
 
 Default value: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
+
+##### `system_home_directory`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Absolute path to the home directory of the system account.  necessary (eg:
+4.25 means 4:15am).
+
+Default value: lookup('backuppc::common::system_home_directory')
 
 ##### `dhcp_address_ranges`
 
@@ -1344,6 +1383,186 @@ Data type: `Optional[Array[String]]`
 Additional arguments to rsync for backup.
 
 Default value: `undef`
+
+##### `package`
+
+Data type: `String[1]`
+
+The name of the backuppc package.
+
+Default value: 'backuppc'
+
+##### `service`
+
+Data type: `String[1]`
+
+The name of the backuppc service.
+
+Default value: 'backuppc'
+
+##### `config_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+The location of the backuppc configuration
+
+Default value: lookup('backuppc::common::config_directory')
+
+##### `topdir`
+
+he backuppc data directory, below which all the BackupPC data is stored.
+This needs to have enough capacity for your backups.
+
+Default value: '/var/lib/backuppc'
+
+##### `config`
+
+Data type: `Stdlib::Absolutepath`
+
+The name of the main configuration file. This sets the defaults for all
+hosts/clients.
+
+Default value: "${backuppc::server::config_directory}/config.pl"
+
+##### `hosts`
+
+Data type: `Stdlib::Absolutepath`
+
+The name of the hosts file. This contains the list of clients to backup.
+
+Default value: "${backuppc::server::config_directory}/hosts"
+
+##### `install_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+Install location for BackupPC scripts, libraries and documentation.
+
+Default value: '/usr/share/backuppc'
+
+##### `cgi_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+Location for BackupPC CGI script. This will usually be below Apache's
+cgi-bin directory.
+
+Default value: "${backuppc::server::install_directory}/cgi-bin"
+
+##### `cgi_image_dir`
+
+Data type: `Stdlib::Absolutepath`
+
+The directory where BackupPC's images are stored so that Apache can serve
+them. You should ensure this directory is readable by Apache and create a
+symlink to this directory from the BackupPC CGI bin Directory.
+
+Default value: "${backuppc::server::install_directory}/image"
+
+##### `cgi_image_dir_url`
+
+URL (without the leading http://host) for BackupPC's image directory. The
+CGI script uses this value to serve up image files.
+
+Default value: '/backuppc/image'
+
+##### `log_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+Location for log files.
+
+Default value: "${backuppc::server::topdir}/log"
+
+##### `config_apache`
+
+Data type: `Stdlib::Absolutepath`
+
+The file where the backuppc specifc config for apache is stored.
+
+Default value: '/etc/apache2/conf.d/backuppc.conf'
+
+##### `group_apache`
+
+Data type: `String[1]`
+
+BackupPC config files are set to this group.
+
+Default value: lookup('backuppc::common::group_apache')
+
+##### `par_path`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Path to par executable
+
+Default value: '/usr/bin/par2'
+
+##### `gzip_path`
+
+Data type: `Stdlib::Absolutepath`
+
+Path to gzip executable
+
+Default value: '/bin/gzip'
+
+##### `bzip2_path`
+
+Data type: `Stdlib::Absolutepath`
+
+Path to bzip2 executable
+
+Default value: '/bin/bzip2'
+
+##### `tar_path`
+
+Data type: `Stdlib::Absolutepath`
+
+Path to tar executable
+
+Default value: '/bin/tar'
+
+##### `preseed_file`
+
+Data type: `Optional[Hash]`
+
+The location for the preseed file to support BackupPC installation by
+providing preset answers.
+
+Default value: {
+    '/var/cache/debconf/backuppc.seeds' => {
+      ensure => 'present',
+      content => "template('backuppc/Debian-preeseed.erb')"
+    }
+  }
+
+##### `system_account`
+
+Data type: `Optional[String]`
+
+Name of the user that will be created to allow backuppc access to the
+system via ssh. This only applies to xfer methods that require it. To
+override this set the system_account to an empty string and configure
+access to the client yourself as the default in the global config file
+(root) or change the rsync_client_cmd or tar_client_cmd to suit your setup.
+
+Default value: lookup('backuppc::common::system_account')
+
+##### `htpasswd_apache`
+
+Data type: `Stdlib::Absolutepath`
+
+
+
+Default value: "${backuppc::server::config_directory}/htpasswd"
+
+##### `rsync_path`
+
+Data type: `Stdlib::Absolutepath`
+
+
+
+Default value: '/bin/rsync'
 
 ## Defined types
 

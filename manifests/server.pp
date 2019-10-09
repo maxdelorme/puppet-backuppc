@@ -212,10 +212,12 @@
 #    database which fails because of some database error.
 #
 # @param wakeup_schedule
-#   Times at which we wake up, check all the PCs,
-#   and schedule necessary backups. Times are measured
-#   in hours since midnight. Can be fractional if
-#   necessary (eg: 4.25 means 4:15am).
+#   Times at which we wake up, check all the PCs, and schedule necessary
+#   backups. Times are measured in hours since midnight. Can be fractional if
+#
+# @param system_home_directory
+#   Absolute path to the home directory of the system account.  necessary (eg:
+#   4.25 means 4:15am).
 #
 # @param dhcp_address_ranges
 #   List of DHCP address ranges we search looking for PCs to backup. This is an
@@ -228,7 +230,77 @@
 # @param rsync_args_extra
 #   Additional arguments to rsync for backup.
 #
+# @param package
+#   The name of the backuppc package.
+#
+# @param service
+#   The name of the backuppc service.
+#
+# @param config_directory
+#   The location of the backuppc configuration
+#
+# @param topdir
+#   he backuppc data directory, below which all the BackupPC data is stored.
+#   This needs to have enough capacity for your backups.
+#
+# @param config
+#   The name of the main configuration file. This sets the defaults for all
+#   hosts/clients.
+#
+# @param hosts
+#   The name of the hosts file. This contains the list of clients to backup.
+#
+# @param install_directory
+#   Install location for BackupPC scripts, libraries and documentation.
+#
+# @param cgi_directory
+#   Location for BackupPC CGI script. This will usually be below Apache's
+#   cgi-bin directory.
+#
+# @param cgi_image_dir
+#   The directory where BackupPC's images are stored so that Apache can serve
+#   them. You should ensure this directory is readable by Apache and create a
+#   symlink to this directory from the BackupPC CGI bin Directory.
+#
+# @param cgi_image_dir_url
+#   URL (without the leading http://host) for BackupPC's image directory. The
+#   CGI script uses this value to serve up image files.
+#
+# @param log_directory
+#   Location for log files.
+#
+# @param config_apache
+#   The file where the backuppc specifc config for apache is stored.
+#
+# @param group_apache
+#   BackupPC config files are set to this group.
+#
+# @param par_path
+#   Path to par executable
+#
+# @param gzip_path
+#   Path to gzip executable
+#
+# @param bzip2_path
+#   Path to bzip2 executable
+#
+# @param tar_path
+#   Path to tar executable
+#
+# @param preseed_file
+#   The location for the preseed file to support BackupPC installation by
+#   providing preset answers.
+#
+# @param system_account
+#   Name of the user that will be created to allow backuppc access to the
+#   system via ssh. This only applies to xfer methods that require it. To
+#   override this set the system_account to an empty string and configure
+#   access to the client yourself as the default in the global config file
+#   (root) or change the rsync_client_cmd or tar_client_cmd to suit your setup.
+#
 class backuppc::server (
+  Stdlib::Absolutepath $config_directory                    = lookup('backuppc::common::config_directory'),
+  Stdlib::Absolutepath $topdir                              = '/var/lib/backuppc',
   String $apache_allow_from                                 = 'all',
   Boolean $apache_configuration                             = true,
   Boolean $apache_require_ssl                               = false,
@@ -238,11 +310,16 @@ class backuppc::server (
   Boolean $backup_zero_files_is_fatal                       = true,
   Integer $blackout_good_cnt                                = 7,
   Backuppc::BlackoutPeriods $blackout_periods = [ { hourBegin => 7.0, hourEnd => 19.5, weekDays => [1,2,3,4,5], }, ],
+  Stdlib::Absolutepath $bzip2_path                          = '/bin/bzip2',
   String $cgi_admin_user_group                              = 'backuppc',
   String $cgi_admin_users                                   = 'backuppc',
   Integer[0,2] $cgi_date_format_mmdd                        = 1,
-  Stdlib::Absolutepath $cgi_image_dir_url                   = $backuppc::params::cgi_image_dir_url,
+  Stdlib::Absolutepath $cgi_directory                       = "${backuppc::server::install_directory}/cgi-bin",
+  Stdlib::Absolutepath $cgi_image_dir                       = "${backuppc::server::install_directory}/image",
+  Stdlib::Absolutepath $cgi_image_dir_url                   = '/backuppc/image',
   Stdlib::HTTPUrl $cgi_url                                  = "http://${facts['networking']['fqdn']}/backuppc/index.cgi",
+  Stdlib::Absolutepath $config_apache                       = '/etc/apache2/conf.d/backuppc.conf',
+  Stdlib::Absolutepath $config                              = "${backuppc::server::config_directory}/config.pl",
   Integer $df_max_usage_pct                                 = 95,
   String $email_admin_user_name                             = 'backuppc',
   String $email_from_user_name                              = 'backuppc',
@@ -253,29 +330,47 @@ class backuppc::server (
   Integer $full_age_max                                     = 90,
   Variant[Integer,Array[Integer]] $full_keep_cnt            = 1,
   Numeric $full_period                                      = 6.97,
+  String[1] $group_apache                                   = lookup('backuppc::common::group_apache'),
+  Stdlib::Absolutepath $gzip_path                           = '/bin/gzip',
+  Stdlib::Absolutepath $hosts                               = "${backuppc::server::config_directory}/hosts",
+  Stdlib::Absolutepath $htpasswd_apache                     = "${backuppc::server::config_directory}/htpasswd",
   Integer $incr_age_max                                     = 30,
   Boolean $incr_fill                                        = false,
   Integer $incr_keep_cnt                                    = 6,
   Array[Integer] $incr_levels                               = [1],
   Numeric $incr_period                                      = 0.97,
+  Stdlib::Absolutepath $install_directory                   = '/usr/share/backuppc',
   String $language                                          = 'en',
+  Stdlib::Absolutepath $log_directory                       = "${backuppc::server::topdir}/log",
   Integer $max_backuppc_nightly_jobs                        = 2,
   Integer $max_backups                                      = 4,
   Integer $max_old_log_files                                = 14,
   Integer $max_pending_cmds                                 = 15,
   Integer $max_user_backups                                 = 4,
+  String[1] $package                                        = 'backuppc',
   Integer $partial_age_max                                  = 3,
   Integer $ping_max_msec                                    = 20,
   Integer $restore_info_keep_cnt                            = 10,
+  Stdlib::Absolutepath $rsync_path                          = '/bin/rsync',
+  String[1] $service                                        = 'backuppc',
   Boolean $service_enable                                   = true,
-  Stdlib::Absolutepath $topdir                              = $backuppc::params::topdir,
+  Stdlib::Absolutepath $tar_path                            = '/bin/tar',
   Integer $trash_clean_sleep_sec                            = 300,
   Boolean $user_cmd_check_status                            = true,
   Array[Backuppc::Hours] $wakeup_schedule = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23],
   Optional[Backuppc::DhcpAddressRange] $dhcp_address_ranges = undef,
   Optional[Backuppc::Domain] $email_user_dest_domain        = undef,
+  Optional[Stdlib::Absolutepath] $par_path                  = '/usr/bin/par2',
+  Optional[Hash] $preseed_file                              = {
+    '/var/cache/debconf/backuppc.seeds' => {
+      ensure => 'present',
+      content => "template('backuppc/Debian-preeseed.erb')"
+    }
+  },
   Optional[Array[String]] $rsync_args_extra                 = undef,
-) inherits backuppc::params  {
+  Optional[String] $system_account                          = lookup('backuppc::common::system_account'),
+  Optional[Stdlib::Absolutepath] $system_home_directory     = lookup('backuppc::common::system_home_directory'),
+) {
 
   if empty($backuppc_password) {
     fail('Please provide a password for the backuppc user. This is used to login to the web based administration site.')
@@ -286,7 +381,7 @@ class backuppc::server (
   $real_uccs      = bool2num($user_cmd_check_status)
 
   $real_topdir = $topdir ? {
-    ''      => $backuppc::params::topdir,
+    ''      => lookup('backuppc::server::topdir'),
     default => $topdir,
   }
 
@@ -298,13 +393,13 @@ class backuppc::server (
   # On Debian, adapt log_directory to $topdir value
   $real_log_directory = $facts['os']['family'] ? {
     'Debian' => "${topdir}/log",
-    default  => $backuppc::params::log_directory,
+    default  => $log_directory,
   }
 
   # If topdir is changed, create a symlink between "default" topdir and the custom
   # This permit "facter/backuppc_pubkey_rsa" to work properly.
-  if $real_topdir != $backuppc::params::topdir {
-    file { $backuppc::params::topdir:
+  if $real_topdir != lookup('backuppc::server::topdir') {
+    file { $topdir:
       ensure => link,
       target => $real_topdir,
     }
@@ -314,19 +409,19 @@ class backuppc::server (
   Package['backuppc'] -> File['config.pl'] -> Service['backuppc']
 
   # Include preseeding for debian packages
-  unless empty ($backuppc::params::preseed_file) {
-    create_resources(file, $backuppc::params::preseed_file)
+  unless empty ($preseed_file) {
+    create_resources(file, $preseed_file)
   }
 
   # BackupPC package and service configuration
   package { 'backuppc':
     ensure => $ensure,
-    name   => $backuppc::params::package,
+    name   => $package,
   }
 
   service { 'backuppc':
     ensure    => $service_enable,
-    name      => $backuppc::params::service,
+    name      => $service,
     enable    => $service_enable,
     hasstatus => true,
     pattern   => 'BackupPC'
@@ -334,9 +429,9 @@ class backuppc::server (
 
   file { 'config.pl':
     ensure  => $ensure,
-    path    => $backuppc::params::config,
+    path    => $config,
     owner   => 'backuppc',
-    group   => $backuppc::params::group_apache,
+    group   => $group_apache,
     mode    => '0640',
     content => template('backuppc/config.pl.erb'),
     notify  => Service['backuppc']
@@ -344,23 +439,23 @@ class backuppc::server (
 
   file { 'config_directory':
     ensure  => $directory_ensure,
-    path    => $backuppc::params::config_directory,
+    path    => $config_directory,
     owner   => 'backuppc',
-    group   => $backuppc::params::group_apache,
+    group   => $group_apache,
     require => Package['backuppc'],
   }
 
   file { 'pc_directory_symlink':
     ensure  => link,
-    path    => "${backuppc::params::config_directory}/pc",
-    target  => $backuppc::params::config_directory,
+    path    => "${config_directory}/pc",
+    target  => $config_directory,
     require => Package['backuppc'],
   }
 
   $topdir_defaults = {
     ensure  => $directory_ensure,
     owner   => 'backuppc',
-    group   => $backuppc::params::group_apache,
+    group   => $group_apache,
     mode    => '0640',
     require => Package['backuppc'],
   }
@@ -384,13 +479,13 @@ class backuppc::server (
     'Debian': {
       file { '/etc/BackupPC':
         ensure => link,
-        target => $backuppc::params::config_directory,
+        target => $config_directory,
       }
     }
     'RedHat': {
       file { '/etc/backuppc':
         ensure => link,
-        target => $backuppc::params::config_directory,
+        target => $config_directory,
       }
     }
     default: {
@@ -414,7 +509,7 @@ class backuppc::server (
   if $apache_configuration {
     file { 'apache_config':
       ensure  => $ensure,
-      path    => $backuppc::params::config_apache,
+      path    => $config_apache,
       content => template("backuppc/apache_${facts['os']['family']}.erb"),
       require => Package['backuppc'],
     }
@@ -428,14 +523,14 @@ class backuppc::server (
   # Export backuppc's authorized key to all clients
   # TODO don't rely on facter to obtain the ssh key.
   if $facts['backuppc_pubkey_rsa'] != undef {
-    if ! empty($system_account) { # lint:ignore:variable_scope
+    if ! empty($system_account) {
       @@ssh_authorized_key { "backuppc_${facts['networking']['fqdn']}":
         ensure  => present,
         key     => $facts['backuppc_pubkey_rsa'],
         name    => "backuppc_${facts['networking']['fqdn']}",
-        user    => $system_account,                           # lint:ignore:variable_scope
+        user    => $system_account,
         options => [
-          "command=\"${system_home_directory}/backuppc.sh\"", # lint:ignore:variable_scope
+          "command=\"${system_home_directory}/backuppc.sh\"",
           'no-agent-forwarding',
           'no-port-forwarding',
           'no-pty',
@@ -456,17 +551,17 @@ class backuppc::server (
     }
   }
 
-# Hosts
-File <<| tag == "backuppc_config_${facts['networking']['fqdn']}" |>> {
-  group   => $backuppc::params::group_apache,
-  notify  => Service['backuppc'],
-  require => File['pc_directory_symlink'],
-}
+  # Hosts
+  File <<| tag == "backuppc_config_${facts['networking']['fqdn']}" |>> {
+    group   => $group_apache,
+    notify  => Service['backuppc'],
+    require => File['pc_directory_symlink'],
+  }
 
-Augeas <<| tag == "backuppc_hosts_${facts['networking']['fqdn']}" |>> {
-  notify  => Service['backuppc'],
-  require => Package['backuppc'],
-}
+  Augeas <<| tag == "backuppc_hosts_${facts['networking']['fqdn']}" |>> {
+    notify  => Service['backuppc'],
+    require => Package['backuppc'],
+  }
 
-Sshkey <<| tag == "backuppc_sshkeys_${facts['networking']['fqdn']}" |>>
+  Sshkey <<| tag == "backuppc_sshkeys_${facts['networking']['fqdn']}" |>>
 }

@@ -21,19 +21,19 @@ $Conf{MaxOldLogFiles} = <%= @max_old_log_files %>;
 $Conf{DfPath} = '/bin/df';
 $Conf{DfCmd} = '$dfPath $topDir';
 $Conf{SplitPath} = '/usr/bin/split';
-$Conf{ParPath}   = '<%= scope['backuppc::params::par_path'] %>';
+$Conf{ParPath}   = '@par_path';
 $Conf{CatPath}   = '/bin/cat';
-$Conf{GzipPath}  = '<%= scope['backuppc::params::gzip_path'] %>';
-$Conf{Bzip2Path} = '<%= scope['backuppc::params::bzip2_path'] %>';
+$Conf{GzipPath}  = '@gzip_path';
+$Conf{Bzip2Path} = '@bzip2_path';
 $Conf{DfMaxUsagePct} = <%= @df_max_usage_pct %>;
 $Conf{TrashCleanSleepSec} = <%= @trash_clean_sleep_sec %>;
 $Conf{DHCPAddressRanges} =  <%= PP.pp(@dhcp_address_ranges,'').chomp.tr(?", ?') -%>;
 $Conf{BackupPCUser} = 'backuppc';
 $Conf{TopDir}      = '<%= scope['backuppc::server::real_topdir'] %>';
-$Conf{ConfDir}     = '<%= scope['backuppc::params::config_directory'] %>';
+$Conf{ConfDir}     = '@config_directory';
 $Conf{LogDir}      = '<%= scope['backuppc::server::real_log_directory'] %>';
-$Conf{InstallDir}  = '<%= scope['backuppc::params::install_directory'] %>';
-$Conf{CgiDir}      = '<%= scope['backuppc::params::cgi_directory'] %>';
+$Conf{InstallDir}  = '@install_directory';
+$Conf{CgiDir}      = '@cgi_directory';
 $Conf{BackupPCUserVerify} = 1;
 $Conf{HardLinkMax} = 31999;
 $Conf{PerlModuleLoad}     = undef;
@@ -87,8 +87,8 @@ $Conf{TarIncrArgs} = '--newer=$incrDate+ $fileList+';
 $Conf{TarClientRestoreCmd} = '$sshPath -q -x -l root $host'
        . ' env LC_ALL=C $tarPath -x -p --numeric-owner --same-owner'
        . ' -v -f - -C $shareName+';
-$Conf{TarClientPath} = '<%= scope['backuppc::params::tar_path'] %>';
-$Conf{RsyncClientPath} = '/usr/bin/rsync';
+$Conf{TarClientPath} = '@tar_path';
+$Conf{RsyncClientPath} = '@rsync_path;
 $Conf{RsyncClientCmd} = '$sshPath -q -x -l root $host $rsyncPath $argList+';
 $Conf{RsyncClientRestoreCmd} = '$sshPath -q -x -l root $host $rsyncPath $argList+';
 $Conf{RsyncShareName} = '/';
@@ -233,7 +233,7 @@ $Conf{CgiStatusHilightColor} = {
     Disabled_AllBackupsDisabled    => '#d1d1d1',
 };
 $Conf{CgiHeaders} = '<meta http-equiv="pragma" content="no-cache">';
-$Conf{CgiImageDir} = '<%= scope['backuppc::params::cgi_image_dir'] %>';
+$Conf{CgiImageDir} = '@cgi_image_dir';
 $Conf{CgiExt2ContentType} = { };
 $Conf{CgiImageDirURL} = '<%= @cgi_image_dir_url %>';
 $Conf{CgiCSSFile} = 'BackupPC_stnd.css';

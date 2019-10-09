@@ -1,9 +1,9 @@
 #
 # This file is managed by puppet.
 #
-Alias /backuppc <%= scope.lookupvar('backuppc::params::cgi_directory') %>
+Alias /backuppc <%= @cgi_directory %>
 
-<Directory <%= scope.lookupvar('backuppc::params::cgi_directory') %>>
+<Directory <%= @cgi_directory %>>
   AllowOverride None
   Order deny,allow
   Deny from all
@@ -15,7 +15,7 @@ Alias /backuppc <%= scope.lookupvar('backuppc::params::cgi_directory') %>
   AddHandler cgi-script .cgi
   DirectoryIndex index.cgi
 
-  AuthUserFile <%= scope.lookupvar('backuppc::params::htpasswd_apache') %>
+  AuthUserFile <%= @htpasswd_apache %>
   AuthType basic
   AuthName "BackupPC"
   require valid-user

@@ -89,5 +89,5 @@ class backuppc::params (
       content => "template('backuppc/Debian-preeseed.erb')"
     }
   }
-) inherits backuppc::common {
+) {
 }

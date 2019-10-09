@@ -1,11 +1,11 @@
 #
 # This file is managed by puppet.
 #
-Alias           /BackupPC/images        <%= scope.lookupvar('backuppc::params::cgi_image_dir') %>
-ScriptAlias     /BackupPC               <%= scope.lookupvar('backuppc::params::cgi_directory') %>/BackupPC_Admin
-ScriptAlias     /backuppc               <%= scope.lookupvar('backuppc::params::cgi_directory') %>/BackupPC_Admin
+Alias           /BackupPC/images        <%= @cgi_image_dir %>
+ScriptAlias     /BackupPC               <%= @cgi_directory %>/BackupPC_Admin
+ScriptAlias     /backuppc               <%= @cgi_directory %>/BackupPC_Admin
 
-<Directory <%= scope.lookupvar('backuppc::params::install_directory') %>>
+<Directory <%= @install_directory %>>
   Order deny,allow
   Deny from all
   Allow from <%= @apache_allow_from %>
@@ -14,7 +14,7 @@ ScriptAlias     /backuppc               <%= scope.lookupvar('backuppc::params::c
   <% end -%>
   
   AuthType Basic
-  AuthUserFile <%= scope.lookupvar('backuppc::params::htpasswd_apache') %>
+  AuthUserFile <%= @htpasswd_apache %>
   AuthName "BackupPC"
   require valid-user    
 </Directory>

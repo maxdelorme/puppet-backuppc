@@ -1,22 +1,27 @@
 ---
 
-backuppc::params::install_directory:  '/usr/share/backuppc'
-backuppc::params::cgi_directory:      "%{hiera('backuppc::params::install_directory')}/cgi-bin"
-backuppc::params::cgi_image_dir:      "%{hiera('backuppc::params::install_directory')}/image"
-backuppc::params::cgi_image_dir_url:  '/backuppc/image'
-backuppc::params::config_apache:      '/etc/apache2/conf.d/backuppc.conf'
-backuppc::params::config:             "%{hiera('backuppc::params::config_directory')}/config.pl"
-backuppc::params::hosts:              "%{hiera('backuppc::params::config_directory')}/hosts"
-backuppc::params::log_directory:      '/var/lib/backuppc/log'
-backuppc::params::package:            'backuppc'
-backuppc::params::par_path:           '/usr/bin/par2'
-backuppc::params::topdir:             '/var/lib/backuppc'
+backuppc::common::config_directory:   '/etc/backuppc'
 
-backuppc::params::config_directory:   '/etc/backuppc'
-backuppc::params::group_apache:       'www-data'
-
-backuppc::params::manage_apache:      true
-backuppc::params::preseed_file:
+backuppc::server::topdir:             '/var/lib/backuppc'
+backuppc::server::install_directory:  '/usr/share/backuppc'
+backuppc::server::cgi_directory:      "%{hiera('backuppc::server::install_directory')}/cgi-bin"
+backuppc::server::cgi_image_dir:      "%{hiera('backuppc::server::install_directory')}/image"
+backuppc::server::cgi_image_dir_url:  '/backuppc/image'
+backuppc::server::config:             "%{hiera('backuppc::common::config_directory')}/config.pl"
+backuppc::server::config_apache:      '/etc/apache2/conf.d/backuppc.conf'
+backuppc::server::group_apache:       'www-data'
+backuppc::server::hosts:              "%{hiera('backuppc::common::config_directory')}/hosts"
+backuppc::server::log_directory:      '/var/lib/backuppc/log'
+backuppc::server::manage_apache:      true
+backuppc::server::package:            'backuppc'
+backuppc::server::par_path:           '/usr/bin/par2'
+backuppc::server::rsync_path:         '/usr/bin/rsync'
+backuppc::server::service:            'backuppc'
+backuppc::server::tar_path:           '/bin/tar'
+backuppc::server::preseed_file:
   '/var/cache/debconf/backuppc.seeds':
     ensure: 'present'
     content: "template('backuppc/Debian-preeseed.erb')"
+
+backuppc::client::rsync_path:         '/usr/bin/rsync'
+backuppc::client::tar_path:           '/bin/tar'

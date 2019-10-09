@@ -15,7 +15,6 @@ define backuppc::server::user (
   $username = undef,
   $password = '',
 ) {
-  include backuppc::params
 
   validate_re($ensure, '^(present|absent)$',
   'ensure parameter must have a value of: present or absent')
@@ -37,17 +36,17 @@ define backuppc::server::user (
 
   if $ensure == 'present' {
     $command = @("END"/$L)
-      test -f ${backuppc::params::htpasswd_apache} \
+      test -f ${backuppc::server::htpasswd_apache} \
         || OPT='-c';\
       htpasswd -bs \${OPT} \
-        ${backuppc::params::htpasswd_apache} ${real_username} '${password}'
+        ${backuppc::server::htpasswd_apache} ${real_username} '${password}'
       | - END
     exec {$command:
-      unless  => "grep -q ${real_username}:${real_password} ${backuppc::params::htpasswd_apache}",
+      unless  => "grep -q ${real_username}:${real_password} ${backuppc::server::htpasswd_apache}",
     }
   } else {
-    exec {"htpasswd -D ${backuppc::params::htpasswd_apache} ${real_username}":
-      onlyif  => "egrep -q '^${real_username}:' ${backuppc::params::htpasswd_apache}",
+    exec {"htpasswd -D ${backuppc::server::htpasswd_apache} ${real_username}":
+      onlyif  => "egrep -q '^${real_username}:' ${backuppc::server::htpasswd_apache}",
     }
   }
 }

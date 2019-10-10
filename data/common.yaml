@@ -4,6 +4,6 @@ backuppc::client::system_account:        'backup'
 backuppc::client::system_home_directory: '/var/backups'
 
 lookup_options:
-  "^backuppc::(.*)::(.*)$":
+  "^backuppc::client::backup_files(.*)$|^backuppc::client::(.*)share_name$":
     merge: deep
     knockout_prefix: '--'

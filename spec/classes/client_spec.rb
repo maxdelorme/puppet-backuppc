@@ -13,8 +13,9 @@ describe 'backuppc::client' do
           '/etc/backuppc/pc/testhost.pl'
         end
       end
-      context "with OS defaults" do
-        let (:default_params) do
+
+      context 'with OS defaults' do
+        let(:default_params) do
           {
             system_account: 'backup',
             system_home_directory: '/var/backups',

@@ -5,7 +5,6 @@ describe 'backuppc::server' do
     let(:node) { 'testhost.test.com' }
 
     context "on #{os}" do
-
       let(:facts) { facts }
       let(:default_params) do
         case facts[:os]['family']
@@ -17,17 +16,15 @@ describe 'backuppc::server' do
           { group_apache: 'www-data',
             config_directory: '/etc/backuppc',
             topdir: '/var/lib/backuppc',
-            'preseed_file' => { '/var/cache/debconf/backuppc.seeds' => { 'ensure' => 'present', } } }
+            'preseed_file' => { '/var/cache/debconf/backuppc.seeds' => { 'ensure' => 'present' } } }
         end
       end
 
-      context "with OS defaults" do
-        let (:default_params) do
-          super().merge({
-            backuppc_password: 'test_password',
-            system_account: 'backup',
-            system_home_directory: '/var/backups',
-          })
+      context 'with OS defaults' do
+        let(:default_params) do
+          super().merge(backuppc_password: 'test_password',
+                        system_account: 'backup',
+                        system_home_directory: '/var/backups')
         end
         let(:htpasswd_command) do
           "test -f #{default_params[:config_directory]}/htpasswd   || OPT='-c';htpasswd -bs ${OPT}   #{default_params[:config_directory]}/htpasswd backuppc 'test_password'"

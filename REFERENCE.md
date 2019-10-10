@@ -689,7 +689,7 @@ Default value: `undef`
 
 ##### `system_account`
 
-Data type: `Optional[String[1]]`
+Data type: `Optional[String]`
 
 
 

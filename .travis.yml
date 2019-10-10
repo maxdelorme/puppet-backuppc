@@ -43,5 +43,5 @@ branches:
     - /^v\d/
 notifications:
   email:
-    on_success: always
+    on_success: change
     on_failure: always

@@ -386,10 +386,9 @@ class backuppc::client (
   # from the backuppc server to this client. It may be managed
   # elsewhere so we allow it to be overridden with the manage_sudo
   # parameter.
+  notify {"Running with \$system_account =  ${::system_account}":}
   if $xfer_method in ['rsync', 'tar'] and $system_account != undef
   {
-  #  validate_absolute_path($system_home_directory)
-
     if $xfer_method == 'rsync' {
       if $manage_rsync {
         package { 'rsync':

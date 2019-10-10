@@ -74,7 +74,7 @@ $Conf{TarShareName} = <%= PP.pp(@tar,'').chomp.tr(?", ?') -%>;
 <% end -%>
 <% if defined?(@tar_client_cmd) and !@tar_client_cmd.empty? -%>
 $Conf{TarClientCmd} = '<%= @tar_client_cmd %>';
-<% elsif defined?(@system_account) -%>
+<% elsif !@system_account.empty? -%>
 $Conf{TarClientCmd} = '$sshPath -q -x -n -l <%= @system_account %> $host'
 . ' env LC_ALL=C $tarPath -c -v -f - -C $shareName+'
 . ' --totals';
@@ -94,12 +94,12 @@ $Conf{TarClientRestoreCmd} = '$sshPath -q -x -l <%= @system_account %> $host'
 <% end -%>
 <% if defined?(@rsync_client_cmd) and !@rsync_client_cmd.empty? -%>
 $Conf{RsyncClientCmd} = '<%= @rsync_client_cmd %>';
-<% elsif defined?(@system_account) %>
+<% elsif !@system_account.empty? %>
 $Conf{RsyncClientCmd} = '$sshPath -q -x -l <%= @system_account %> $host $rsyncPath $argList+';
 <% end -%>
 <% if defined?(@rsync_client_restore_cmd) and !@rsync_client_restore_cmd.empty? -%>
 $Conf{RsyncClientRestoreCmd} = '<%= @rsync_client_restore_cmd %>';
-<% elsif defined?(@system_account) -%>
+<% elsif !@system_account.empty? -%>
 $Conf{RsyncClientRestoreCmd} = '$sshPath -q -x -l <%= @system_account %> $host $rsyncPath $argList+';
 <% end -%>
 <% if defined?(@rsync_share_name) and !@rsync_share_name.empty? -%>

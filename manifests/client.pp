@@ -355,7 +355,7 @@ class backuppc::client (
   Optional[String] $smb_share_passwd                         = undef,
   Optional[String] $smb_share_user_name                      = undef,
   Optional[String] $sudo_prepend                             = undef,
-  Optional[String[1]] $system_account                        = 'backup',
+  Optional[String] $system_account                           = 'backup',
   Optional[Array[String]] $system_additional_commands_noexec = undef,
   Optional[Array[String]] $system_additional_commands        = undef,
   Optional[String] $tar_client_cmd                           = undef,
@@ -386,8 +386,7 @@ class backuppc::client (
   # from the backuppc server to this client. It may be managed
   # elsewhere so we allow it to be overridden with the manage_sudo
   # parameter.
-  notify {"Running with \$system_account =  ${::system_account}":}
-  if $xfer_method in ['rsync', 'tar'] and $system_account != undef
+  if $xfer_method in ['rsync', 'tar'] and !empty($system_account)
   {
     if $xfer_method == 'rsync' {
       if $manage_rsync {

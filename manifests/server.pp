@@ -215,10 +215,6 @@
 #   Times at which we wake up, check all the PCs, and schedule necessary
 #   backups. Times are measured in hours since midnight. Can be fractional if
 #
-# @param system_home_directory
-#   Absolute path to the home directory of the system account.  necessary (eg:
-#   4.25 means 4:15am).
-#
 # @param dhcp_address_ranges
 #   List of DHCP address ranges we search looking for PCs to backup. This is an
 #   array of hashes for each class C address range. This is only needed if hosts
@@ -291,15 +287,8 @@
 #   The location for the preseed file to support BackupPC installation by
 #   providing preset answers.
 #
-# @param system_account
-#   Name of the user that will be created to allow backuppc access to the
-#   system via ssh. This only applies to xfer methods that require it. To
-#   override this set the system_account to an empty string and configure
-#   access to the client yourself as the default in the global config file
-#   (root) or change the rsync_client_cmd or tar_client_cmd to suit your setup.
-#
 class backuppc::server (
-  Stdlib::Absolutepath $config_directory                    = lookup('backuppc::common::config_directory'),
+  Stdlib::Absolutepath $config_directory                    = '/etc/backuppc',
   Stdlib::Absolutepath $topdir                              = '/var/lib/backuppc',
   String $apache_allow_from                                 = 'all',
   Boolean $apache_configuration                             = true,
@@ -314,12 +303,12 @@ class backuppc::server (
   String $cgi_admin_user_group                              = 'backuppc',
   String $cgi_admin_users                                   = 'backuppc',
   Integer[0,2] $cgi_date_format_mmdd                        = 1,
-  Stdlib::Absolutepath $cgi_directory                       = "${backuppc::server::install_directory}/cgi-bin",
-  Stdlib::Absolutepath $cgi_image_dir                       = "${backuppc::server::install_directory}/image",
+  Stdlib::Absolutepath $cgi_directory                       = "${install_directory}/cgi-bin",
+  Stdlib::Absolutepath $cgi_image_dir                       = "${install_directory}/image",
   Stdlib::Absolutepath $cgi_image_dir_url                   = '/backuppc/image',
   Stdlib::HTTPUrl $cgi_url                                  = "http://${facts['networking']['fqdn']}/backuppc/index.cgi",
   Stdlib::Absolutepath $config_apache                       = '/etc/apache2/conf.d/backuppc.conf',
-  Stdlib::Absolutepath $config                              = "${backuppc::server::config_directory}/config.pl",
+  Stdlib::Absolutepath $config                              = "${config_directory}/config.pl",
   Integer $df_max_usage_pct                                 = 95,
   String $email_admin_user_name                             = 'backuppc',
   String $email_from_user_name                              = 'backuppc',
@@ -330,10 +319,10 @@ class backuppc::server (
   Integer $full_age_max                                     = 90,
   Variant[Integer,Array[Integer]] $full_keep_cnt            = 1,
   Numeric $full_period                                      = 6.97,
-  String[1] $group_apache                                   = lookup('backuppc::common::group_apache'),
+  String[1] $group_apache                                   = 'www-data',
   Stdlib::Absolutepath $gzip_path                           = '/bin/gzip',
-  Stdlib::Absolutepath $hosts                               = "${backuppc::server::config_directory}/hosts",
-  Stdlib::Absolutepath $htpasswd_apache                     = "${backuppc::server::config_directory}/htpasswd",
+  Stdlib::Absolutepath $hosts                               = "${config_directory}/hosts",
+  Stdlib::Absolutepath $htpasswd_apache                     = "${config_directory}/htpasswd",
   Integer $incr_age_max                                     = 30,
   Boolean $incr_fill                                        = false,
   Integer $incr_keep_cnt                                    = 6,
@@ -341,7 +330,7 @@ class backuppc::server (
   Numeric $incr_period                                      = 0.97,
   Stdlib::Absolutepath $install_directory                   = '/usr/share/backuppc',
   String $language                                          = 'en',
-  Stdlib::Absolutepath $log_directory                       = "${backuppc::server::topdir}/log",
+  Stdlib::Absolutepath $log_directory                       = "${topdir}/log",
   Integer $max_backuppc_nightly_jobs                        = 2,
   Integer $max_backups                                      = 4,
   Integer $max_old_log_files                                = 14,
@@ -368,8 +357,6 @@ class backuppc::server (
     }
   },
   Optional[Array[String]] $rsync_args_extra                 = undef,
-  Optional[String] $system_account                          = lookup('backuppc::common::system_account'),
-  Optional[Stdlib::Absolutepath] $system_home_directory     = lookup('backuppc::common::system_home_directory'),
 ) {
 
   if empty($backuppc_password) {
@@ -523,31 +510,13 @@ class backuppc::server (
   # Export backuppc's authorized key to all clients
   # TODO don't rely on facter to obtain the ssh key.
   if $facts['backuppc_pubkey_rsa'] != undef {
-    if ! empty($system_account) {
-      @@ssh_authorized_key { "backuppc_${facts['networking']['fqdn']}":
-        ensure  => present,
-        key     => $facts['backuppc_pubkey_rsa'],
-        name    => "backuppc_${facts['networking']['fqdn']}",
-        user    => $system_account,
-        options => [
-          "command=\"${system_home_directory}/backuppc.sh\"",
-          'no-agent-forwarding',
-          'no-port-forwarding',
-          'no-pty',
-          'no-X11-forwarding',
-        ],
-        type    => 'ssh-rsa',
-        tag     => "backuppc_${facts['networking']['fqdn']}",
-      }
-    } else {
-      @@ssh_authorized_key { "backuppc_${facts['networking']['fqdn']}":
-        ensure => present,
-        key    => $facts['backuppc_pubkey_rsa'],
-        name   => "backuppc_${facts['networking']['fqdn']}",
-        user   => 'root',
-        type   => 'ssh-rsa',
-        tag    => "backuppc_${facts['networking']['fqdn']}",
-      }
+    @@ssh_authorized_key { "backuppc_${facts['networking']['fqdn']}":
+      ensure => present,
+      key    => $facts['backuppc_pubkey_rsa'],
+      name   => "backuppc_${facts['networking']['fqdn']}",
+      user   => 'root',
+      type   => 'ssh-rsa',
+      tag    => "backuppc_${facts['networking']['fqdn']}",
     }
   }
 

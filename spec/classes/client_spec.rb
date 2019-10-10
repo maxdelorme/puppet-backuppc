@@ -5,14 +5,7 @@ describe 'backuppc::client' do
     context "on #{os}" do
       let(:facts) { facts }
       let(:node) { 'testhost.test.com' }
-      let(:file_host) do
-        case facts[:os]['family']
-        when 'RedHat'
-          '/etc/BackupPC/pc/testhost.pl'
-        when 'Debian'
-          '/etc/backuppc/pc/testhost.pl'
-        end
-      end
+      let(:file_host) { '/etc/backuppc/pc/testhost.pl' }
 
       context 'with OS defaults' do
         let(:default_params) do

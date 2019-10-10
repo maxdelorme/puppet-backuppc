@@ -1,16 +1,15 @@
 ---
 
-backuppc::common::config_directory:  '/etc/BackupPC'
-
+backuppc::server::config_directory:  '/etc/BackupPC'
 backuppc::server::topdir:            '/var/lib/BackupPC'
 backuppc::server::install_directory: '/usr/share/BackupPC'
 backuppc::server::cgi_directory:     "%{hiera('backuppc::server::install_directory')}/sbin"
 backuppc::server::cgi_image_dir:     "%{hiera('backuppc::server::install_directory')}/html"
 backuppc::server::cgi_image_dir_url: '/BackupPC/images'
-backuppc::server::config:            "%{hiera('backuppc::common::config_directory')}/config.pl"
+backuppc::server::config:            "%{hiera('backuppc::server::config_directory')}/config.pl"
 backuppc::server::config_apache:     '/etc/httpd/conf.d/BackupPC.conf'
 backuppc::server::group_apache:      'www-data'
-backuppc::server::hosts:             "%{hiera('backuppc::common::config_directory')}/hosts"
+backuppc::server::hosts:             "%{hiera('backuppc::server::config_directory')}/hosts"
 backuppc::server::log_directory:     '/var/log/BackupPC'
 backuppc::server::package:           'BackupPC'
 backuppc::server::par_path:

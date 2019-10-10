@@ -1,7 +1,7 @@
 ---
 
-backuppc::common::system_account:        'backup'
-backuppc::common::system_home_directory: '/var/backups'
+backuppc::client::system_account:        'backup'
+backuppc::client::system_home_directory: '/var/backups'
 
 lookup_options:
   "^backuppc::(.*)::(.*)$":

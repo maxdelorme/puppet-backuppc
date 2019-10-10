@@ -51,21 +51,6 @@ The module is designed to work alongside the BackupPC web administration
 interface, meaning hosts that are configured but not managed by this module
 will still work.
 
-### Common parameters between client and server
-The following parameters **must** be the same for both client and server due to
-the way the modules uses exported resources between the client and server:
-* 'system_account'
-* 'system_home_directory'
-* 'config_directory'
-
-Defaults for these are set in hiera anc can be overridden using the following keys:
-```puppet
-backuppc::common::system_account:
-backuppc::common::system_home_directory:
-backuppc::common::config_directory:
-```
-The parameters can also be set when calling the `backuppc::server` and `backuppc::client` classes, but
-you **must** ensure they are the same.
 ## Usage
 
 ### Minimal server configuration

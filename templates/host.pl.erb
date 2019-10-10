@@ -60,21 +60,21 @@ $Conf{SmbShareUserName} = '<%= @smb_share_user_name %>';
 <% if defined?(@smb_share_passwd) and !@smb_share_passwd.empty? -%>
 $Conf{SmbSharePasswd} = '<%= @smb_share_passwd %>';
 <% end -%>
-<% if @smb_client_full_cmd and !@smb_client_full_cmd.empty? -%>
+<% if defined?(@smb_client_full_cmd) and !@smb_client_full_cmd.empty? -%>
 $Conf{SmbClientFullCmd} = '<%= @smb_client_full_cmd %>';
 <% end -%>
-<% if @smb_client_incr_cmd and !@smb_client_incr_cmd.empty? -%>
+<% if defined?(@smb_client_incr_cmd) and !@smb_client_incr_cmd.empty? -%>
 $Conf{SmbClientIncrCmd} = '<%= @smb_client_incr_cmd %>';
 <% end -%>
-<% if @smb_client_restore_cmd and !@smb_client_restore_cmd.empty? -%>
+<% if defined?(@smb_client_restore_cmd) and !@smb_client_restore_cmd.empty? -%>
 $Conf{SmbClientRestoreCmd} = '<%= @smb_client_restore_cmd %>';
 <% end -%>
-<% if @tar_share_name and !@tar_share_name.empty? -%>
+<% if defined?(@tar_share_name) and !@tar_share_name.empty? -%>
 $Conf{TarShareName} = <%= PP.pp(@tar,'').chomp.tr(?", ?') -%>;
 <% end -%>
-<% if @tar_client_cmd and !@tar_client_cmd.empty? -%>
+<% if defined?(@tar_client_cmd) and !@tar_client_cmd.empty? -%>
 $Conf{TarClientCmd} = '<%= @tar_client_cmd %>';
-<% elsif !@system_account.empty? -%>
+<% elsif defined?(@system_account) -%>
 $Conf{TarClientCmd} = '$sshPath -q -x -n -l <%= @system_account %> $host'
 . ' env LC_ALL=C $tarPath -c -v -f - -C $shareName+'
 . ' --totals';
@@ -94,12 +94,12 @@ $Conf{TarClientRestoreCmd} = '$sshPath -q -x -l <%= @system_account %> $host'
 <% end -%>
 <% if defined?(@rsync_client_cmd) and !@rsync_client_cmd.empty? -%>
 $Conf{RsyncClientCmd} = '<%= @rsync_client_cmd %>';
-<% elsif !@system_account.empty? %>
+<% elsif defined?(@system_account) %>
 $Conf{RsyncClientCmd} = '$sshPath -q -x -l <%= @system_account %> $host $rsyncPath $argList+';
 <% end -%>
 <% if defined?(@rsync_client_restore_cmd) and !@rsync_client_restore_cmd.empty? -%>
 $Conf{RsyncClientRestoreCmd} = '<%= @rsync_client_restore_cmd %>';
-<% elsif !@system_account.empty? -%>
+<% elsif defined?(@system_account) -%>
 $Conf{RsyncClientRestoreCmd} = '$sshPath -q -x -l <%= @system_account %> $host $rsyncPath $argList+';
 <% end -%>
 <% if defined?(@rsync_share_name) and !@rsync_share_name.empty? -%>

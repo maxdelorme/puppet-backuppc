@@ -22,9 +22,7 @@ describe 'backuppc::server' do
 
       context 'with OS defaults' do
         let(:default_params) do
-          super().merge(backuppc_password: 'test_password',
-                        system_account: 'backup',
-                        system_home_directory: '/var/backups')
+          super().merge(backuppc_password: 'test_password')
         end
         let(:htpasswd_command) do
           "test -f #{default_params[:config_directory]}/htpasswd   || OPT='-c';htpasswd -bs ${OPT}   #{default_params[:config_directory]}/htpasswd backuppc 'test_password'"

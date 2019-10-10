@@ -39,10 +39,3 @@ def config_content(tparam, tvalue)
 
   %r{^\$Conf{#{fparam}}\s+=\s+#{fvalue};}m
 end
-
-def setup_common(p_system_account, p_system_home_directory)
-  "class {'backuppc::common':
-     system_account        => '#{p_system_account}',
-     system_home_directory => '#{p_system_home_directory}',
-   }"
-end

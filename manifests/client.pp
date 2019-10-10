@@ -11,9 +11,6 @@
 # @param config_name
 #   Name of the this host used for the configuration file.
 #
-# @param config_directory
-#   The location of the backuppc configuration
-#
 # @param ensure
 #   Default for creation of files by this class
 #
@@ -299,15 +296,13 @@
 class backuppc::client (
   Boolean $backups_disable                                   = false,
   Stdlib::Fqdn $config_name                                  = $facts['networking']['fqdn'],
-  Stdlib::Absolutepath $config_directory                     = lookup('backuppc::common::config_directory'),
   Enum['present','absent'] $ensure                           = 'present',
   Boolean $manage_rsync                                      = true,
   Boolean $manage_sshkey                                     = true,
   Boolean $manage_sudo                                       = false,
   Stdlib::Absolutepath $rsync_path                           = '/bin/rsync',
   Boolean $rsyncd_auth_required                              = false,
-  String $system_account                                     = lookup('backuppc::common::system_account'),
-  Stdlib::Absolutepath $system_home_directory                = lookup('backuppc::common::system_home_directory'),
+  Stdlib::Absolutepath $system_home_directory                = '/var/backups',
   Stdlib::Absolutepath $tar_path                             = '/bin/tar',
   Backuppc::XferLogLevel $xfer_log_level                     = 1,
   Backuppc::XferMethod $xfer_method                          = 'rsync',
@@ -360,6 +355,7 @@ class backuppc::client (
   Optional[String] $smb_share_passwd                         = undef,
   Optional[String] $smb_share_user_name                      = undef,
   Optional[String] $sudo_prepend                             = undef,
+  Optional[String[1]] $system_account                        = 'backup',
   Optional[Array[String]] $system_additional_commands_noexec = undef,
   Optional[Array[String]] $system_additional_commands        = undef,
   Optional[String] $tar_client_cmd                           = undef,
@@ -390,7 +386,7 @@ class backuppc::client (
   # from the backuppc server to this client. It may be managed
   # elsewhere so we allow it to be overridden with the manage_sudo
   # parameter.
-  if $xfer_method in ['rsync', 'tar'] and ! empty($system_account)
+  if $xfer_method in ['rsync', 'tar'] and $system_account != undef
   {
   #  validate_absolute_path($system_home_directory)
 
@@ -488,7 +484,14 @@ class backuppc::client (
 
     Ssh_authorized_key <<| tag == "backuppc_${backuppc_hostname}" |>> {
       user    => $system_account,
-      require => File["${system_home_directory}/.ssh"]
+      options => [
+        "command=\"${system_home_directory}/backuppc.sh\"",
+        'no-agent-forwarding',
+        'no-port-forwarding',
+        'no-pty',
+        'no-X11-forwarding',
+      ],
+      require => File["${system_home_directory}/.ssh"],
     }
   }
 
@@ -523,7 +526,10 @@ class backuppc::client (
     }
   }
 
-  @@file { "${config_directory}/pc/${config_name}.pl":
+  # This can use '/etc/backuppc' due to the wokaround on the client that links
+  # config directories for all supported OS. This avoids having a shared param
+  # between client and server that must be the same
+  @@file { "/etc/backuppc/pc/${config_name}.pl":
     ensure  => $ensure,
     content => template("${module_name}/host.pl.erb"),
     owner   => 'backuppc',

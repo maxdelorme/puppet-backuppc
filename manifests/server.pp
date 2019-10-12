@@ -310,6 +310,7 @@ class backuppc::server (
   Stdlib::Absolutepath $config_apache                       = '/etc/apache2/conf.d/backuppc.conf',
   Stdlib::Absolutepath $config                              = "${config_directory}/config.pl",
   Integer $df_max_usage_pct                                 = 95,
+  Backuppc::DhcpAddressRange $dhcp_address_ranges           = [],
   String $email_admin_user_name                             = 'backuppc',
   String $email_from_user_name                              = 'backuppc',
   Hash $email_headers = { 'MIME-Version' => 1.0, 'Content-Type' => 'text/plain; charset="iso-8859-1"', },
@@ -347,7 +348,6 @@ class backuppc::server (
   Integer $trash_clean_sleep_sec                            = 300,
   Boolean $user_cmd_check_status                            = true,
   Array[Backuppc::Hours] $wakeup_schedule = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23],
-  Optional[Backuppc::DhcpAddressRange] $dhcp_address_ranges = undef,
   Optional[Backuppc::Domain] $email_user_dest_domain        = undef,
   Optional[Stdlib::Absolutepath] $par_path                  = '/usr/bin/par2',
   Optional[Hash] $preseed_file                              = {

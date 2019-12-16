@@ -1136,13 +1136,13 @@ Default value: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
 
 ##### `dhcp_address_ranges`
 
-Data type: `Optional[Backuppc::DhcpAddressRange]`
+Data type: `Backuppc::DhcpAddressRange`
 
 List of DHCP address ranges we search looking for PCs to backup. This is an
 array of hashes for each class C address range. This is only needed if hosts
 in the conf/hosts file have the dhcp flag set.
 
-Default value: `undef`
+Default value: []
 
 ##### `email_user_dest_domain`
 

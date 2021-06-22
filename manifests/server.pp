@@ -1,5 +1,5 @@
 # @summary
-#   Configures the backuppc server. 
+#   Configures the backuppc server.
 #
 # @param apache_allow_from
 #   A space seperated list of hostnames, ip addresses and networks that are
@@ -386,7 +386,7 @@ class backuppc::server (
   # If topdir is changed, create a symlink between "default" topdir and the custom
   # This permit "facter/backuppc_pubkey_rsa" to work properly.
   if $real_topdir != lookup('backuppc::server::topdir') {
-    file { $topdir:
+    file { lookup('backuppc::server::topdir'):
       ensure => link,
       target => $real_topdir,
     }

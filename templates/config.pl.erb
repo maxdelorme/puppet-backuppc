@@ -48,7 +48,7 @@ $Conf{IncrKeepCnt} = <%= @incr_keep_cnt %>;
 $Conf{IncrKeepCntMin} = 1;
 $Conf{IncrAgeMax}     = <%= @incr_age_max %>;
 $Conf{IncrLevels} = [<%= @incr_levels.join(', ') %>];
-$Conf{BackupsDisable} = 0;
+$Conf{BackupsDisable} = <%= @backups_disable %>;
 $Conf{PartialAgeMax} = <%= @partial_age_max %>;
 $Conf{IncrFill} = <%= @real_incr_fill %>;
 $Conf{RestoreInfoKeepCnt} = <%= @restore_info_keep_cnt %>;

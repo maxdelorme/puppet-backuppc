@@ -33,6 +33,9 @@
 # @param backuppc_password
 #   Password for the backuppc user used to access the web interface.
 #
+# @param backups_disable
+#   Disable all backups
+#
 # @param blackout_good_cnt
 #   PCs that are always or often on the network can be backed up after hours, to
 #   reduce PC, network and server load during working hours. For each PC a count
@@ -295,6 +298,7 @@ class backuppc::server (
   Boolean $apache_require_ssl                               = false,
   Integer $archive_info_keep_cnt                            = 10,
   Integer $backuppc_nightly_period                          = 1,
+  Integer $backups_disable                                  = 0,
   String $backuppc_password                                 = '',
   Boolean $backup_zero_files_is_fatal                       = true,
   Integer $blackout_good_cnt                                = 7,

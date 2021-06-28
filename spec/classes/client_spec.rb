@@ -122,8 +122,6 @@ describe 'backuppc::client' do
             'restore_pre_user_cmd' => '/restore/pre/user/cmd',
             'rsync_args' => ['-F', '-G'],
             'rsync_args_extra' => ['-H', '-I'],
-            'rsync_client_cmd' => '/rsync/client/cmd args',
-            'rsync_client_restore_cmd' => '/rsync/client/restore/cmd args',
             'rsync_csum_cache_verify_prob' => 0.01,
             'rsyncd_auth_required' => true,
             'rsyncd_client_port' => 378,

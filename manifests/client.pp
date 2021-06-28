@@ -88,7 +88,7 @@
 #   refer to the same physical host. This should only be set in the per-PC
 #   config file and is only used by BackupPC at the last moment prior to
 #   generating the command used to backup that machine (ie: the value of
-#   `$Conf{ClientNameAlias}` is invisible everywhere else in BackupPC). 
+#   `$Conf{ClientNameAlias}` is invisible everywhere else in BackupPC).
 #   The setting can be a host name or IP address. eg.
 #         backuppc::client::client_name_alias: 'realHostName',
 #         backuppc::client::client_name_alias: '192.1.1.15',
@@ -204,13 +204,6 @@
 #
 # @param rsync_args
 #   Arguments to rsync for backup.
-#
-# @param rsync_client_cmd
-#   Full command to run rsync on the client machine. The default will run
-#   the rsync command as the user you specify in system_account.
-#
-# @param rsync_client_restore_cmd
-#   Full command to run rsync for restore on the client.
 #
 # @param rsync_csum_cache_verify_prob
 #   When rsync checksum caching is enabled (by adding the
@@ -340,8 +333,6 @@ class backuppc::client (
   Optional[String] $restore_pre_user_cmd                     = undef,
   Optional[Array[String]] $rsync_args_extra                  = undef,
   Optional[Array[String]] $rsync_args                        = undef,
-  Optional[String] $rsync_client_cmd                         = undef,
-  Optional[String] $rsync_client_restore_cmd                 = undef,
   Optional[Float] $rsync_csum_cache_verify_prob              = undef,
   Optional[Integer] $rsyncd_client_port                      = undef,
   Optional[String] $rsyncd_passwd                            = undef,

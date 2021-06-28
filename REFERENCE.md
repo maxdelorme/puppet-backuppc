@@ -452,22 +452,6 @@ Arguments to rsync for backup.
 
 Default value: `undef`
 
-##### `rsync_client_cmd`
-
-Data type: `Optional[String]`
-
-Full command to run rsync on the client machine. The default will run
-the rsync command as the user you specify in system_account.
-
-Default value: `undef`
-
-##### `rsync_client_restore_cmd`
-
-Data type: `Optional[String]`
-
-Full command to run rsync for restore on the client.
-
-Default value: `undef`
 
 ##### `rsync_csum_cache_verify_prob`
 
@@ -1487,4 +1471,3 @@ Alias of `Integer[0, 2]`
 Numeric user ID.
 
 Alias of `Enum['smb', 'rsync', 'rsyncd', 'tar']`
-

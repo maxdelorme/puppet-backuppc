@@ -49,6 +49,7 @@ $Conf{IncrKeepCntMin} = 1;
 $Conf{IncrAgeMax}     = <%= @incr_age_max %>;
 $Conf{IncrLevels} = [<%= @incr_levels.join(', ') %>];
 $Conf{BackupsDisable} = <%= @backups_disable %>;
+$Conf{RsyncSshArgs} = <%= PP.pp(@rsync_ssh_args,'').chomp.tr(?", ?') -%>;
 $Conf{PartialAgeMax} = <%= @partial_age_max %>;
 $Conf{IncrFill} = <%= @real_incr_fill %>;
 $Conf{RestoreInfoKeepCnt} = <%= @restore_info_keep_cnt %>;

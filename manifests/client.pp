@@ -287,7 +287,6 @@
 #   Whether the exit status of each PreUserCmd and PostUserCmd is checked.
 #
 class backuppc::client (
-  Boolean $backups_disable                                   = false,
   Stdlib::Fqdn $config_name                                  = $facts['networking']['fqdn'],
   Enum['present','absent'] $ensure                           = 'present',
   Boolean $manage_rsync                                      = true,
@@ -302,6 +301,7 @@ class backuppc::client (
   Optional[Backuppc::BackupFiles] $backup_files_exclude      = undef,
   Optional[Backuppc::BackupFiles] $backup_files_only         = undef,
   Optional[Stdlib::Fqdn] $backuppc_hostname                  = undef,
+  Optional[Boolean] $backups_disable                         = undef,
   Optional[Integer] $blackout_bad_ping_limit                 = undef,
   Optional[Integer] $blackout_good_cnt                       = undef,
   Optional[Backuppc::BlackoutPeriods] $blackout_periods      = undef,
